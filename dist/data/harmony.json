@@ -1,0 +1,3561 @@
+{
+  "pericopes": [
+    {
+      "pericopeId": "genealogy-matthew",
+      "title": "Genealogy of Jesus (Matthew)",
+      "summary": "Matthew records Jesus\u2019s genealogy from Abraham to Jesus.",
+      "tags": [
+        "birth",
+        "identity"
+      ],
+      "sortOrder": 10
+    },
+    {
+      "pericopeId": "genealogy-luke",
+      "title": "Genealogy of Jesus (Luke)",
+      "summary": "Luke records Jesus\u2019s genealogy in connection with Jesus\u2019s baptism.",
+      "tags": [
+        "birth",
+        "identity"
+      ],
+      "sortOrder": 20
+    },
+    {
+      "pericopeId": "birth-jesus",
+      "title": "Birth of Jesus",
+      "summary": "Jesus is born in Bethlehem.",
+      "tags": [
+        "birth"
+      ],
+      "sortOrder": 30
+    },
+    {
+      "pericopeId": "shepherds",
+      "title": "Angels and Shepherds",
+      "summary": "Angels announce Jesus\u2019s birth to shepherds.",
+      "tags": [
+        "birth"
+      ],
+      "sortOrder": 40
+    },
+    {
+      "pericopeId": "magi",
+      "title": "Visit of the Magi",
+      "summary": "Wise men worship the newborn king.",
+      "tags": [
+        "birth"
+      ],
+      "sortOrder": 50
+    },
+    {
+      "pericopeId": "flight-egypt",
+      "title": "Flight into Egypt",
+      "summary": "Joseph takes Mary and Jesus to Egypt for safety.",
+      "tags": [
+        "birth"
+      ],
+      "sortOrder": 60
+    },
+    {
+      "pericopeId": "return-nazareth",
+      "title": "Return to Nazareth",
+      "summary": "The family settles in Nazareth after Herod\u2019s death.",
+      "tags": [
+        "birth"
+      ],
+      "sortOrder": 70
+    },
+    {
+      "pericopeId": "boy-jesus-temple",
+      "title": "Boy Jesus in the Temple",
+      "summary": "At age twelve, Jesus is found in the temple.",
+      "tags": [
+        "early life",
+        "teaching"
+      ],
+      "sortOrder": 80
+    },
+    {
+      "pericopeId": "john-prologue",
+      "title": "The Word Made Flesh",
+      "summary": "John introduces Jesus as the eternal Word made flesh.",
+      "tags": [
+        "identity",
+        "teaching"
+      ],
+      "sortOrder": 90
+    },
+    {
+      "pericopeId": "john-baptist-ministry",
+      "title": "John the Baptist\u2019s Ministry",
+      "summary": "John prepares the way with repentance and baptism.",
+      "tags": [
+        "john the baptist",
+        "teaching"
+      ],
+      "sortOrder": 100
+    },
+    {
+      "pericopeId": "baptism",
+      "title": "Baptism of Jesus",
+      "summary": "Jesus is baptized and affirmed from heaven.",
+      "tags": [
+        "baptism",
+        "identity"
+      ],
+      "sortOrder": 110
+    },
+    {
+      "pericopeId": "temptation",
+      "title": "Temptation in the Wilderness",
+      "summary": "Jesus is tempted in the wilderness.",
+      "tags": [
+        "temptation"
+      ],
+      "sortOrder": 120
+    },
+    {
+      "pericopeId": "first-disciples-john",
+      "title": "First Disciples Called",
+      "summary": "Jesus begins gathering disciples after John\u2019s witness.",
+      "tags": [
+        "discipleship"
+      ],
+      "sortOrder": 130
+    },
+    {
+      "pericopeId": "wedding-cana",
+      "title": "Wedding at Cana",
+      "summary": "Jesus turns water into wine.",
+      "tags": [
+        "miracle"
+      ],
+      "sortOrder": 140
+    },
+    {
+      "pericopeId": "temple-cleansing-early",
+      "title": "Cleansing of the Temple (early)",
+      "summary": "Jesus cleanses the temple early in John\u2019s account.",
+      "tags": [
+        "temple",
+        "conflict"
+      ],
+      "sortOrder": 150
+    },
+    {
+      "pericopeId": "nicodemus",
+      "title": "Jesus and Nicodemus",
+      "summary": "Jesus teaches about being born again.",
+      "tags": [
+        "teaching"
+      ],
+      "sortOrder": 160
+    },
+    {
+      "pericopeId": "samaritan-woman",
+      "title": "Woman at the Well",
+      "summary": "Jesus offers living water to the Samaritan woman.",
+      "tags": [
+        "teaching"
+      ],
+      "sortOrder": 170
+    },
+    {
+      "pericopeId": "officials-son",
+      "title": "Healing the Official\u2019s Son",
+      "summary": "Jesus heals a son from a distance.",
+      "tags": [
+        "miracle",
+        "healing"
+      ],
+      "sortOrder": 180
+    },
+    {
+      "pericopeId": "call-fishermen",
+      "title": "Calling of the Fishermen",
+      "summary": "Jesus calls fishermen to follow him.",
+      "tags": [
+        "discipleship"
+      ],
+      "sortOrder": 190
+    },
+    {
+      "pericopeId": "synagogue-capernaum",
+      "title": "Teaching in Capernaum Synagogue",
+      "summary": "Jesus teaches with authority and casts out an unclean spirit.",
+      "tags": [
+        "miracle",
+        "healing"
+      ],
+      "sortOrder": 200
+    },
+    {
+      "pericopeId": "peters-mother-in-law",
+      "title": "Healing Peter\u2019s Mother-in-law",
+      "summary": "Jesus heals Peter\u2019s mother-in-law and many others.",
+      "tags": [
+        "miracle",
+        "healing"
+      ],
+      "sortOrder": 210
+    },
+    {
+      "pericopeId": "first-preaching-tour",
+      "title": "First Preaching Tour",
+      "summary": "Jesus travels preaching in Galilee.",
+      "tags": [
+        "mission"
+      ],
+      "sortOrder": 220
+    },
+    {
+      "pericopeId": "leper",
+      "title": "Cleansing a Leper",
+      "summary": "Jesus cleanses a leper.",
+      "tags": [
+        "miracle",
+        "healing"
+      ],
+      "sortOrder": 230
+    },
+    {
+      "pericopeId": "paralytic",
+      "title": "Healing the Paralytic",
+      "summary": "A paralytic is forgiven and healed.",
+      "tags": [
+        "miracle",
+        "healing"
+      ],
+      "sortOrder": 240
+    },
+    {
+      "pericopeId": "call-levi",
+      "title": "Call of Matthew/Levi",
+      "summary": "Jesus calls Levi and eats with sinners.",
+      "tags": [
+        "discipleship"
+      ],
+      "sortOrder": 250
+    },
+    {
+      "pericopeId": "question-fasting",
+      "title": "Question About Fasting",
+      "summary": "Jesus answers a question about fasting.",
+      "tags": [
+        "teaching"
+      ],
+      "sortOrder": 260
+    },
+    {
+      "pericopeId": "bethesda",
+      "title": "Healing at Bethesda",
+      "summary": "Jesus heals a man at Bethesda on the Sabbath.",
+      "tags": [
+        "miracle",
+        "healing",
+        "sabbath"
+      ],
+      "sortOrder": 270
+    },
+    {
+      "pericopeId": "sons-authority",
+      "title": "The Son\u2019s Authority",
+      "summary": "Jesus speaks of his unity with the Father and authority to judge.",
+      "tags": [
+        "teaching",
+        "identity"
+      ],
+      "sortOrder": 280
+    },
+    {
+      "pericopeId": "grain-sabbath",
+      "title": "Plucking Grain on the Sabbath",
+      "summary": "Jesus teaches that the Son of Man is Lord of the Sabbath.",
+      "tags": [
+        "sabbath",
+        "teaching"
+      ],
+      "sortOrder": 290
+    },
+    {
+      "pericopeId": "withered-hand",
+      "title": "Man with the Withered Hand",
+      "summary": "Jesus heals on the Sabbath and faces opposition.",
+      "tags": [
+        "miracle",
+        "healing",
+        "sabbath"
+      ],
+      "sortOrder": 300
+    },
+    {
+      "pericopeId": "choose-twelve",
+      "title": "Choosing the Twelve",
+      "summary": "Jesus appoints the twelve apostles.",
+      "tags": [
+        "apostles"
+      ],
+      "sortOrder": 310
+    },
+    {
+      "pericopeId": "sermon-mount",
+      "title": "Sermon on the Mount / Plain",
+      "summary": "Jesus teaches kingdom ethics and discipleship.",
+      "tags": [
+        "teaching",
+        "sermon"
+      ],
+      "sortOrder": 320
+    },
+    {
+      "pericopeId": "centurion-servant",
+      "title": "Centurion\u2019s Servant",
+      "summary": "Jesus heals a centurion\u2019s servant and praises his faith.",
+      "tags": [
+        "miracle",
+        "healing"
+      ],
+      "sortOrder": 330
+    },
+    {
+      "pericopeId": "widows-son-naim",
+      "title": "Widow\u2019s Son at Nain",
+      "summary": "Jesus raises a widow\u2019s son.",
+      "tags": [
+        "miracle"
+      ],
+      "sortOrder": 340
+    },
+    {
+      "pericopeId": "johns-question",
+      "title": "John\u2019s Question from Prison",
+      "summary": "Jesus answers John\u2019s inquiry and honors him.",
+      "tags": [
+        "john the baptist",
+        "teaching"
+      ],
+      "sortOrder": 350
+    },
+    {
+      "pericopeId": "sinful-woman",
+      "title": "Sinful Woman Anoints Jesus",
+      "summary": "A repentant woman anoints Jesus and receives forgiveness.",
+      "tags": [
+        "devotion",
+        "teaching"
+      ],
+      "sortOrder": 360
+    },
+    {
+      "pericopeId": "sower",
+      "title": "Parable of the Sower",
+      "summary": "The word is received in different kinds of soil.",
+      "tags": [
+        "parable",
+        "teaching"
+      ],
+      "sortOrder": 370
+    },
+    {
+      "pericopeId": "lamp-under-basket",
+      "title": "Lamp Under a Basket",
+      "summary": "Light is meant to be seen.",
+      "tags": [
+        "parable",
+        "teaching"
+      ],
+      "sortOrder": 380
+    },
+    {
+      "pericopeId": "seed-growing",
+      "title": "Parable of the Growing Seed",
+      "summary": "The kingdom grows in hidden ways.",
+      "tags": [
+        "parable",
+        "teaching"
+      ],
+      "sortOrder": 390
+    },
+    {
+      "pericopeId": "mustard-seed",
+      "title": "Parable of the Mustard Seed",
+      "summary": "The kingdom grows from small beginnings.",
+      "tags": [
+        "parable"
+      ],
+      "sortOrder": 400
+    },
+    {
+      "pericopeId": "leaven",
+      "title": "Parable of the Leaven",
+      "summary": "The kingdom works through the whole batch like leaven.",
+      "tags": [
+        "parable"
+      ],
+      "sortOrder": 410
+    },
+    {
+      "pericopeId": "weeds",
+      "title": "Parable of the Weeds",
+      "summary": "Wheat and weeds grow together until harvest.",
+      "tags": [
+        "parable",
+        "teaching"
+      ],
+      "sortOrder": 420
+    },
+    {
+      "pericopeId": "hidden-treasure",
+      "title": "Hidden Treasure",
+      "summary": "The kingdom is worth everything to gain.",
+      "tags": [
+        "parable"
+      ],
+      "sortOrder": 430
+    },
+    {
+      "pericopeId": "pearl",
+      "title": "Pearl of Great Price",
+      "summary": "The kingdom is like a pearl of great value.",
+      "tags": [
+        "parable"
+      ],
+      "sortOrder": 440
+    },
+    {
+      "pericopeId": "dragnet",
+      "title": "Parable of the Dragnet",
+      "summary": "The final sorting is like a dragnet gathering fish.",
+      "tags": [
+        "parable"
+      ],
+      "sortOrder": 450
+    },
+    {
+      "pericopeId": "householder",
+      "title": "Parable of the Householder",
+      "summary": "A disciple brings out treasures old and new.",
+      "tags": [
+        "parable"
+      ],
+      "sortOrder": 460
+    },
+    {
+      "pericopeId": "calming-storm",
+      "title": "Jesus Calms the Storm",
+      "summary": "Jesus rebukes wind and waves.",
+      "tags": [
+        "miracle"
+      ],
+      "sortOrder": 470
+    },
+    {
+      "pericopeId": "gerasene-demoniac",
+      "title": "Gerasene Demoniac",
+      "summary": "Jesus frees a man oppressed by demons.",
+      "tags": [
+        "miracle",
+        "healing"
+      ],
+      "sortOrder": 480
+    },
+    {
+      "pericopeId": "jairus-woman",
+      "title": "Jairus\u2019s Daughter and the Woman",
+      "summary": "Jesus heals a woman and raises Jairus\u2019s daughter.",
+      "tags": [
+        "miracle",
+        "healing"
+      ],
+      "sortOrder": 490
+    },
+    {
+      "pericopeId": "nazareth-rejection",
+      "title": "Rejection at Nazareth",
+      "summary": "Jesus is rejected in his hometown.",
+      "tags": [
+        "conflict"
+      ],
+      "sortOrder": 500
+    },
+    {
+      "pericopeId": "send-twelve",
+      "title": "Sending the Twelve",
+      "summary": "Jesus sends the twelve to preach and heal.",
+      "tags": [
+        "mission"
+      ],
+      "sortOrder": 510
+    },
+    {
+      "pericopeId": "john-death",
+      "title": "Death of John the Baptist",
+      "summary": "Herod executes John the Baptist.",
+      "tags": [
+        "john the baptist"
+      ],
+      "sortOrder": 520
+    },
+    {
+      "pericopeId": "feeding-5000",
+      "title": "Feeding of the Five Thousand",
+      "summary": "Jesus feeds a large crowd with loaves and fish.",
+      "tags": [
+        "miracle"
+      ],
+      "sortOrder": 530
+    },
+    {
+      "pericopeId": "walk-water",
+      "title": "Walking on Water",
+      "summary": "Jesus walks on the sea.",
+      "tags": [
+        "miracle"
+      ],
+      "sortOrder": 540
+    },
+    {
+      "pericopeId": "bread-of-life",
+      "title": "Bread of Life Discourse",
+      "summary": "Jesus teaches that he is the bread of life.",
+      "tags": [
+        "teaching"
+      ],
+      "sortOrder": 550
+    },
+    {
+      "pericopeId": "traditions-defile",
+      "title": "Traditions and Defilement",
+      "summary": "Jesus teaches what truly defiles a person.",
+      "tags": [
+        "teaching",
+        "conflict"
+      ],
+      "sortOrder": 560
+    },
+    {
+      "pericopeId": "syrophoenician",
+      "title": "Syrophoenician Woman",
+      "summary": "Jesus commends a Gentile woman\u2019s faith.",
+      "tags": [
+        "miracle",
+        "healing"
+      ],
+      "sortOrder": 570
+    },
+    {
+      "pericopeId": "deaf-mute",
+      "title": "Healing a Deaf and Mute Man",
+      "summary": "Jesus heals a man in the Decapolis.",
+      "tags": [
+        "miracle",
+        "healing"
+      ],
+      "sortOrder": 580
+    },
+    {
+      "pericopeId": "feeding-4000",
+      "title": "Feeding of the Four Thousand",
+      "summary": "Jesus feeds four thousand people.",
+      "tags": [
+        "miracle"
+      ],
+      "sortOrder": 590
+    },
+    {
+      "pericopeId": "blind-bethsaida",
+      "title": "Healing a Blind Man at Bethsaida",
+      "summary": "Jesus heals a blind man in stages.",
+      "tags": [
+        "miracle",
+        "healing"
+      ],
+      "sortOrder": 600
+    },
+    {
+      "pericopeId": "peters-confession",
+      "title": "Peter\u2019s Confession",
+      "summary": "Peter confesses Jesus as the Christ.",
+      "tags": [
+        "identity"
+      ],
+      "sortOrder": 610
+    },
+    {
+      "pericopeId": "first-passion",
+      "title": "First Passion Prediction",
+      "summary": "Jesus predicts his death and calls disciples to take up the cross.",
+      "tags": [
+        "passion",
+        "teaching"
+      ],
+      "sortOrder": 620
+    },
+    {
+      "pericopeId": "transfiguration",
+      "title": "Transfiguration",
+      "summary": "Jesus is revealed in glory before selected disciples.",
+      "tags": [
+        "identity"
+      ],
+      "sortOrder": 630
+    },
+    {
+      "pericopeId": "boy-unclean-spirit",
+      "title": "Boy with an Unclean Spirit",
+      "summary": "Jesus heals a boy after the disciples fail.",
+      "tags": [
+        "miracle",
+        "healing"
+      ],
+      "sortOrder": 640
+    },
+    {
+      "pericopeId": "second-passion",
+      "title": "Second Passion Prediction",
+      "summary": "Jesus again predicts his death and resurrection.",
+      "tags": [
+        "passion"
+      ],
+      "sortOrder": 650
+    },
+    {
+      "pericopeId": "greatness-child",
+      "title": "Greatness and a Child",
+      "summary": "Jesus teaches humility and warns against causing others to stumble.",
+      "tags": [
+        "teaching",
+        "discipleship"
+      ],
+      "sortOrder": 660
+    },
+    {
+      "pericopeId": "coin-fish",
+      "title": "Temple Tax Coin",
+      "summary": "Jesus provides a coin in a fish\u2019s mouth.",
+      "tags": [
+        "miracle"
+      ],
+      "sortOrder": 670
+    },
+    {
+      "pericopeId": "feast-tabernacles",
+      "title": "Feast of Tabernacles",
+      "summary": "Jesus teaches publicly at the feast.",
+      "tags": [
+        "teaching",
+        "feasts"
+      ],
+      "sortOrder": 680
+    },
+    {
+      "pericopeId": "woman-caught",
+      "title": "Woman Caught in Adultery",
+      "summary": "Jesus responds with mercy and truth.",
+      "tags": [
+        "teaching",
+        "conflict"
+      ],
+      "sortOrder": 690
+    },
+    {
+      "pericopeId": "light-of-world",
+      "title": "Light of the World",
+      "summary": "Jesus teaches about his identity and freedom.",
+      "tags": [
+        "teaching",
+        "identity"
+      ],
+      "sortOrder": 700
+    },
+    {
+      "pericopeId": "born-blind",
+      "title": "Man Born Blind",
+      "summary": "Jesus heals a man blind from birth.",
+      "tags": [
+        "miracle",
+        "healing"
+      ],
+      "sortOrder": 710
+    },
+    {
+      "pericopeId": "good-shepherd",
+      "title": "Good Shepherd",
+      "summary": "Jesus teaches about the true shepherd.",
+      "tags": [
+        "teaching",
+        "identity"
+      ],
+      "sortOrder": 720
+    },
+    {
+      "pericopeId": "mission-seventy",
+      "title": "Sending the Seventy-Two",
+      "summary": "Jesus sends a larger group of disciples.",
+      "tags": [
+        "mission"
+      ],
+      "sortOrder": 730
+    },
+    {
+      "pericopeId": "good-samaritan",
+      "title": "Good Samaritan",
+      "summary": "A neighbor is defined by mercy.",
+      "tags": [
+        "parable",
+        "teaching"
+      ],
+      "sortOrder": 740
+    },
+    {
+      "pericopeId": "mary-martha",
+      "title": "Mary and Martha",
+      "summary": "Jesus teaches priority and attentive discipleship.",
+      "tags": [
+        "discipleship",
+        "teaching"
+      ],
+      "sortOrder": 750
+    },
+    {
+      "pericopeId": "lords-prayer",
+      "title": "Lord\u2019s Prayer and Persistence",
+      "summary": "Jesus teaches his disciples how to pray.",
+      "tags": [
+        "prayer",
+        "teaching"
+      ],
+      "sortOrder": 760
+    },
+    {
+      "pericopeId": "rich-fool",
+      "title": "Parable of the Rich Fool",
+      "summary": "A warning against greed and false security.",
+      "tags": [
+        "parable"
+      ],
+      "sortOrder": 770
+    },
+    {
+      "pericopeId": "watchful-servants",
+      "title": "Watchful Servants",
+      "summary": "Jesus calls disciples to readiness.",
+      "tags": [
+        "parable",
+        "teaching"
+      ],
+      "sortOrder": 780
+    },
+    {
+      "pericopeId": "barren-fig-tree",
+      "title": "Parable of the Barren Fig Tree",
+      "summary": "A warning to repent before judgment comes.",
+      "tags": [
+        "parable"
+      ],
+      "sortOrder": 790
+    },
+    {
+      "pericopeId": "crippled-woman",
+      "title": "Healing a Crippled Woman",
+      "summary": "Jesus heals on the Sabbath in a synagogue.",
+      "tags": [
+        "miracle",
+        "healing",
+        "sabbath"
+      ],
+      "sortOrder": 800
+    },
+    {
+      "pericopeId": "narrow-door",
+      "title": "The Narrow Door",
+      "summary": "Jesus warns that entry into the kingdom is urgent.",
+      "tags": [
+        "teaching"
+      ],
+      "sortOrder": 810
+    },
+    {
+      "pericopeId": "great-banquet",
+      "title": "Parable of the Great Banquet",
+      "summary": "Those invited refuse; others are brought in.",
+      "tags": [
+        "parable"
+      ],
+      "sortOrder": 820
+    },
+    {
+      "pericopeId": "cost-discipleship",
+      "title": "Cost of Discipleship",
+      "summary": "Jesus teaches the cost of following him.",
+      "tags": [
+        "discipleship",
+        "teaching"
+      ],
+      "sortOrder": 830
+    },
+    {
+      "pericopeId": "lost-sheep",
+      "title": "Parable of the Lost Sheep",
+      "summary": "Heaven rejoices over one who repents.",
+      "tags": [
+        "parable"
+      ],
+      "sortOrder": 840
+    },
+    {
+      "pericopeId": "lost-coin",
+      "title": "Parable of the Lost Coin",
+      "summary": "There is joy when the lost is found.",
+      "tags": [
+        "parable"
+      ],
+      "sortOrder": 850
+    },
+    {
+      "pericopeId": "prodigal-son",
+      "title": "Parable of the Prodigal Son",
+      "summary": "A father welcomes his returning son.",
+      "tags": [
+        "parable"
+      ],
+      "sortOrder": 860
+    },
+    {
+      "pericopeId": "unjust-steward",
+      "title": "Parable of the Unjust Steward",
+      "summary": "Jesus teaches on wise stewardship.",
+      "tags": [
+        "parable"
+      ],
+      "sortOrder": 870
+    },
+    {
+      "pericopeId": "rich-man-lazarus",
+      "title": "Parable of the Rich Man and Lazarus",
+      "summary": "A warning about hardness of heart and eternal consequence.",
+      "tags": [
+        "parable"
+      ],
+      "sortOrder": 880
+    },
+    {
+      "pericopeId": "persistent-widow",
+      "title": "Parable of the Persistent Widow",
+      "summary": "Jesus teaches persistence in prayer.",
+      "tags": [
+        "parable",
+        "prayer"
+      ],
+      "sortOrder": 890
+    },
+    {
+      "pericopeId": "pharisee-tax",
+      "title": "Parable of the Pharisee and Tax Collector",
+      "summary": "God receives the humble, not the self-righteous.",
+      "tags": [
+        "parable"
+      ],
+      "sortOrder": 900
+    },
+    {
+      "pericopeId": "feast-dedication",
+      "title": "Feast of Dedication",
+      "summary": "Jesus teaches at the Feast of Dedication.",
+      "tags": [
+        "feasts",
+        "identity"
+      ],
+      "sortOrder": 910
+    },
+    {
+      "pericopeId": "lazarus",
+      "title": "Raising of Lazarus",
+      "summary": "Jesus raises Lazarus from the dead.",
+      "tags": [
+        "miracle"
+      ],
+      "sortOrder": 920
+    },
+    {
+      "pericopeId": "plot-kill-jesus",
+      "title": "Plot to Kill Jesus",
+      "summary": "The leaders plan Jesus\u2019s death after Lazarus is raised.",
+      "tags": [
+        "conflict",
+        "passion"
+      ],
+      "sortOrder": 930
+    },
+    {
+      "pericopeId": "marriage-divorce",
+      "title": "Marriage and Divorce",
+      "summary": "Jesus teaches about marriage and divorce.",
+      "tags": [
+        "teaching"
+      ],
+      "sortOrder": 940
+    },
+    {
+      "pericopeId": "bless-children",
+      "title": "Blessing the Children",
+      "summary": "Jesus welcomes little children.",
+      "tags": [
+        "teaching",
+        "children"
+      ],
+      "sortOrder": 950
+    },
+    {
+      "pericopeId": "rich-young-ruler",
+      "title": "Rich Young Ruler",
+      "summary": "A rich ruler asks about eternal life.",
+      "tags": [
+        "teaching",
+        "discipleship"
+      ],
+      "sortOrder": 960
+    },
+    {
+      "pericopeId": "laborers-vineyard",
+      "title": "Parable of the Laborers in the Vineyard",
+      "summary": "The kingdom reflects the generosity of the master.",
+      "tags": [
+        "parable"
+      ],
+      "sortOrder": 970
+    },
+    {
+      "pericopeId": "third-passion",
+      "title": "Third Passion Prediction",
+      "summary": "Jesus again predicts his coming suffering.",
+      "tags": [
+        "passion"
+      ],
+      "sortOrder": 980
+    },
+    {
+      "pericopeId": "james-john-request",
+      "title": "Request of James and John",
+      "summary": "Jesus teaches servant leadership.",
+      "tags": [
+        "teaching",
+        "leadership"
+      ],
+      "sortOrder": 990
+    },
+    {
+      "pericopeId": "blind-jericho",
+      "title": "Healing Near Jericho",
+      "summary": "Jesus heals blind beggars near Jericho.",
+      "tags": [
+        "miracle",
+        "healing"
+      ],
+      "sortOrder": 1000
+    },
+    {
+      "pericopeId": "zacchaeus",
+      "title": "Zacchaeus",
+      "summary": "Jesus brings salvation to Zacchaeus\u2019s house.",
+      "tags": [
+        "repentance",
+        "teaching"
+      ],
+      "sortOrder": 1010
+    },
+    {
+      "pericopeId": "minas",
+      "title": "Parable of the Minas",
+      "summary": "Faithful stewardship is rewarded.",
+      "tags": [
+        "parable"
+      ],
+      "sortOrder": 1020
+    },
+    {
+      "pericopeId": "anointing-bethany",
+      "title": "Anointing at Bethany",
+      "summary": "Jesus is anointed in preparation for burial.",
+      "tags": [
+        "passion week",
+        "devotion"
+      ],
+      "sortOrder": 1030
+    },
+    {
+      "pericopeId": "triumphal-entry",
+      "title": "Triumphal Entry",
+      "summary": "Jesus enters Jerusalem publicly as king.",
+      "tags": [
+        "passion week"
+      ],
+      "sortOrder": 1040
+    },
+    {
+      "pericopeId": "fig-tree",
+      "title": "Fig Tree",
+      "summary": "Jesus curses the fig tree and teaches about faith.",
+      "tags": [
+        "passion week",
+        "teaching"
+      ],
+      "sortOrder": 1050
+    },
+    {
+      "pericopeId": "cleansing-temple-final",
+      "title": "Cleansing of the Temple",
+      "summary": "Jesus cleanses the temple during the final week.",
+      "tags": [
+        "passion week",
+        "temple",
+        "conflict"
+      ],
+      "sortOrder": 1060
+    },
+    {
+      "pericopeId": "authority-question",
+      "title": "Question of Authority",
+      "summary": "Jesus is challenged about his authority.",
+      "tags": [
+        "passion week",
+        "conflict"
+      ],
+      "sortOrder": 1070
+    },
+    {
+      "pericopeId": "two-sons",
+      "title": "Parable of the Two Sons",
+      "summary": "Obedience matters more than profession.",
+      "tags": [
+        "parable",
+        "passion week"
+      ],
+      "sortOrder": 1080
+    },
+    {
+      "pericopeId": "wicked-tenants",
+      "title": "Parable of the Wicked Tenants",
+      "summary": "Jesus warns the leaders through a vineyard parable.",
+      "tags": [
+        "parable",
+        "passion week"
+      ],
+      "sortOrder": 1090
+    },
+    {
+      "pericopeId": "wedding-feast",
+      "title": "Parable of the Wedding Feast",
+      "summary": "Many are invited, but response matters.",
+      "tags": [
+        "parable",
+        "passion week"
+      ],
+      "sortOrder": 1100
+    },
+    {
+      "pericopeId": "tribute-caesar",
+      "title": "Tribute to Caesar",
+      "summary": "Jesus answers the question about taxes.",
+      "tags": [
+        "passion week",
+        "teaching",
+        "conflict"
+      ],
+      "sortOrder": 1110
+    },
+    {
+      "pericopeId": "resurrection-question",
+      "title": "Question About Resurrection",
+      "summary": "Jesus answers the Sadducees about resurrection.",
+      "tags": [
+        "passion week",
+        "teaching"
+      ],
+      "sortOrder": 1120
+    },
+    {
+      "pericopeId": "great-commandment",
+      "title": "Great Commandment",
+      "summary": "Jesus summarizes the law in love for God and neighbor.",
+      "tags": [
+        "passion week",
+        "teaching"
+      ],
+      "sortOrder": 1130
+    },
+    {
+      "pericopeId": "woes-pharisees",
+      "title": "Woes to the Scribes and Pharisees",
+      "summary": "Jesus denounces hypocrisy and blindness.",
+      "tags": [
+        "passion week",
+        "conflict",
+        "teaching"
+      ],
+      "sortOrder": 1140
+    },
+    {
+      "pericopeId": "widows-offering",
+      "title": "Widow\u2019s Offering",
+      "summary": "Jesus honors the widow\u2019s sacrificial gift.",
+      "tags": [
+        "passion week",
+        "devotion"
+      ],
+      "sortOrder": 1150
+    },
+    {
+      "pericopeId": "greeks-seek-jesus",
+      "title": "Greeks Seek Jesus",
+      "summary": "Jesus speaks of glorification through death.",
+      "tags": [
+        "passion week",
+        "identity",
+        "teaching"
+      ],
+      "sortOrder": 1160
+    },
+    {
+      "pericopeId": "olivet-discourse",
+      "title": "Olivet Discourse",
+      "summary": "Jesus teaches about coming judgment and readiness.",
+      "tags": [
+        "passion week",
+        "teaching",
+        "second coming"
+      ],
+      "sortOrder": 1170
+    },
+    {
+      "pericopeId": "ten-virgins",
+      "title": "Parable of the Ten Virgins",
+      "summary": "Jesus teaches readiness for his coming.",
+      "tags": [
+        "parable",
+        "passion week",
+        "second coming"
+      ],
+      "sortOrder": 1180
+    },
+    {
+      "pericopeId": "talents",
+      "title": "Parable of the Talents",
+      "summary": "Faithful servants are commended.",
+      "tags": [
+        "parable",
+        "passion week"
+      ],
+      "sortOrder": 1190
+    },
+    {
+      "pericopeId": "sheep-goats",
+      "title": "Sheep and Goats",
+      "summary": "Final judgment is pictured in terms of compassion and obedience.",
+      "tags": [
+        "parable",
+        "passion week",
+        "judgment"
+      ],
+      "sortOrder": 1200
+    },
+    {
+      "pericopeId": "judas-betrayal",
+      "title": "Judas Agrees to Betray",
+      "summary": "Judas arranges to betray Jesus.",
+      "tags": [
+        "passion week"
+      ],
+      "sortOrder": 1210
+    },
+    {
+      "pericopeId": "last-supper",
+      "title": "Last Supper",
+      "summary": "Jesus shares his final meal with the disciples.",
+      "tags": [
+        "passion week"
+      ],
+      "sortOrder": 1220
+    },
+    {
+      "pericopeId": "farewell-discourse",
+      "title": "Farewell Discourse",
+      "summary": "Jesus teaches and comforts his disciples before his death.",
+      "tags": [
+        "passion week",
+        "teaching"
+      ],
+      "sortOrder": 1230
+    },
+    {
+      "pericopeId": "gethsemane",
+      "title": "Prayer in Gethsemane",
+      "summary": "Jesus prays before his arrest.",
+      "tags": [
+        "passion week"
+      ],
+      "sortOrder": 1240
+    },
+    {
+      "pericopeId": "arrest",
+      "title": "Arrest of Jesus",
+      "summary": "Jesus is arrested in the garden.",
+      "tags": [
+        "passion week"
+      ],
+      "sortOrder": 1250
+    },
+    {
+      "pericopeId": "jewish-trial",
+      "title": "Before Jewish Authorities",
+      "summary": "Jesus is questioned before the high priest and council.",
+      "tags": [
+        "passion week",
+        "trial"
+      ],
+      "sortOrder": 1260
+    },
+    {
+      "pericopeId": "peter-denial",
+      "title": "Peter Denies Jesus",
+      "summary": "Peter denies knowing Jesus three times.",
+      "tags": [
+        "passion week"
+      ],
+      "sortOrder": 1270
+    },
+    {
+      "pericopeId": "judas-end",
+      "title": "Death of Judas",
+      "summary": "Judas\u2019s betrayal ends in despair and death.",
+      "tags": [
+        "passion week"
+      ],
+      "sortOrder": 1280
+    },
+    {
+      "pericopeId": "pilate-herod",
+      "title": "Before Pilate and Herod",
+      "summary": "Jesus is tried before Roman authorities.",
+      "tags": [
+        "passion week",
+        "trial"
+      ],
+      "sortOrder": 1290
+    },
+    {
+      "pericopeId": "crucifixion",
+      "title": "Crucifixion",
+      "summary": "Jesus is crucified.",
+      "tags": [
+        "passion week"
+      ],
+      "sortOrder": 1300
+    },
+    {
+      "pericopeId": "burial",
+      "title": "Burial of Jesus",
+      "summary": "Jesus is buried in the tomb.",
+      "tags": [
+        "passion week"
+      ],
+      "sortOrder": 1310
+    },
+    {
+      "pericopeId": "resurrection",
+      "title": "Resurrection Morning",
+      "summary": "The tomb is found empty and Jesus rises.",
+      "tags": [
+        "resurrection"
+      ],
+      "sortOrder": 1320
+    },
+    {
+      "pericopeId": "emmaus",
+      "title": "Road to Emmaus",
+      "summary": "The risen Jesus appears to two disciples.",
+      "tags": [
+        "resurrection"
+      ],
+      "sortOrder": 1330
+    },
+    {
+      "pericopeId": "appearance-disciples",
+      "title": "Appearance to the Disciples",
+      "summary": "Jesus appears to the gathered disciples.",
+      "tags": [
+        "resurrection"
+      ],
+      "sortOrder": 1340
+    },
+    {
+      "pericopeId": "thomas",
+      "title": "Jesus and Thomas",
+      "summary": "Thomas believes after seeing the risen Christ.",
+      "tags": [
+        "resurrection"
+      ],
+      "sortOrder": 1350
+    },
+    {
+      "pericopeId": "galilee-breakfast",
+      "title": "Breakfast by the Sea",
+      "summary": "The risen Jesus appears by the Sea of Galilee.",
+      "tags": [
+        "resurrection"
+      ],
+      "sortOrder": 1360
+    },
+    {
+      "pericopeId": "great-commission",
+      "title": "Great Commission",
+      "summary": "Jesus commissions his disciples.",
+      "tags": [
+        "resurrection"
+      ],
+      "sortOrder": 1370
+    }
+  ],
+  "passages": [
+    {
+      "pericopeId": "genealogy-matthew",
+      "book": "Matthew",
+      "startChapter": 1,
+      "startVerse": 1,
+      "endChapter": 1,
+      "endVerse": 17
+    },
+    {
+      "pericopeId": "genealogy-luke",
+      "book": "Luke",
+      "startChapter": 3,
+      "startVerse": 23,
+      "endChapter": 3,
+      "endVerse": 38
+    },
+    {
+      "pericopeId": "birth-jesus",
+      "book": "Matthew",
+      "startChapter": 1,
+      "startVerse": 18,
+      "endChapter": 1,
+      "endVerse": 25
+    },
+    {
+      "pericopeId": "birth-jesus",
+      "book": "Luke",
+      "startChapter": 2,
+      "startVerse": 1,
+      "endChapter": 2,
+      "endVerse": 7
+    },
+    {
+      "pericopeId": "shepherds",
+      "book": "Luke",
+      "startChapter": 2,
+      "startVerse": 8,
+      "endChapter": 2,
+      "endVerse": 20
+    },
+    {
+      "pericopeId": "magi",
+      "book": "Matthew",
+      "startChapter": 2,
+      "startVerse": 1,
+      "endChapter": 2,
+      "endVerse": 12
+    },
+    {
+      "pericopeId": "flight-egypt",
+      "book": "Matthew",
+      "startChapter": 2,
+      "startVerse": 13,
+      "endChapter": 2,
+      "endVerse": 15
+    },
+    {
+      "pericopeId": "return-nazareth",
+      "book": "Matthew",
+      "startChapter": 2,
+      "startVerse": 19,
+      "endChapter": 2,
+      "endVerse": 23
+    },
+    {
+      "pericopeId": "return-nazareth",
+      "book": "Luke",
+      "startChapter": 2,
+      "startVerse": 39,
+      "endChapter": 2,
+      "endVerse": 40
+    },
+    {
+      "pericopeId": "boy-jesus-temple",
+      "book": "Luke",
+      "startChapter": 2,
+      "startVerse": 41,
+      "endChapter": 2,
+      "endVerse": 52
+    },
+    {
+      "pericopeId": "john-prologue",
+      "book": "John",
+      "startChapter": 1,
+      "startVerse": 1,
+      "endChapter": 1,
+      "endVerse": 18
+    },
+    {
+      "pericopeId": "john-baptist-ministry",
+      "book": "Matthew",
+      "startChapter": 3,
+      "startVerse": 1,
+      "endChapter": 3,
+      "endVerse": 12
+    },
+    {
+      "pericopeId": "john-baptist-ministry",
+      "book": "Mark",
+      "startChapter": 1,
+      "startVerse": 1,
+      "endChapter": 1,
+      "endVerse": 8
+    },
+    {
+      "pericopeId": "john-baptist-ministry",
+      "book": "Luke",
+      "startChapter": 3,
+      "startVerse": 1,
+      "endChapter": 3,
+      "endVerse": 18
+    },
+    {
+      "pericopeId": "john-baptist-ministry",
+      "book": "John",
+      "startChapter": 1,
+      "startVerse": 19,
+      "endChapter": 1,
+      "endVerse": 28
+    },
+    {
+      "pericopeId": "baptism",
+      "book": "Matthew",
+      "startChapter": 3,
+      "startVerse": 13,
+      "endChapter": 3,
+      "endVerse": 17
+    },
+    {
+      "pericopeId": "baptism",
+      "book": "Mark",
+      "startChapter": 1,
+      "startVerse": 9,
+      "endChapter": 1,
+      "endVerse": 11
+    },
+    {
+      "pericopeId": "baptism",
+      "book": "Luke",
+      "startChapter": 3,
+      "startVerse": 21,
+      "endChapter": 3,
+      "endVerse": 22
+    },
+    {
+      "pericopeId": "baptism",
+      "book": "John",
+      "startChapter": 1,
+      "startVerse": 29,
+      "endChapter": 1,
+      "endVerse": 34
+    },
+    {
+      "pericopeId": "temptation",
+      "book": "Matthew",
+      "startChapter": 4,
+      "startVerse": 1,
+      "endChapter": 4,
+      "endVerse": 11
+    },
+    {
+      "pericopeId": "temptation",
+      "book": "Mark",
+      "startChapter": 1,
+      "startVerse": 12,
+      "endChapter": 1,
+      "endVerse": 13
+    },
+    {
+      "pericopeId": "temptation",
+      "book": "Luke",
+      "startChapter": 4,
+      "startVerse": 1,
+      "endChapter": 4,
+      "endVerse": 13
+    },
+    {
+      "pericopeId": "first-disciples-john",
+      "book": "John",
+      "startChapter": 1,
+      "startVerse": 35,
+      "endChapter": 1,
+      "endVerse": 51
+    },
+    {
+      "pericopeId": "wedding-cana",
+      "book": "John",
+      "startChapter": 2,
+      "startVerse": 1,
+      "endChapter": 2,
+      "endVerse": 11
+    },
+    {
+      "pericopeId": "temple-cleansing-early",
+      "book": "John",
+      "startChapter": 2,
+      "startVerse": 13,
+      "endChapter": 2,
+      "endVerse": 22
+    },
+    {
+      "pericopeId": "nicodemus",
+      "book": "John",
+      "startChapter": 3,
+      "startVerse": 1,
+      "endChapter": 3,
+      "endVerse": 21
+    },
+    {
+      "pericopeId": "samaritan-woman",
+      "book": "John",
+      "startChapter": 4,
+      "startVerse": 1,
+      "endChapter": 4,
+      "endVerse": 42
+    },
+    {
+      "pericopeId": "officials-son",
+      "book": "John",
+      "startChapter": 4,
+      "startVerse": 46,
+      "endChapter": 4,
+      "endVerse": 54
+    },
+    {
+      "pericopeId": "call-fishermen",
+      "book": "Matthew",
+      "startChapter": 4,
+      "startVerse": 18,
+      "endChapter": 4,
+      "endVerse": 22
+    },
+    {
+      "pericopeId": "call-fishermen",
+      "book": "Mark",
+      "startChapter": 1,
+      "startVerse": 16,
+      "endChapter": 1,
+      "endVerse": 20
+    },
+    {
+      "pericopeId": "call-fishermen",
+      "book": "Luke",
+      "startChapter": 5,
+      "startVerse": 1,
+      "endChapter": 5,
+      "endVerse": 11
+    },
+    {
+      "pericopeId": "synagogue-capernaum",
+      "book": "Mark",
+      "startChapter": 1,
+      "startVerse": 21,
+      "endChapter": 1,
+      "endVerse": 28
+    },
+    {
+      "pericopeId": "synagogue-capernaum",
+      "book": "Luke",
+      "startChapter": 4,
+      "startVerse": 31,
+      "endChapter": 4,
+      "endVerse": 37
+    },
+    {
+      "pericopeId": "peters-mother-in-law",
+      "book": "Matthew",
+      "startChapter": 8,
+      "startVerse": 14,
+      "endChapter": 8,
+      "endVerse": 17
+    },
+    {
+      "pericopeId": "peters-mother-in-law",
+      "book": "Mark",
+      "startChapter": 1,
+      "startVerse": 29,
+      "endChapter": 1,
+      "endVerse": 34
+    },
+    {
+      "pericopeId": "peters-mother-in-law",
+      "book": "Luke",
+      "startChapter": 4,
+      "startVerse": 38,
+      "endChapter": 4,
+      "endVerse": 41
+    },
+    {
+      "pericopeId": "first-preaching-tour",
+      "book": "Mark",
+      "startChapter": 1,
+      "startVerse": 35,
+      "endChapter": 1,
+      "endVerse": 39
+    },
+    {
+      "pericopeId": "first-preaching-tour",
+      "book": "Luke",
+      "startChapter": 4,
+      "startVerse": 42,
+      "endChapter": 4,
+      "endVerse": 44
+    },
+    {
+      "pericopeId": "leper",
+      "book": "Matthew",
+      "startChapter": 8,
+      "startVerse": 1,
+      "endChapter": 8,
+      "endVerse": 4
+    },
+    {
+      "pericopeId": "leper",
+      "book": "Mark",
+      "startChapter": 1,
+      "startVerse": 40,
+      "endChapter": 1,
+      "endVerse": 45
+    },
+    {
+      "pericopeId": "leper",
+      "book": "Luke",
+      "startChapter": 5,
+      "startVerse": 12,
+      "endChapter": 5,
+      "endVerse": 16
+    },
+    {
+      "pericopeId": "paralytic",
+      "book": "Matthew",
+      "startChapter": 9,
+      "startVerse": 1,
+      "endChapter": 9,
+      "endVerse": 8
+    },
+    {
+      "pericopeId": "paralytic",
+      "book": "Mark",
+      "startChapter": 2,
+      "startVerse": 1,
+      "endChapter": 2,
+      "endVerse": 12
+    },
+    {
+      "pericopeId": "paralytic",
+      "book": "Luke",
+      "startChapter": 5,
+      "startVerse": 17,
+      "endChapter": 5,
+      "endVerse": 26
+    },
+    {
+      "pericopeId": "call-levi",
+      "book": "Matthew",
+      "startChapter": 9,
+      "startVerse": 9,
+      "endChapter": 9,
+      "endVerse": 13
+    },
+    {
+      "pericopeId": "call-levi",
+      "book": "Mark",
+      "startChapter": 2,
+      "startVerse": 13,
+      "endChapter": 2,
+      "endVerse": 17
+    },
+    {
+      "pericopeId": "call-levi",
+      "book": "Luke",
+      "startChapter": 5,
+      "startVerse": 27,
+      "endChapter": 5,
+      "endVerse": 32
+    },
+    {
+      "pericopeId": "question-fasting",
+      "book": "Matthew",
+      "startChapter": 9,
+      "startVerse": 14,
+      "endChapter": 9,
+      "endVerse": 17
+    },
+    {
+      "pericopeId": "question-fasting",
+      "book": "Mark",
+      "startChapter": 2,
+      "startVerse": 18,
+      "endChapter": 2,
+      "endVerse": 22
+    },
+    {
+      "pericopeId": "question-fasting",
+      "book": "Luke",
+      "startChapter": 5,
+      "startVerse": 33,
+      "endChapter": 5,
+      "endVerse": 39
+    },
+    {
+      "pericopeId": "bethesda",
+      "book": "John",
+      "startChapter": 5,
+      "startVerse": 1,
+      "endChapter": 5,
+      "endVerse": 18
+    },
+    {
+      "pericopeId": "sons-authority",
+      "book": "John",
+      "startChapter": 5,
+      "startVerse": 19,
+      "endChapter": 5,
+      "endVerse": 47
+    },
+    {
+      "pericopeId": "grain-sabbath",
+      "book": "Matthew",
+      "startChapter": 12,
+      "startVerse": 1,
+      "endChapter": 12,
+      "endVerse": 8
+    },
+    {
+      "pericopeId": "grain-sabbath",
+      "book": "Mark",
+      "startChapter": 2,
+      "startVerse": 23,
+      "endChapter": 2,
+      "endVerse": 28
+    },
+    {
+      "pericopeId": "grain-sabbath",
+      "book": "Luke",
+      "startChapter": 6,
+      "startVerse": 1,
+      "endChapter": 6,
+      "endVerse": 5
+    },
+    {
+      "pericopeId": "withered-hand",
+      "book": "Matthew",
+      "startChapter": 12,
+      "startVerse": 9,
+      "endChapter": 12,
+      "endVerse": 14
+    },
+    {
+      "pericopeId": "withered-hand",
+      "book": "Mark",
+      "startChapter": 3,
+      "startVerse": 1,
+      "endChapter": 3,
+      "endVerse": 6
+    },
+    {
+      "pericopeId": "withered-hand",
+      "book": "Luke",
+      "startChapter": 6,
+      "startVerse": 6,
+      "endChapter": 6,
+      "endVerse": 11
+    },
+    {
+      "pericopeId": "choose-twelve",
+      "book": "Matthew",
+      "startChapter": 10,
+      "startVerse": 1,
+      "endChapter": 10,
+      "endVerse": 4
+    },
+    {
+      "pericopeId": "choose-twelve",
+      "book": "Mark",
+      "startChapter": 3,
+      "startVerse": 13,
+      "endChapter": 3,
+      "endVerse": 19
+    },
+    {
+      "pericopeId": "choose-twelve",
+      "book": "Luke",
+      "startChapter": 6,
+      "startVerse": 12,
+      "endChapter": 6,
+      "endVerse": 16
+    },
+    {
+      "pericopeId": "sermon-mount",
+      "book": "Matthew",
+      "startChapter": 5,
+      "startVerse": 1,
+      "endChapter": 7,
+      "endVerse": 29
+    },
+    {
+      "pericopeId": "sermon-mount",
+      "book": "Luke",
+      "startChapter": 6,
+      "startVerse": 17,
+      "endChapter": 6,
+      "endVerse": 49
+    },
+    {
+      "pericopeId": "centurion-servant",
+      "book": "Matthew",
+      "startChapter": 8,
+      "startVerse": 5,
+      "endChapter": 8,
+      "endVerse": 13
+    },
+    {
+      "pericopeId": "centurion-servant",
+      "book": "Luke",
+      "startChapter": 7,
+      "startVerse": 1,
+      "endChapter": 7,
+      "endVerse": 10
+    },
+    {
+      "pericopeId": "widows-son-naim",
+      "book": "Luke",
+      "startChapter": 7,
+      "startVerse": 11,
+      "endChapter": 7,
+      "endVerse": 17
+    },
+    {
+      "pericopeId": "johns-question",
+      "book": "Matthew",
+      "startChapter": 11,
+      "startVerse": 2,
+      "endChapter": 11,
+      "endVerse": 19
+    },
+    {
+      "pericopeId": "johns-question",
+      "book": "Luke",
+      "startChapter": 7,
+      "startVerse": 18,
+      "endChapter": 7,
+      "endVerse": 35
+    },
+    {
+      "pericopeId": "sinful-woman",
+      "book": "Luke",
+      "startChapter": 7,
+      "startVerse": 36,
+      "endChapter": 7,
+      "endVerse": 50
+    },
+    {
+      "pericopeId": "sower",
+      "book": "Matthew",
+      "startChapter": 13,
+      "startVerse": 1,
+      "endChapter": 13,
+      "endVerse": 23
+    },
+    {
+      "pericopeId": "sower",
+      "book": "Mark",
+      "startChapter": 4,
+      "startVerse": 1,
+      "endChapter": 4,
+      "endVerse": 20
+    },
+    {
+      "pericopeId": "sower",
+      "book": "Luke",
+      "startChapter": 8,
+      "startVerse": 4,
+      "endChapter": 8,
+      "endVerse": 15
+    },
+    {
+      "pericopeId": "lamp-under-basket",
+      "book": "Matthew",
+      "startChapter": 5,
+      "startVerse": 14,
+      "endChapter": 5,
+      "endVerse": 16
+    },
+    {
+      "pericopeId": "lamp-under-basket",
+      "book": "Mark",
+      "startChapter": 4,
+      "startVerse": 21,
+      "endChapter": 4,
+      "endVerse": 25
+    },
+    {
+      "pericopeId": "lamp-under-basket",
+      "book": "Luke",
+      "startChapter": 8,
+      "startVerse": 16,
+      "endChapter": 8,
+      "endVerse": 18
+    },
+    {
+      "pericopeId": "seed-growing",
+      "book": "Mark",
+      "startChapter": 4,
+      "startVerse": 26,
+      "endChapter": 4,
+      "endVerse": 29
+    },
+    {
+      "pericopeId": "mustard-seed",
+      "book": "Matthew",
+      "startChapter": 13,
+      "startVerse": 31,
+      "endChapter": 13,
+      "endVerse": 32
+    },
+    {
+      "pericopeId": "mustard-seed",
+      "book": "Mark",
+      "startChapter": 4,
+      "startVerse": 30,
+      "endChapter": 4,
+      "endVerse": 32
+    },
+    {
+      "pericopeId": "mustard-seed",
+      "book": "Luke",
+      "startChapter": 13,
+      "startVerse": 18,
+      "endChapter": 13,
+      "endVerse": 19
+    },
+    {
+      "pericopeId": "leaven",
+      "book": "Matthew",
+      "startChapter": 13,
+      "startVerse": 33,
+      "endChapter": 13,
+      "endVerse": 33
+    },
+    {
+      "pericopeId": "leaven",
+      "book": "Luke",
+      "startChapter": 13,
+      "startVerse": 20,
+      "endChapter": 13,
+      "endVerse": 21
+    },
+    {
+      "pericopeId": "weeds",
+      "book": "Matthew",
+      "startChapter": 13,
+      "startVerse": 24,
+      "endChapter": 13,
+      "endVerse": 30
+    },
+    {
+      "pericopeId": "weeds",
+      "book": "Matthew",
+      "startChapter": 13,
+      "startVerse": 36,
+      "endChapter": 13,
+      "endVerse": 43
+    },
+    {
+      "pericopeId": "hidden-treasure",
+      "book": "Matthew",
+      "startChapter": 13,
+      "startVerse": 44,
+      "endChapter": 13,
+      "endVerse": 44
+    },
+    {
+      "pericopeId": "pearl",
+      "book": "Matthew",
+      "startChapter": 13,
+      "startVerse": 45,
+      "endChapter": 13,
+      "endVerse": 46
+    },
+    {
+      "pericopeId": "dragnet",
+      "book": "Matthew",
+      "startChapter": 13,
+      "startVerse": 47,
+      "endChapter": 13,
+      "endVerse": 50
+    },
+    {
+      "pericopeId": "householder",
+      "book": "Matthew",
+      "startChapter": 13,
+      "startVerse": 51,
+      "endChapter": 13,
+      "endVerse": 52
+    },
+    {
+      "pericopeId": "calming-storm",
+      "book": "Matthew",
+      "startChapter": 8,
+      "startVerse": 23,
+      "endChapter": 8,
+      "endVerse": 27
+    },
+    {
+      "pericopeId": "calming-storm",
+      "book": "Mark",
+      "startChapter": 4,
+      "startVerse": 35,
+      "endChapter": 4,
+      "endVerse": 41
+    },
+    {
+      "pericopeId": "calming-storm",
+      "book": "Luke",
+      "startChapter": 8,
+      "startVerse": 22,
+      "endChapter": 8,
+      "endVerse": 25
+    },
+    {
+      "pericopeId": "gerasene-demoniac",
+      "book": "Matthew",
+      "startChapter": 8,
+      "startVerse": 28,
+      "endChapter": 8,
+      "endVerse": 34
+    },
+    {
+      "pericopeId": "gerasene-demoniac",
+      "book": "Mark",
+      "startChapter": 5,
+      "startVerse": 1,
+      "endChapter": 5,
+      "endVerse": 20
+    },
+    {
+      "pericopeId": "gerasene-demoniac",
+      "book": "Luke",
+      "startChapter": 8,
+      "startVerse": 26,
+      "endChapter": 8,
+      "endVerse": 39
+    },
+    {
+      "pericopeId": "jairus-woman",
+      "book": "Matthew",
+      "startChapter": 9,
+      "startVerse": 18,
+      "endChapter": 9,
+      "endVerse": 26
+    },
+    {
+      "pericopeId": "jairus-woman",
+      "book": "Mark",
+      "startChapter": 5,
+      "startVerse": 21,
+      "endChapter": 5,
+      "endVerse": 43
+    },
+    {
+      "pericopeId": "jairus-woman",
+      "book": "Luke",
+      "startChapter": 8,
+      "startVerse": 40,
+      "endChapter": 8,
+      "endVerse": 56
+    },
+    {
+      "pericopeId": "nazareth-rejection",
+      "book": "Matthew",
+      "startChapter": 13,
+      "startVerse": 53,
+      "endChapter": 13,
+      "endVerse": 58
+    },
+    {
+      "pericopeId": "nazareth-rejection",
+      "book": "Mark",
+      "startChapter": 6,
+      "startVerse": 1,
+      "endChapter": 6,
+      "endVerse": 6
+    },
+    {
+      "pericopeId": "nazareth-rejection",
+      "book": "Luke",
+      "startChapter": 4,
+      "startVerse": 16,
+      "endChapter": 4,
+      "endVerse": 30
+    },
+    {
+      "pericopeId": "send-twelve",
+      "book": "Matthew",
+      "startChapter": 10,
+      "startVerse": 5,
+      "endChapter": 10,
+      "endVerse": 42
+    },
+    {
+      "pericopeId": "send-twelve",
+      "book": "Mark",
+      "startChapter": 6,
+      "startVerse": 7,
+      "endChapter": 6,
+      "endVerse": 13
+    },
+    {
+      "pericopeId": "send-twelve",
+      "book": "Luke",
+      "startChapter": 9,
+      "startVerse": 1,
+      "endChapter": 9,
+      "endVerse": 6
+    },
+    {
+      "pericopeId": "john-death",
+      "book": "Matthew",
+      "startChapter": 14,
+      "startVerse": 1,
+      "endChapter": 14,
+      "endVerse": 12
+    },
+    {
+      "pericopeId": "john-death",
+      "book": "Mark",
+      "startChapter": 6,
+      "startVerse": 14,
+      "endChapter": 6,
+      "endVerse": 29
+    },
+    {
+      "pericopeId": "john-death",
+      "book": "Luke",
+      "startChapter": 9,
+      "startVerse": 7,
+      "endChapter": 9,
+      "endVerse": 9
+    },
+    {
+      "pericopeId": "feeding-5000",
+      "book": "Matthew",
+      "startChapter": 14,
+      "startVerse": 13,
+      "endChapter": 14,
+      "endVerse": 21
+    },
+    {
+      "pericopeId": "feeding-5000",
+      "book": "Mark",
+      "startChapter": 6,
+      "startVerse": 30,
+      "endChapter": 6,
+      "endVerse": 44
+    },
+    {
+      "pericopeId": "feeding-5000",
+      "book": "Luke",
+      "startChapter": 9,
+      "startVerse": 10,
+      "endChapter": 9,
+      "endVerse": 17
+    },
+    {
+      "pericopeId": "feeding-5000",
+      "book": "John",
+      "startChapter": 6,
+      "startVerse": 1,
+      "endChapter": 6,
+      "endVerse": 14
+    },
+    {
+      "pericopeId": "walk-water",
+      "book": "Matthew",
+      "startChapter": 14,
+      "startVerse": 22,
+      "endChapter": 14,
+      "endVerse": 33
+    },
+    {
+      "pericopeId": "walk-water",
+      "book": "Mark",
+      "startChapter": 6,
+      "startVerse": 45,
+      "endChapter": 6,
+      "endVerse": 52
+    },
+    {
+      "pericopeId": "walk-water",
+      "book": "John",
+      "startChapter": 6,
+      "startVerse": 15,
+      "endChapter": 6,
+      "endVerse": 21
+    },
+    {
+      "pericopeId": "bread-of-life",
+      "book": "John",
+      "startChapter": 6,
+      "startVerse": 22,
+      "endChapter": 6,
+      "endVerse": 71
+    },
+    {
+      "pericopeId": "traditions-defile",
+      "book": "Matthew",
+      "startChapter": 15,
+      "startVerse": 1,
+      "endChapter": 15,
+      "endVerse": 20
+    },
+    {
+      "pericopeId": "traditions-defile",
+      "book": "Mark",
+      "startChapter": 7,
+      "startVerse": 1,
+      "endChapter": 7,
+      "endVerse": 23
+    },
+    {
+      "pericopeId": "syrophoenician",
+      "book": "Matthew",
+      "startChapter": 15,
+      "startVerse": 21,
+      "endChapter": 15,
+      "endVerse": 28
+    },
+    {
+      "pericopeId": "syrophoenician",
+      "book": "Mark",
+      "startChapter": 7,
+      "startVerse": 24,
+      "endChapter": 7,
+      "endVerse": 30
+    },
+    {
+      "pericopeId": "deaf-mute",
+      "book": "Mark",
+      "startChapter": 7,
+      "startVerse": 31,
+      "endChapter": 7,
+      "endVerse": 37
+    },
+    {
+      "pericopeId": "feeding-4000",
+      "book": "Matthew",
+      "startChapter": 15,
+      "startVerse": 32,
+      "endChapter": 15,
+      "endVerse": 39
+    },
+    {
+      "pericopeId": "feeding-4000",
+      "book": "Mark",
+      "startChapter": 8,
+      "startVerse": 1,
+      "endChapter": 8,
+      "endVerse": 10
+    },
+    {
+      "pericopeId": "blind-bethsaida",
+      "book": "Mark",
+      "startChapter": 8,
+      "startVerse": 22,
+      "endChapter": 8,
+      "endVerse": 26
+    },
+    {
+      "pericopeId": "peters-confession",
+      "book": "Matthew",
+      "startChapter": 16,
+      "startVerse": 13,
+      "endChapter": 16,
+      "endVerse": 20
+    },
+    {
+      "pericopeId": "peters-confession",
+      "book": "Mark",
+      "startChapter": 8,
+      "startVerse": 27,
+      "endChapter": 8,
+      "endVerse": 30
+    },
+    {
+      "pericopeId": "peters-confession",
+      "book": "Luke",
+      "startChapter": 9,
+      "startVerse": 18,
+      "endChapter": 9,
+      "endVerse": 21
+    },
+    {
+      "pericopeId": "first-passion",
+      "book": "Matthew",
+      "startChapter": 16,
+      "startVerse": 21,
+      "endChapter": 16,
+      "endVerse": 28
+    },
+    {
+      "pericopeId": "first-passion",
+      "book": "Mark",
+      "startChapter": 8,
+      "startVerse": 31,
+      "endChapter": 9,
+      "endVerse": 1
+    },
+    {
+      "pericopeId": "first-passion",
+      "book": "Luke",
+      "startChapter": 9,
+      "startVerse": 22,
+      "endChapter": 9,
+      "endVerse": 27
+    },
+    {
+      "pericopeId": "transfiguration",
+      "book": "Matthew",
+      "startChapter": 17,
+      "startVerse": 1,
+      "endChapter": 17,
+      "endVerse": 13
+    },
+    {
+      "pericopeId": "transfiguration",
+      "book": "Mark",
+      "startChapter": 9,
+      "startVerse": 2,
+      "endChapter": 9,
+      "endVerse": 13
+    },
+    {
+      "pericopeId": "transfiguration",
+      "book": "Luke",
+      "startChapter": 9,
+      "startVerse": 28,
+      "endChapter": 9,
+      "endVerse": 36
+    },
+    {
+      "pericopeId": "boy-unclean-spirit",
+      "book": "Matthew",
+      "startChapter": 17,
+      "startVerse": 14,
+      "endChapter": 17,
+      "endVerse": 21
+    },
+    {
+      "pericopeId": "boy-unclean-spirit",
+      "book": "Mark",
+      "startChapter": 9,
+      "startVerse": 14,
+      "endChapter": 9,
+      "endVerse": 29
+    },
+    {
+      "pericopeId": "boy-unclean-spirit",
+      "book": "Luke",
+      "startChapter": 9,
+      "startVerse": 37,
+      "endChapter": 9,
+      "endVerse": 43
+    },
+    {
+      "pericopeId": "second-passion",
+      "book": "Matthew",
+      "startChapter": 17,
+      "startVerse": 22,
+      "endChapter": 17,
+      "endVerse": 23
+    },
+    {
+      "pericopeId": "second-passion",
+      "book": "Mark",
+      "startChapter": 9,
+      "startVerse": 30,
+      "endChapter": 9,
+      "endVerse": 32
+    },
+    {
+      "pericopeId": "second-passion",
+      "book": "Luke",
+      "startChapter": 9,
+      "startVerse": 43,
+      "endChapter": 9,
+      "endVerse": 45
+    },
+    {
+      "pericopeId": "greatness-child",
+      "book": "Matthew",
+      "startChapter": 18,
+      "startVerse": 1,
+      "endChapter": 18,
+      "endVerse": 14
+    },
+    {
+      "pericopeId": "greatness-child",
+      "book": "Mark",
+      "startChapter": 9,
+      "startVerse": 33,
+      "endChapter": 9,
+      "endVerse": 50
+    },
+    {
+      "pericopeId": "greatness-child",
+      "book": "Luke",
+      "startChapter": 9,
+      "startVerse": 46,
+      "endChapter": 9,
+      "endVerse": 50
+    },
+    {
+      "pericopeId": "coin-fish",
+      "book": "Matthew",
+      "startChapter": 17,
+      "startVerse": 24,
+      "endChapter": 17,
+      "endVerse": 27
+    },
+    {
+      "pericopeId": "feast-tabernacles",
+      "book": "John",
+      "startChapter": 7,
+      "startVerse": 1,
+      "endChapter": 7,
+      "endVerse": 52
+    },
+    {
+      "pericopeId": "woman-caught",
+      "book": "John",
+      "startChapter": 8,
+      "startVerse": 1,
+      "endChapter": 8,
+      "endVerse": 11
+    },
+    {
+      "pericopeId": "light-of-world",
+      "book": "John",
+      "startChapter": 8,
+      "startVerse": 12,
+      "endChapter": 8,
+      "endVerse": 59
+    },
+    {
+      "pericopeId": "born-blind",
+      "book": "John",
+      "startChapter": 9,
+      "startVerse": 1,
+      "endChapter": 9,
+      "endVerse": 41
+    },
+    {
+      "pericopeId": "good-shepherd",
+      "book": "John",
+      "startChapter": 10,
+      "startVerse": 1,
+      "endChapter": 10,
+      "endVerse": 21
+    },
+    {
+      "pericopeId": "mission-seventy",
+      "book": "Luke",
+      "startChapter": 10,
+      "startVerse": 1,
+      "endChapter": 10,
+      "endVerse": 24
+    },
+    {
+      "pericopeId": "good-samaritan",
+      "book": "Luke",
+      "startChapter": 10,
+      "startVerse": 25,
+      "endChapter": 10,
+      "endVerse": 37
+    },
+    {
+      "pericopeId": "mary-martha",
+      "book": "Luke",
+      "startChapter": 10,
+      "startVerse": 38,
+      "endChapter": 10,
+      "endVerse": 42
+    },
+    {
+      "pericopeId": "lords-prayer",
+      "book": "Matthew",
+      "startChapter": 6,
+      "startVerse": 5,
+      "endChapter": 6,
+      "endVerse": 15
+    },
+    {
+      "pericopeId": "lords-prayer",
+      "book": "Luke",
+      "startChapter": 11,
+      "startVerse": 1,
+      "endChapter": 11,
+      "endVerse": 13
+    },
+    {
+      "pericopeId": "rich-fool",
+      "book": "Luke",
+      "startChapter": 12,
+      "startVerse": 13,
+      "endChapter": 12,
+      "endVerse": 21
+    },
+    {
+      "pericopeId": "watchful-servants",
+      "book": "Matthew",
+      "startChapter": 24,
+      "startVerse": 42,
+      "endChapter": 24,
+      "endVerse": 51
+    },
+    {
+      "pericopeId": "watchful-servants",
+      "book": "Luke",
+      "startChapter": 12,
+      "startVerse": 35,
+      "endChapter": 12,
+      "endVerse": 48
+    },
+    {
+      "pericopeId": "barren-fig-tree",
+      "book": "Luke",
+      "startChapter": 13,
+      "startVerse": 6,
+      "endChapter": 13,
+      "endVerse": 9
+    },
+    {
+      "pericopeId": "crippled-woman",
+      "book": "Luke",
+      "startChapter": 13,
+      "startVerse": 10,
+      "endChapter": 13,
+      "endVerse": 17
+    },
+    {
+      "pericopeId": "narrow-door",
+      "book": "Matthew",
+      "startChapter": 7,
+      "startVerse": 13,
+      "endChapter": 7,
+      "endVerse": 14
+    },
+    {
+      "pericopeId": "narrow-door",
+      "book": "Luke",
+      "startChapter": 13,
+      "startVerse": 22,
+      "endChapter": 13,
+      "endVerse": 30
+    },
+    {
+      "pericopeId": "great-banquet",
+      "book": "Matthew",
+      "startChapter": 22,
+      "startVerse": 1,
+      "endChapter": 22,
+      "endVerse": 14
+    },
+    {
+      "pericopeId": "great-banquet",
+      "book": "Luke",
+      "startChapter": 14,
+      "startVerse": 15,
+      "endChapter": 14,
+      "endVerse": 24
+    },
+    {
+      "pericopeId": "cost-discipleship",
+      "book": "Luke",
+      "startChapter": 14,
+      "startVerse": 25,
+      "endChapter": 14,
+      "endVerse": 35
+    },
+    {
+      "pericopeId": "lost-sheep",
+      "book": "Matthew",
+      "startChapter": 18,
+      "startVerse": 10,
+      "endChapter": 18,
+      "endVerse": 14
+    },
+    {
+      "pericopeId": "lost-sheep",
+      "book": "Luke",
+      "startChapter": 15,
+      "startVerse": 1,
+      "endChapter": 15,
+      "endVerse": 7
+    },
+    {
+      "pericopeId": "lost-coin",
+      "book": "Luke",
+      "startChapter": 15,
+      "startVerse": 8,
+      "endChapter": 15,
+      "endVerse": 10
+    },
+    {
+      "pericopeId": "prodigal-son",
+      "book": "Luke",
+      "startChapter": 15,
+      "startVerse": 11,
+      "endChapter": 15,
+      "endVerse": 32
+    },
+    {
+      "pericopeId": "unjust-steward",
+      "book": "Luke",
+      "startChapter": 16,
+      "startVerse": 1,
+      "endChapter": 16,
+      "endVerse": 13
+    },
+    {
+      "pericopeId": "rich-man-lazarus",
+      "book": "Luke",
+      "startChapter": 16,
+      "startVerse": 19,
+      "endChapter": 16,
+      "endVerse": 31
+    },
+    {
+      "pericopeId": "persistent-widow",
+      "book": "Luke",
+      "startChapter": 18,
+      "startVerse": 1,
+      "endChapter": 18,
+      "endVerse": 8
+    },
+    {
+      "pericopeId": "pharisee-tax",
+      "book": "Luke",
+      "startChapter": 18,
+      "startVerse": 9,
+      "endChapter": 18,
+      "endVerse": 14
+    },
+    {
+      "pericopeId": "feast-dedication",
+      "book": "John",
+      "startChapter": 10,
+      "startVerse": 22,
+      "endChapter": 10,
+      "endVerse": 42
+    },
+    {
+      "pericopeId": "lazarus",
+      "book": "John",
+      "startChapter": 11,
+      "startVerse": 1,
+      "endChapter": 11,
+      "endVerse": 44
+    },
+    {
+      "pericopeId": "plot-kill-jesus",
+      "book": "John",
+      "startChapter": 11,
+      "startVerse": 45,
+      "endChapter": 11,
+      "endVerse": 57
+    },
+    {
+      "pericopeId": "marriage-divorce",
+      "book": "Matthew",
+      "startChapter": 19,
+      "startVerse": 1,
+      "endChapter": 19,
+      "endVerse": 12
+    },
+    {
+      "pericopeId": "marriage-divorce",
+      "book": "Mark",
+      "startChapter": 10,
+      "startVerse": 1,
+      "endChapter": 10,
+      "endVerse": 12
+    },
+    {
+      "pericopeId": "bless-children",
+      "book": "Matthew",
+      "startChapter": 19,
+      "startVerse": 13,
+      "endChapter": 19,
+      "endVerse": 15
+    },
+    {
+      "pericopeId": "bless-children",
+      "book": "Mark",
+      "startChapter": 10,
+      "startVerse": 13,
+      "endChapter": 10,
+      "endVerse": 16
+    },
+    {
+      "pericopeId": "bless-children",
+      "book": "Luke",
+      "startChapter": 18,
+      "startVerse": 15,
+      "endChapter": 18,
+      "endVerse": 17
+    },
+    {
+      "pericopeId": "rich-young-ruler",
+      "book": "Matthew",
+      "startChapter": 19,
+      "startVerse": 16,
+      "endChapter": 19,
+      "endVerse": 30
+    },
+    {
+      "pericopeId": "rich-young-ruler",
+      "book": "Mark",
+      "startChapter": 10,
+      "startVerse": 17,
+      "endChapter": 10,
+      "endVerse": 31
+    },
+    {
+      "pericopeId": "rich-young-ruler",
+      "book": "Luke",
+      "startChapter": 18,
+      "startVerse": 18,
+      "endChapter": 18,
+      "endVerse": 30
+    },
+    {
+      "pericopeId": "laborers-vineyard",
+      "book": "Matthew",
+      "startChapter": 20,
+      "startVerse": 1,
+      "endChapter": 20,
+      "endVerse": 16
+    },
+    {
+      "pericopeId": "third-passion",
+      "book": "Matthew",
+      "startChapter": 20,
+      "startVerse": 17,
+      "endChapter": 20,
+      "endVerse": 19
+    },
+    {
+      "pericopeId": "third-passion",
+      "book": "Mark",
+      "startChapter": 10,
+      "startVerse": 32,
+      "endChapter": 10,
+      "endVerse": 34
+    },
+    {
+      "pericopeId": "third-passion",
+      "book": "Luke",
+      "startChapter": 18,
+      "startVerse": 31,
+      "endChapter": 18,
+      "endVerse": 34
+    },
+    {
+      "pericopeId": "james-john-request",
+      "book": "Matthew",
+      "startChapter": 20,
+      "startVerse": 20,
+      "endChapter": 20,
+      "endVerse": 28
+    },
+    {
+      "pericopeId": "james-john-request",
+      "book": "Mark",
+      "startChapter": 10,
+      "startVerse": 35,
+      "endChapter": 10,
+      "endVerse": 45
+    },
+    {
+      "pericopeId": "blind-jericho",
+      "book": "Matthew",
+      "startChapter": 20,
+      "startVerse": 29,
+      "endChapter": 20,
+      "endVerse": 34
+    },
+    {
+      "pericopeId": "blind-jericho",
+      "book": "Mark",
+      "startChapter": 10,
+      "startVerse": 46,
+      "endChapter": 10,
+      "endVerse": 52
+    },
+    {
+      "pericopeId": "blind-jericho",
+      "book": "Luke",
+      "startChapter": 18,
+      "startVerse": 35,
+      "endChapter": 18,
+      "endVerse": 43
+    },
+    {
+      "pericopeId": "zacchaeus",
+      "book": "Luke",
+      "startChapter": 19,
+      "startVerse": 1,
+      "endChapter": 19,
+      "endVerse": 10
+    },
+    {
+      "pericopeId": "minas",
+      "book": "Luke",
+      "startChapter": 19,
+      "startVerse": 11,
+      "endChapter": 19,
+      "endVerse": 27
+    },
+    {
+      "pericopeId": "anointing-bethany",
+      "book": "Matthew",
+      "startChapter": 26,
+      "startVerse": 6,
+      "endChapter": 26,
+      "endVerse": 13
+    },
+    {
+      "pericopeId": "anointing-bethany",
+      "book": "Mark",
+      "startChapter": 14,
+      "startVerse": 3,
+      "endChapter": 14,
+      "endVerse": 9
+    },
+    {
+      "pericopeId": "anointing-bethany",
+      "book": "John",
+      "startChapter": 12,
+      "startVerse": 1,
+      "endChapter": 12,
+      "endVerse": 8
+    },
+    {
+      "pericopeId": "triumphal-entry",
+      "book": "Matthew",
+      "startChapter": 21,
+      "startVerse": 1,
+      "endChapter": 21,
+      "endVerse": 11
+    },
+    {
+      "pericopeId": "triumphal-entry",
+      "book": "Mark",
+      "startChapter": 11,
+      "startVerse": 1,
+      "endChapter": 11,
+      "endVerse": 11
+    },
+    {
+      "pericopeId": "triumphal-entry",
+      "book": "Luke",
+      "startChapter": 19,
+      "startVerse": 28,
+      "endChapter": 19,
+      "endVerse": 44
+    },
+    {
+      "pericopeId": "triumphal-entry",
+      "book": "John",
+      "startChapter": 12,
+      "startVerse": 12,
+      "endChapter": 12,
+      "endVerse": 19
+    },
+    {
+      "pericopeId": "fig-tree",
+      "book": "Matthew",
+      "startChapter": 21,
+      "startVerse": 18,
+      "endChapter": 21,
+      "endVerse": 22
+    },
+    {
+      "pericopeId": "fig-tree",
+      "book": "Mark",
+      "startChapter": 11,
+      "startVerse": 12,
+      "endChapter": 11,
+      "endVerse": 14
+    },
+    {
+      "pericopeId": "fig-tree",
+      "book": "Mark",
+      "startChapter": 11,
+      "startVerse": 20,
+      "endChapter": 11,
+      "endVerse": 26
+    },
+    {
+      "pericopeId": "cleansing-temple-final",
+      "book": "Matthew",
+      "startChapter": 21,
+      "startVerse": 12,
+      "endChapter": 21,
+      "endVerse": 17
+    },
+    {
+      "pericopeId": "cleansing-temple-final",
+      "book": "Mark",
+      "startChapter": 11,
+      "startVerse": 15,
+      "endChapter": 11,
+      "endVerse": 19
+    },
+    {
+      "pericopeId": "cleansing-temple-final",
+      "book": "Luke",
+      "startChapter": 19,
+      "startVerse": 45,
+      "endChapter": 19,
+      "endVerse": 48
+    },
+    {
+      "pericopeId": "authority-question",
+      "book": "Matthew",
+      "startChapter": 21,
+      "startVerse": 23,
+      "endChapter": 21,
+      "endVerse": 27
+    },
+    {
+      "pericopeId": "authority-question",
+      "book": "Mark",
+      "startChapter": 11,
+      "startVerse": 27,
+      "endChapter": 11,
+      "endVerse": 33
+    },
+    {
+      "pericopeId": "authority-question",
+      "book": "Luke",
+      "startChapter": 20,
+      "startVerse": 1,
+      "endChapter": 20,
+      "endVerse": 8
+    },
+    {
+      "pericopeId": "two-sons",
+      "book": "Matthew",
+      "startChapter": 21,
+      "startVerse": 28,
+      "endChapter": 21,
+      "endVerse": 32
+    },
+    {
+      "pericopeId": "wicked-tenants",
+      "book": "Matthew",
+      "startChapter": 21,
+      "startVerse": 33,
+      "endChapter": 21,
+      "endVerse": 46
+    },
+    {
+      "pericopeId": "wicked-tenants",
+      "book": "Mark",
+      "startChapter": 12,
+      "startVerse": 1,
+      "endChapter": 12,
+      "endVerse": 12
+    },
+    {
+      "pericopeId": "wicked-tenants",
+      "book": "Luke",
+      "startChapter": 20,
+      "startVerse": 9,
+      "endChapter": 20,
+      "endVerse": 19
+    },
+    {
+      "pericopeId": "wedding-feast",
+      "book": "Matthew",
+      "startChapter": 22,
+      "startVerse": 1,
+      "endChapter": 22,
+      "endVerse": 14
+    },
+    {
+      "pericopeId": "tribute-caesar",
+      "book": "Matthew",
+      "startChapter": 22,
+      "startVerse": 15,
+      "endChapter": 22,
+      "endVerse": 22
+    },
+    {
+      "pericopeId": "tribute-caesar",
+      "book": "Mark",
+      "startChapter": 12,
+      "startVerse": 13,
+      "endChapter": 12,
+      "endVerse": 17
+    },
+    {
+      "pericopeId": "tribute-caesar",
+      "book": "Luke",
+      "startChapter": 20,
+      "startVerse": 20,
+      "endChapter": 20,
+      "endVerse": 26
+    },
+    {
+      "pericopeId": "resurrection-question",
+      "book": "Matthew",
+      "startChapter": 22,
+      "startVerse": 23,
+      "endChapter": 22,
+      "endVerse": 33
+    },
+    {
+      "pericopeId": "resurrection-question",
+      "book": "Mark",
+      "startChapter": 12,
+      "startVerse": 18,
+      "endChapter": 12,
+      "endVerse": 27
+    },
+    {
+      "pericopeId": "resurrection-question",
+      "book": "Luke",
+      "startChapter": 20,
+      "startVerse": 27,
+      "endChapter": 20,
+      "endVerse": 40
+    },
+    {
+      "pericopeId": "great-commandment",
+      "book": "Matthew",
+      "startChapter": 22,
+      "startVerse": 34,
+      "endChapter": 22,
+      "endVerse": 40
+    },
+    {
+      "pericopeId": "great-commandment",
+      "book": "Mark",
+      "startChapter": 12,
+      "startVerse": 28,
+      "endChapter": 12,
+      "endVerse": 34
+    },
+    {
+      "pericopeId": "woes-pharisees",
+      "book": "Matthew",
+      "startChapter": 23,
+      "startVerse": 1,
+      "endChapter": 23,
+      "endVerse": 39
+    },
+    {
+      "pericopeId": "woes-pharisees",
+      "book": "Luke",
+      "startChapter": 11,
+      "startVerse": 37,
+      "endChapter": 11,
+      "endVerse": 54
+    },
+    {
+      "pericopeId": "widows-offering",
+      "book": "Mark",
+      "startChapter": 12,
+      "startVerse": 41,
+      "endChapter": 12,
+      "endVerse": 44
+    },
+    {
+      "pericopeId": "widows-offering",
+      "book": "Luke",
+      "startChapter": 21,
+      "startVerse": 1,
+      "endChapter": 21,
+      "endVerse": 4
+    },
+    {
+      "pericopeId": "greeks-seek-jesus",
+      "book": "John",
+      "startChapter": 12,
+      "startVerse": 20,
+      "endChapter": 12,
+      "endVerse": 36
+    },
+    {
+      "pericopeId": "olivet-discourse",
+      "book": "Matthew",
+      "startChapter": 24,
+      "startVerse": 1,
+      "endChapter": 25,
+      "endVerse": 46
+    },
+    {
+      "pericopeId": "olivet-discourse",
+      "book": "Mark",
+      "startChapter": 13,
+      "startVerse": 1,
+      "endChapter": 13,
+      "endVerse": 37
+    },
+    {
+      "pericopeId": "olivet-discourse",
+      "book": "Luke",
+      "startChapter": 21,
+      "startVerse": 5,
+      "endChapter": 21,
+      "endVerse": 36
+    },
+    {
+      "pericopeId": "ten-virgins",
+      "book": "Matthew",
+      "startChapter": 25,
+      "startVerse": 1,
+      "endChapter": 25,
+      "endVerse": 13
+    },
+    {
+      "pericopeId": "talents",
+      "book": "Matthew",
+      "startChapter": 25,
+      "startVerse": 14,
+      "endChapter": 25,
+      "endVerse": 30
+    },
+    {
+      "pericopeId": "sheep-goats",
+      "book": "Matthew",
+      "startChapter": 25,
+      "startVerse": 31,
+      "endChapter": 25,
+      "endVerse": 46
+    },
+    {
+      "pericopeId": "judas-betrayal",
+      "book": "Matthew",
+      "startChapter": 26,
+      "startVerse": 14,
+      "endChapter": 26,
+      "endVerse": 16
+    },
+    {
+      "pericopeId": "judas-betrayal",
+      "book": "Mark",
+      "startChapter": 14,
+      "startVerse": 10,
+      "endChapter": 14,
+      "endVerse": 11
+    },
+    {
+      "pericopeId": "judas-betrayal",
+      "book": "Luke",
+      "startChapter": 22,
+      "startVerse": 1,
+      "endChapter": 22,
+      "endVerse": 6
+    },
+    {
+      "pericopeId": "last-supper",
+      "book": "Matthew",
+      "startChapter": 26,
+      "startVerse": 17,
+      "endChapter": 26,
+      "endVerse": 35
+    },
+    {
+      "pericopeId": "last-supper",
+      "book": "Mark",
+      "startChapter": 14,
+      "startVerse": 12,
+      "endChapter": 14,
+      "endVerse": 31
+    },
+    {
+      "pericopeId": "last-supper",
+      "book": "Luke",
+      "startChapter": 22,
+      "startVerse": 7,
+      "endChapter": 22,
+      "endVerse": 38
+    },
+    {
+      "pericopeId": "last-supper",
+      "book": "John",
+      "startChapter": 13,
+      "startVerse": 1,
+      "endChapter": 13,
+      "endVerse": 38
+    },
+    {
+      "pericopeId": "farewell-discourse",
+      "book": "John",
+      "startChapter": 14,
+      "startVerse": 1,
+      "endChapter": 17,
+      "endVerse": 26
+    },
+    {
+      "pericopeId": "gethsemane",
+      "book": "Matthew",
+      "startChapter": 26,
+      "startVerse": 36,
+      "endChapter": 26,
+      "endVerse": 46
+    },
+    {
+      "pericopeId": "gethsemane",
+      "book": "Mark",
+      "startChapter": 14,
+      "startVerse": 32,
+      "endChapter": 14,
+      "endVerse": 42
+    },
+    {
+      "pericopeId": "gethsemane",
+      "book": "Luke",
+      "startChapter": 22,
+      "startVerse": 39,
+      "endChapter": 22,
+      "endVerse": 46
+    },
+    {
+      "pericopeId": "gethsemane",
+      "book": "John",
+      "startChapter": 18,
+      "startVerse": 1,
+      "endChapter": 18,
+      "endVerse": 1
+    },
+    {
+      "pericopeId": "arrest",
+      "book": "Matthew",
+      "startChapter": 26,
+      "startVerse": 47,
+      "endChapter": 26,
+      "endVerse": 56
+    },
+    {
+      "pericopeId": "arrest",
+      "book": "Mark",
+      "startChapter": 14,
+      "startVerse": 43,
+      "endChapter": 14,
+      "endVerse": 52
+    },
+    {
+      "pericopeId": "arrest",
+      "book": "Luke",
+      "startChapter": 22,
+      "startVerse": 47,
+      "endChapter": 22,
+      "endVerse": 53
+    },
+    {
+      "pericopeId": "arrest",
+      "book": "John",
+      "startChapter": 18,
+      "startVerse": 2,
+      "endChapter": 18,
+      "endVerse": 12
+    },
+    {
+      "pericopeId": "jewish-trial",
+      "book": "Matthew",
+      "startChapter": 26,
+      "startVerse": 57,
+      "endChapter": 26,
+      "endVerse": 68
+    },
+    {
+      "pericopeId": "jewish-trial",
+      "book": "Mark",
+      "startChapter": 14,
+      "startVerse": 53,
+      "endChapter": 14,
+      "endVerse": 65
+    },
+    {
+      "pericopeId": "jewish-trial",
+      "book": "Luke",
+      "startChapter": 22,
+      "startVerse": 63,
+      "endChapter": 22,
+      "endVerse": 71
+    },
+    {
+      "pericopeId": "jewish-trial",
+      "book": "John",
+      "startChapter": 18,
+      "startVerse": 13,
+      "endChapter": 18,
+      "endVerse": 24
+    },
+    {
+      "pericopeId": "peter-denial",
+      "book": "Matthew",
+      "startChapter": 26,
+      "startVerse": 69,
+      "endChapter": 26,
+      "endVerse": 75
+    },
+    {
+      "pericopeId": "peter-denial",
+      "book": "Mark",
+      "startChapter": 14,
+      "startVerse": 66,
+      "endChapter": 14,
+      "endVerse": 72
+    },
+    {
+      "pericopeId": "peter-denial",
+      "book": "Luke",
+      "startChapter": 22,
+      "startVerse": 54,
+      "endChapter": 22,
+      "endVerse": 62
+    },
+    {
+      "pericopeId": "peter-denial",
+      "book": "John",
+      "startChapter": 18,
+      "startVerse": 15,
+      "endChapter": 18,
+      "endVerse": 18
+    },
+    {
+      "pericopeId": "peter-denial",
+      "book": "John",
+      "startChapter": 18,
+      "startVerse": 25,
+      "endChapter": 18,
+      "endVerse": 27
+    },
+    {
+      "pericopeId": "judas-end",
+      "book": "Matthew",
+      "startChapter": 27,
+      "startVerse": 3,
+      "endChapter": 27,
+      "endVerse": 10
+    },
+    {
+      "pericopeId": "pilate-herod",
+      "book": "Matthew",
+      "startChapter": 27,
+      "startVerse": 11,
+      "endChapter": 27,
+      "endVerse": 31
+    },
+    {
+      "pericopeId": "pilate-herod",
+      "book": "Mark",
+      "startChapter": 15,
+      "startVerse": 1,
+      "endChapter": 15,
+      "endVerse": 20
+    },
+    {
+      "pericopeId": "pilate-herod",
+      "book": "Luke",
+      "startChapter": 23,
+      "startVerse": 1,
+      "endChapter": 23,
+      "endVerse": 25
+    },
+    {
+      "pericopeId": "pilate-herod",
+      "book": "John",
+      "startChapter": 18,
+      "startVerse": 28,
+      "endChapter": 19,
+      "endVerse": 16
+    },
+    {
+      "pericopeId": "crucifixion",
+      "book": "Matthew",
+      "startChapter": 27,
+      "startVerse": 32,
+      "endChapter": 27,
+      "endVerse": 56
+    },
+    {
+      "pericopeId": "crucifixion",
+      "book": "Mark",
+      "startChapter": 15,
+      "startVerse": 21,
+      "endChapter": 15,
+      "endVerse": 41
+    },
+    {
+      "pericopeId": "crucifixion",
+      "book": "Luke",
+      "startChapter": 23,
+      "startVerse": 26,
+      "endChapter": 23,
+      "endVerse": 49
+    },
+    {
+      "pericopeId": "crucifixion",
+      "book": "John",
+      "startChapter": 19,
+      "startVerse": 17,
+      "endChapter": 19,
+      "endVerse": 37
+    },
+    {
+      "pericopeId": "burial",
+      "book": "Matthew",
+      "startChapter": 27,
+      "startVerse": 57,
+      "endChapter": 27,
+      "endVerse": 66
+    },
+    {
+      "pericopeId": "burial",
+      "book": "Mark",
+      "startChapter": 15,
+      "startVerse": 42,
+      "endChapter": 15,
+      "endVerse": 47
+    },
+    {
+      "pericopeId": "burial",
+      "book": "Luke",
+      "startChapter": 23,
+      "startVerse": 50,
+      "endChapter": 23,
+      "endVerse": 56
+    },
+    {
+      "pericopeId": "burial",
+      "book": "John",
+      "startChapter": 19,
+      "startVerse": 38,
+      "endChapter": 19,
+      "endVerse": 42
+    },
+    {
+      "pericopeId": "resurrection",
+      "book": "Matthew",
+      "startChapter": 28,
+      "startVerse": 1,
+      "endChapter": 28,
+      "endVerse": 10
+    },
+    {
+      "pericopeId": "resurrection",
+      "book": "Mark",
+      "startChapter": 16,
+      "startVerse": 1,
+      "endChapter": 16,
+      "endVerse": 8
+    },
+    {
+      "pericopeId": "resurrection",
+      "book": "Luke",
+      "startChapter": 24,
+      "startVerse": 1,
+      "endChapter": 24,
+      "endVerse": 12
+    },
+    {
+      "pericopeId": "resurrection",
+      "book": "John",
+      "startChapter": 20,
+      "startVerse": 1,
+      "endChapter": 20,
+      "endVerse": 18
+    },
+    {
+      "pericopeId": "emmaus",
+      "book": "Luke",
+      "startChapter": 24,
+      "startVerse": 13,
+      "endChapter": 24,
+      "endVerse": 35
+    },
+    {
+      "pericopeId": "appearance-disciples",
+      "book": "Luke",
+      "startChapter": 24,
+      "startVerse": 36,
+      "endChapter": 24,
+      "endVerse": 49
+    },
+    {
+      "pericopeId": "appearance-disciples",
+      "book": "John",
+      "startChapter": 20,
+      "startVerse": 19,
+      "endChapter": 20,
+      "endVerse": 23
+    },
+    {
+      "pericopeId": "thomas",
+      "book": "John",
+      "startChapter": 20,
+      "startVerse": 24,
+      "endChapter": 20,
+      "endVerse": 29
+    },
+    {
+      "pericopeId": "galilee-breakfast",
+      "book": "John",
+      "startChapter": 21,
+      "startVerse": 1,
+      "endChapter": 21,
+      "endVerse": 25
+    },
+    {
+      "pericopeId": "great-commission",
+      "book": "Matthew",
+      "startChapter": 28,
+      "startVerse": 16,
+      "endChapter": 28,
+      "endVerse": 20
+    },
+    {
+      "pericopeId": "great-commission",
+      "book": "Mark",
+      "startChapter": 16,
+      "startVerse": 14,
+      "endChapter": 16,
+      "endVerse": 20
+    },
+    {
+      "pericopeId": "great-commission",
+      "book": "Luke",
+      "startChapter": 24,
+      "startVerse": 44,
+      "endChapter": 24,
+      "endVerse": 53
+    }
+  ]
+}

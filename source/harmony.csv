@@ -1,0 +1,138 @@
+pericopeId,title,summary,tags,sortOrder,Matthew,Mark,Luke,John
+genealogy-matthew,Genealogy of Jesus (Matthew),Matthew records Jesus’s genealogy from Abraham to Jesus.,birth|identity,10,1:1-17,,,
+genealogy-luke,Genealogy of Jesus (Luke),Luke records Jesus’s genealogy in connection with Jesus’s baptism.,birth|identity,20,,,3:23-38,
+birth-jesus,Birth of Jesus,Jesus is born in Bethlehem.,birth,30,1:18-25,,2:1-7,
+shepherds,Angels and Shepherds,Angels announce Jesus’s birth to shepherds.,birth,40,,,2:8-20,
+magi,Visit of the Magi,Wise men worship the newborn king.,birth,50,2:1-12,,,
+flight-egypt,Flight into Egypt,Joseph takes Mary and Jesus to Egypt for safety.,birth,60,2:13-15,,,
+return-nazareth,Return to Nazareth,The family settles in Nazareth after Herod’s death.,birth,70,2:19-23,,2:39-40,
+boy-jesus-temple,Boy Jesus in the Temple,"At age twelve, Jesus is found in the temple.",early life|teaching,80,,,2:41-52,
+john-prologue,The Word Made Flesh,John introduces Jesus as the eternal Word made flesh.,identity|teaching,90,,,,1:1-18
+john-baptist-ministry,John the Baptist’s Ministry,John prepares the way with repentance and baptism.,john the baptist|teaching,100,3:1-12,1:1-8,3:1-18,1:19-28
+baptism,Baptism of Jesus,Jesus is baptized and affirmed from heaven.,baptism|identity,110,3:13-17,1:9-11,3:21-22,1:29-34
+temptation,Temptation in the Wilderness,Jesus is tempted in the wilderness.,temptation,120,4:1-11,1:12-13,4:1-13,
+first-disciples-john,First Disciples Called,Jesus begins gathering disciples after John’s witness.,discipleship,130,,,,1:35-51
+wedding-cana,Wedding at Cana,Jesus turns water into wine.,miracle,140,,,,2:1-11
+temple-cleansing-early,Cleansing of the Temple (early),Jesus cleanses the temple early in John’s account.,temple|conflict,150,,,,2:13-22
+nicodemus,Jesus and Nicodemus,Jesus teaches about being born again.,teaching,160,,,,3:1-21
+samaritan-woman,Woman at the Well,Jesus offers living water to the Samaritan woman.,teaching,170,,,,4:1-42
+officials-son,Healing the Official’s Son,Jesus heals a son from a distance.,miracle|healing,180,,,,4:46-54
+call-fishermen,Calling of the Fishermen,Jesus calls fishermen to follow him.,discipleship,190,4:18-22,1:16-20,5:1-11,
+synagogue-capernaum,Teaching in Capernaum Synagogue,Jesus teaches with authority and casts out an unclean spirit.,miracle|healing,200,,1:21-28,4:31-37,
+peters-mother-in-law,Healing Peter’s Mother-in-law,Jesus heals Peter’s mother-in-law and many others.,miracle|healing,210,8:14-17,1:29-34,4:38-41,
+first-preaching-tour,First Preaching Tour,Jesus travels preaching in Galilee.,mission,220,,1:35-39,4:42-44,
+leper,Cleansing a Leper,Jesus cleanses a leper.,miracle|healing,230,8:1-4,1:40-45,5:12-16,
+paralytic,Healing the Paralytic,A paralytic is forgiven and healed.,miracle|healing,240,9:1-8,2:1-12,5:17-26,
+call-levi,Call of Matthew/Levi,Jesus calls Levi and eats with sinners.,discipleship,250,9:9-13,2:13-17,5:27-32,
+question-fasting,Question About Fasting,Jesus answers a question about fasting.,teaching,260,9:14-17,2:18-22,5:33-39,
+bethesda,Healing at Bethesda,Jesus heals a man at Bethesda on the Sabbath.,miracle|healing|sabbath,270,,,,5:1-18
+sons-authority,The Son’s Authority,Jesus speaks of his unity with the Father and authority to judge.,teaching|identity,280,,,,5:19-47
+grain-sabbath,Plucking Grain on the Sabbath,Jesus teaches that the Son of Man is Lord of the Sabbath.,sabbath|teaching,290,12:1-8,2:23-28,6:1-5,
+withered-hand,Man with the Withered Hand,Jesus heals on the Sabbath and faces opposition.,miracle|healing|sabbath,300,12:9-14,3:1-6,6:6-11,
+choose-twelve,Choosing the Twelve,Jesus appoints the twelve apostles.,apostles,310,10:1-4,3:13-19,6:12-16,
+sermon-mount,Sermon on the Mount / Plain,Jesus teaches kingdom ethics and discipleship.,teaching|sermon,320,5:1-7:29,,6:17-49,
+centurion-servant,Centurion’s Servant,Jesus heals a centurion’s servant and praises his faith.,miracle|healing,330,8:5-13,,7:1-10,
+widows-son-naim,Widow’s Son at Nain,Jesus raises a widow’s son.,miracle,340,,,7:11-17,
+johns-question,John’s Question from Prison,Jesus answers John’s inquiry and honors him.,john the baptist|teaching,350,11:2-19,,7:18-35,
+sinful-woman,Sinful Woman Anoints Jesus,A repentant woman anoints Jesus and receives forgiveness.,devotion|teaching,360,,,7:36-50,
+sower,Parable of the Sower,The word is received in different kinds of soil.,parable|teaching,370,13:1-23,4:1-20,8:4-15,
+lamp-under-basket,Lamp Under a Basket,Light is meant to be seen.,parable|teaching,380,5:14-16,4:21-25,8:16-18,
+seed-growing,Parable of the Growing Seed,The kingdom grows in hidden ways.,parable|teaching,390,,4:26-29,,
+mustard-seed,Parable of the Mustard Seed,The kingdom grows from small beginnings.,parable,400,13:31-32,4:30-32,13:18-19,
+leaven,Parable of the Leaven,The kingdom works through the whole batch like leaven.,parable,410,13:33,,13:20-21,
+weeds,Parable of the Weeds,Wheat and weeds grow together until harvest.,parable|teaching,420,"13:24-30,36-43",,,
+hidden-treasure,Hidden Treasure,The kingdom is worth everything to gain.,parable,430,13:44,,,
+pearl,Pearl of Great Price,The kingdom is like a pearl of great value.,parable,440,13:45-46,,,
+dragnet,Parable of the Dragnet,The final sorting is like a dragnet gathering fish.,parable,450,13:47-50,,,
+householder,Parable of the Householder,A disciple brings out treasures old and new.,parable,460,13:51-52,,,
+calming-storm,Jesus Calms the Storm,Jesus rebukes wind and waves.,miracle,470,8:23-27,4:35-41,8:22-25,
+gerasene-demoniac,Gerasene Demoniac,Jesus frees a man oppressed by demons.,miracle|healing,480,8:28-34,5:1-20,8:26-39,
+jairus-woman,Jairus’s Daughter and the Woman,Jesus heals a woman and raises Jairus’s daughter.,miracle|healing,490,9:18-26,5:21-43,8:40-56,
+nazareth-rejection,Rejection at Nazareth,Jesus is rejected in his hometown.,conflict,500,13:53-58,6:1-6,4:16-30,
+send-twelve,Sending the Twelve,Jesus sends the twelve to preach and heal.,mission,510,10:5-42,6:7-13,9:1-6,
+john-death,Death of John the Baptist,Herod executes John the Baptist.,john the baptist,520,14:1-12,6:14-29,9:7-9,
+feeding-5000,Feeding of the Five Thousand,Jesus feeds a large crowd with loaves and fish.,miracle,530,14:13-21,6:30-44,9:10-17,6:1-14
+walk-water,Walking on Water,Jesus walks on the sea.,miracle,540,14:22-33,6:45-52,,6:15-21
+bread-of-life,Bread of Life Discourse,Jesus teaches that he is the bread of life.,teaching,550,,,,6:22-71
+traditions-defile,Traditions and Defilement,Jesus teaches what truly defiles a person.,teaching|conflict,560,15:1-20,7:1-23,,
+syrophoenician,Syrophoenician Woman,Jesus commends a Gentile woman’s faith.,miracle|healing,570,15:21-28,7:24-30,,
+deaf-mute,Healing a Deaf and Mute Man,Jesus heals a man in the Decapolis.,miracle|healing,580,,7:31-37,,
+feeding-4000,Feeding of the Four Thousand,Jesus feeds four thousand people.,miracle,590,15:32-39,8:1-10,,
+blind-bethsaida,Healing a Blind Man at Bethsaida,Jesus heals a blind man in stages.,miracle|healing,600,,8:22-26,,
+peters-confession,Peter’s Confession,Peter confesses Jesus as the Christ.,identity,610,16:13-20,8:27-30,9:18-21,
+first-passion,First Passion Prediction,Jesus predicts his death and calls disciples to take up the cross.,passion|teaching,620,16:21-28,8:31-9:1,9:22-27,
+transfiguration,Transfiguration,Jesus is revealed in glory before selected disciples.,identity,630,17:1-13,9:2-13,9:28-36,
+boy-unclean-spirit,Boy with an Unclean Spirit,Jesus heals a boy after the disciples fail.,miracle|healing,640,17:14-21,9:14-29,9:37-43,
+second-passion,Second Passion Prediction,Jesus again predicts his death and resurrection.,passion,650,17:22-23,9:30-32,9:43-45,
+greatness-child,Greatness and a Child,Jesus teaches humility and warns against causing others to stumble.,teaching|discipleship,660,18:1-14,9:33-50,9:46-50,
+coin-fish,Temple Tax Coin,Jesus provides a coin in a fish’s mouth.,miracle,670,17:24-27,,,
+feast-tabernacles,Feast of Tabernacles,Jesus teaches publicly at the feast.,teaching|feasts,680,,,,7:1-52
+woman-caught,Woman Caught in Adultery,Jesus responds with mercy and truth.,teaching|conflict,690,,,,8:1-11
+light-of-world,Light of the World,Jesus teaches about his identity and freedom.,teaching|identity,700,,,,8:12-59
+born-blind,Man Born Blind,Jesus heals a man blind from birth.,miracle|healing,710,,,,9:1-41
+good-shepherd,Good Shepherd,Jesus teaches about the true shepherd.,teaching|identity,720,,,,10:1-21
+mission-seventy,Sending the Seventy-Two,Jesus sends a larger group of disciples.,mission,730,,,10:1-24,
+good-samaritan,Good Samaritan,A neighbor is defined by mercy.,parable|teaching,740,,,10:25-37,
+mary-martha,Mary and Martha,Jesus teaches priority and attentive discipleship.,discipleship|teaching,750,,,10:38-42,
+lords-prayer,Lord’s Prayer and Persistence,Jesus teaches his disciples how to pray.,prayer|teaching,760,6:5-15,,11:1-13,
+rich-fool,Parable of the Rich Fool,A warning against greed and false security.,parable,770,,,12:13-21,
+watchful-servants,Watchful Servants,Jesus calls disciples to readiness.,parable|teaching,780,24:42-51,,12:35-48,
+barren-fig-tree,Parable of the Barren Fig Tree,A warning to repent before judgment comes.,parable,790,,,13:6-9,
+crippled-woman,Healing a Crippled Woman,Jesus heals on the Sabbath in a synagogue.,miracle|healing|sabbath,800,,,13:10-17,
+narrow-door,The Narrow Door,Jesus warns that entry into the kingdom is urgent.,teaching,810,7:13-14,,13:22-30,
+great-banquet,Parable of the Great Banquet,Those invited refuse; others are brought in.,parable,820,22:1-14,,14:15-24,
+cost-discipleship,Cost of Discipleship,Jesus teaches the cost of following him.,discipleship|teaching,830,,,14:25-35,
+lost-sheep,Parable of the Lost Sheep,Heaven rejoices over one who repents.,parable,840,18:10-14,,15:1-7,
+lost-coin,Parable of the Lost Coin,There is joy when the lost is found.,parable,850,,,15:8-10,
+prodigal-son,Parable of the Prodigal Son,A father welcomes his returning son.,parable,860,,,15:11-32,
+unjust-steward,Parable of the Unjust Steward,Jesus teaches on wise stewardship.,parable,870,,,16:1-13,
+rich-man-lazarus,Parable of the Rich Man and Lazarus,A warning about hardness of heart and eternal consequence.,parable,880,,,16:19-31,
+persistent-widow,Parable of the Persistent Widow,Jesus teaches persistence in prayer.,parable|prayer,890,,,18:1-8,
+pharisee-tax,Parable of the Pharisee and Tax Collector,"God receives the humble, not the self-righteous.",parable,900,,,18:9-14,
+feast-dedication,Feast of Dedication,Jesus teaches at the Feast of Dedication.,feasts|identity,910,,,,10:22-42
+lazarus,Raising of Lazarus,Jesus raises Lazarus from the dead.,miracle,920,,,,11:1-44
+plot-kill-jesus,Plot to Kill Jesus,The leaders plan Jesus’s death after Lazarus is raised.,conflict|passion,930,,,,11:45-57
+marriage-divorce,Marriage and Divorce,Jesus teaches about marriage and divorce.,teaching,940,19:1-12,10:1-12,,
+bless-children,Blessing the Children,Jesus welcomes little children.,teaching|children,950,19:13-15,10:13-16,18:15-17,
+rich-young-ruler,Rich Young Ruler,A rich ruler asks about eternal life.,teaching|discipleship,960,19:16-30,10:17-31,18:18-30,
+laborers-vineyard,Parable of the Laborers in the Vineyard,The kingdom reflects the generosity of the master.,parable,970,20:1-16,,,
+third-passion,Third Passion Prediction,Jesus again predicts his coming suffering.,passion,980,20:17-19,10:32-34,18:31-34,
+james-john-request,Request of James and John,Jesus teaches servant leadership.,teaching|leadership,990,20:20-28,10:35-45,,
+blind-jericho,Healing Near Jericho,Jesus heals blind beggars near Jericho.,miracle|healing,1000,20:29-34,10:46-52,18:35-43,
+zacchaeus,Zacchaeus,Jesus brings salvation to Zacchaeus’s house.,repentance|teaching,1010,,,19:1-10,
+minas,Parable of the Minas,Faithful stewardship is rewarded.,parable,1020,,,19:11-27,
+anointing-bethany,Anointing at Bethany,Jesus is anointed in preparation for burial.,passion week|devotion,1030,26:6-13,14:3-9,,12:1-8
+triumphal-entry,Triumphal Entry,Jesus enters Jerusalem publicly as king.,passion week,1040,21:1-11,11:1-11,19:28-44,12:12-19
+fig-tree,Fig Tree,Jesus curses the fig tree and teaches about faith.,passion week|teaching,1050,21:18-22,"11:12-14,20-26",,
+cleansing-temple-final,Cleansing of the Temple,Jesus cleanses the temple during the final week.,passion week|temple|conflict,1060,21:12-17,11:15-19,19:45-48,
+authority-question,Question of Authority,Jesus is challenged about his authority.,passion week|conflict,1070,21:23-27,11:27-33,20:1-8,
+two-sons,Parable of the Two Sons,Obedience matters more than profession.,parable|passion week,1080,21:28-32,,,
+wicked-tenants,Parable of the Wicked Tenants,Jesus warns the leaders through a vineyard parable.,parable|passion week,1090,21:33-46,12:1-12,20:9-19,
+wedding-feast,Parable of the Wedding Feast,"Many are invited, but response matters.",parable|passion week,1100,22:1-14,,,
+tribute-caesar,Tribute to Caesar,Jesus answers the question about taxes.,passion week|teaching|conflict,1110,22:15-22,12:13-17,20:20-26,
+resurrection-question,Question About Resurrection,Jesus answers the Sadducees about resurrection.,passion week|teaching,1120,22:23-33,12:18-27,20:27-40,
+great-commandment,Great Commandment,Jesus summarizes the law in love for God and neighbor.,passion week|teaching,1130,22:34-40,12:28-34,,
+woes-pharisees,Woes to the Scribes and Pharisees,Jesus denounces hypocrisy and blindness.,passion week|conflict|teaching,1140,23:1-39,,11:37-54,
+widows-offering,Widow’s Offering,Jesus honors the widow’s sacrificial gift.,passion week|devotion,1150,,12:41-44,21:1-4,
+greeks-seek-jesus,Greeks Seek Jesus,Jesus speaks of glorification through death.,passion week|identity|teaching,1160,,,,12:20-36
+olivet-discourse,Olivet Discourse,Jesus teaches about coming judgment and readiness.,passion week|teaching|second coming,1170,24:1-25:46,13:1-37,21:5-36,
+ten-virgins,Parable of the Ten Virgins,Jesus teaches readiness for his coming.,parable|passion week|second coming,1180,25:1-13,,,
+talents,Parable of the Talents,Faithful servants are commended.,parable|passion week,1190,25:14-30,,,
+sheep-goats,Sheep and Goats,Final judgment is pictured in terms of compassion and obedience.,parable|passion week|judgment,1200,25:31-46,,,
+judas-betrayal,Judas Agrees to Betray,Judas arranges to betray Jesus.,passion week,1210,26:14-16,14:10-11,22:1-6,
+last-supper,Last Supper,Jesus shares his final meal with the disciples.,passion week,1220,26:17-35,14:12-31,22:7-38,13:1-38
+farewell-discourse,Farewell Discourse,Jesus teaches and comforts his disciples before his death.,passion week|teaching,1230,,,,14:1-17:26
+gethsemane,Prayer in Gethsemane,Jesus prays before his arrest.,passion week,1240,26:36-46,14:32-42,22:39-46,18:1
+arrest,Arrest of Jesus,Jesus is arrested in the garden.,passion week,1250,26:47-56,14:43-52,22:47-53,18:2-12
+jewish-trial,Before Jewish Authorities,Jesus is questioned before the high priest and council.,passion week|trial,1260,26:57-68,14:53-65,22:63-71,18:13-24
+peter-denial,Peter Denies Jesus,Peter denies knowing Jesus three times.,passion week,1270,26:69-75,14:66-72,22:54-62,"18:15-18,25-27"
+judas-end,Death of Judas,Judas’s betrayal ends in despair and death.,passion week,1280,27:3-10,,,
+pilate-herod,Before Pilate and Herod,Jesus is tried before Roman authorities.,passion week|trial,1290,27:11-31,15:1-20,23:1-25,18:28-19:16
+crucifixion,Crucifixion,Jesus is crucified.,passion week,1300,27:32-56,15:21-41,23:26-49,19:17-37
+burial,Burial of Jesus,Jesus is buried in the tomb.,passion week,1310,27:57-66,15:42-47,23:50-56,19:38-42
+resurrection,Resurrection Morning,The tomb is found empty and Jesus rises.,resurrection,1320,28:1-10,16:1-8,24:1-12,20:1-18
+emmaus,Road to Emmaus,The risen Jesus appears to two disciples.,resurrection,1330,,,24:13-35,
+appearance-disciples,Appearance to the Disciples,Jesus appears to the gathered disciples.,resurrection,1340,,,24:36-49,20:19-23
+thomas,Jesus and Thomas,Thomas believes after seeing the risen Christ.,resurrection,1350,,,,20:24-29
+galilee-breakfast,Breakfast by the Sea,The risen Jesus appears by the Sea of Galilee.,resurrection,1360,,,,21:1-25
+great-commission,Great Commission,Jesus commissions his disciples.,resurrection,1370,28:16-20,16:14-20,24:44-53,
