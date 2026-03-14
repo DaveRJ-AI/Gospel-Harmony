@@ -5,6 +5,7 @@ import StoriesIndex from "./pages/StoriesIndex";
 import StoryView from "./pages/StoryView";
 import TimelineView from "./pages/TimelineView";
 import TypeView from "./pages/TypeView";
+import ArtView from "./pages/ArtView";
 
 function navLinkStyle({ isActive }: { isActive: boolean }) {
   return {
@@ -53,6 +54,9 @@ export default function App() {
           <NavLink to="/types" style={navLinkStyle}>
             Type
           </NavLink>
+          <NavLink to="/art" style={navLinkStyle}>
+            Art
+          </NavLink>
         </div>
       </div>
 
@@ -62,6 +66,7 @@ export default function App() {
         <Route path="/story/:pericopeId" element={<StoryView />} />
         <Route path="/timeline" element={<TimelineView />} />
         <Route path="/types" element={<TypeView />} />
+        <Route path="/art" element={<ArtView />} />
       </Routes>
     </div>
   );
