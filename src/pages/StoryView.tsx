@@ -1,8 +1,10 @@
 import React from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import ColumnGrid, { type ColumnBlock } from "../components/ColumnGrid";
+import ArtworkModal from "../components/ArtworkModal";
 import { getPassage, type PassageRef } from "../lib/bible";
 import { loadHarmony, passagesForPericope, type Pericope } from "../lib/harmony";
+import { artworkForPericope, loadArtworkMap, type ArtworkItem } from "../lib/artwork";
 import { GOSPELS, type Gospel, type Version } from "../lib/refs";
 
 function formatPassageRef(ref: PassageRef) {
@@ -30,6 +32,8 @@ export default function StoryView() {
   const [allPericopes, setAllPericopes] = React.useState<Pericope[]>([]);
   const [referenceMap, setReferenceMap] = React.useState<Partial<Record<Gospel, string>>>({});
   const [primaryBook, setPrimaryBook] = React.useState<Gospel>("Matthew");
+  const [artItems, setArtItems] = React.useState<ArtworkItem[]>([]);
+  const [artOpenIndex, setArtOpenIndex] = React.useState<number | null>(null);
 
   const [cols, setCols] = React.useState<Record<Gospel, ColumnBlock[]>>({
     Matthew: [],
@@ -47,7 +51,8 @@ export default function StoryView() {
       try {
         if (!pericopeId) throw new Error("Missing event id");
 
-        const h = await loadHarmony();
+        const [h, artworkMap] = await Promise.all([loadHarmony(), loadArtworkMap()]);
+
         const sorted = [...h.pericopes].sort((a, b) => {
           const sa = a.sortOrder ?? 999999;
           const sb = b.sortOrder ?? 999999;
@@ -55,7 +60,7 @@ export default function StoryView() {
           return a.title.localeCompare(b.title);
         });
 
-        const p = sorted.find((x) => x.pericopeId === pericopeId) as Pericope | undefined;
+        const p = sorted.find((x) => x.pericopeId === pericopeId);
         if (!p) throw new Error("Event not found");
 
         const blocksByBook: Record<Gospel, ColumnBlock[]> = {
@@ -67,7 +72,6 @@ export default function StoryView() {
 
         const refs: Partial<Record<Gospel, string>> = {};
         const passages = passagesForPericope(h, pericopeId);
-
         const firstAvailable = GOSPELS.find((g) => passages.some((x) => x.book === g)) || "Matthew";
 
         for (const g of GOSPELS) {
@@ -106,6 +110,7 @@ export default function StoryView() {
         setReferenceMap(refs);
         setPrimaryBook(firstAvailable);
         setCols(blocksByBook);
+        setArtItems(artworkForPericope(artworkMap, pericopeId));
       } catch (e: any) {
         if (!alive) return;
         setError(e?.message ?? "Error");
@@ -145,8 +150,16 @@ export default function StoryView() {
   return (
     <div>
       <div className="card">
-        <div className="row" style={{ alignItems: "center", justifyContent: "space-between", gap: 16 }}>
-          <div style={{ flex: 1 }}>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 20,
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ flex: "1 1 520px", minWidth: 300 }}>
             <div className="muted">
               <Link to="/stories">← Back to events</Link>
             </div>
@@ -171,12 +184,79 @@ export default function StoryView() {
             </div>
           </div>
 
-          <div>
-            <label>Version</label>
-            <select value={version} onChange={(e) => setVersion(e.target.value as Version)}>
-              <option value="KJV">KJV</option>
-              <option value="ESV">ESV</option>
-            </select>
+          <div style={{ flex: "0 1 320px", minWidth: 260 }}>
+            <div
+              style={{
+                border: "1px solid #e5e7eb",
+                borderRadius: 14,
+                padding: 12,
+                background: "#fafafa",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 12,
+                  marginBottom: 10,
+                }}
+              >
+                <div style={{ fontWeight: 700 }}>Artwork</div>
+
+                <div>
+                  <label style={{ margin: 0 }}>Version</label>
+                  <select value={version} onChange={(e) => setVersion(e.target.value as Version)}>
+                    <option value="KJV">KJV</option>
+                    <option value="ESV">ESV</option>
+                  </select>
+                </div>
+              </div>
+
+              {artItems.length === 0 ? (
+                <div className="muted">No artwork available for this story yet.</div>
+              ) : (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                  {artItems.map((item, idx) => (
+                    <button
+                      key={`${item.image}-${idx}`}
+                      type="button"
+                      onClick={() => setArtOpenIndex(idx)}
+                      style={{
+                        border: "1px solid #d1d5db",
+                        borderRadius: 10,
+                        padding: 0,
+                        background: "#fff",
+                        cursor: "pointer",
+                        overflow: "hidden",
+                        width: 140,
+                      }}
+                    >
+                      <img
+                        src={item.thumbnail || item.image}
+                        alt={item.title}
+                        style={{
+                          width: "100%",
+                          height: 96,
+                          objectFit: "cover",
+                          display: "block",
+                        }}
+                      />
+                      <div
+                        style={{
+                          padding: "8px 10px",
+                          fontSize: 13,
+                          fontWeight: 600,
+                          textAlign: "left",
+                        }}
+                      >
+                        {item.title}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -222,6 +302,14 @@ export default function StoryView() {
           blocks: cols[book],
         }))}
       />
+
+      {artOpenIndex !== null ? (
+        <ArtworkModal
+          items={artItems}
+          initialIndex={artOpenIndex}
+          onClose={() => setArtOpenIndex(null)}
+        />
+      ) : null}
     </div>
   );
 }

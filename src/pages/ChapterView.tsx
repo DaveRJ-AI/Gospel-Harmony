@@ -1,7 +1,9 @@
 import React from "react";
 import ColumnGrid, { type ColumnBlock } from "../components/ColumnGrid";
+import ArtworkModal from "../components/ArtworkModal";
 import { getChapter, getPassage, type PassageRef } from "../lib/bible";
 import { loadHarmony, pericopesForChapter, passageForBook } from "../lib/harmony";
+import { artworkForPericope, loadArtworkMap, type ArtworkItem, type ArtworkMap } from "../lib/artwork";
 import { GOSPELS, otherGospels, type Gospel, type Version } from "../lib/refs";
 
 type ChapterVerse = { book: Gospel; chapter: number; verse: number; text: string };
@@ -122,6 +124,37 @@ function TogglePills({
   );
 }
 
+function ArtPill({
+  onClick,
+  count,
+}: {
+  onClick: () => void;
+  count: number;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      title={count > 1 ? `Open ${count} artwork images` : "Open artwork"}
+      style={{
+        padding: "4px 8px",
+        borderRadius: 999,
+        border: "1px solid #cbd5e1",
+        background: "#fff",
+        fontSize: 12,
+        fontWeight: 700,
+        cursor: "pointer",
+        whiteSpace: "nowrap",
+      }}
+    >
+      Art
+    </button>
+  );
+}
+
 export default function ChapterView() {
   const [version, setVersion] = React.useState<Version>("KJV");
   const [book, setBook] = React.useState<Gospel>("Matthew");
@@ -136,6 +169,10 @@ export default function ChapterView() {
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
 
+  const [artworkMap, setArtworkMap] = React.useState<ArtworkMap>({});
+  const [modalItems, setModalItems] = React.useState<ArtworkItem[]>([]);
+  const [modalIndex, setModalIndex] = React.useState<number | null>(null);
+
   const [primaryBlocks, setPrimaryBlocks] = React.useState<ColumnBlock[]>([]);
   const [otherBlocks, setOtherBlocks] = React.useState<Record<Gospel, ColumnBlock[]>>({
     Matthew: [],
@@ -143,6 +180,25 @@ export default function ChapterView() {
     Luke: [],
     John: [],
   });
+
+  React.useEffect(() => {
+    let alive = true;
+
+    (async () => {
+      try {
+        const map = await loadArtworkMap();
+        if (!alive) return;
+        setArtworkMap(map);
+      } catch {
+        if (!alive) return;
+        setArtworkMap({});
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   React.useEffect(() => {
     const maxChapter = CHAPTER_COUNTS[book];
@@ -214,10 +270,22 @@ export default function ChapterView() {
 
           const storyVerses = takeVerses(r.start, r.end);
           if (storyVerses.length > 0) {
+            const artItems = artworkForPericope(artworkMap, r.blockId);
+
             primary.push({
               blockId: r.blockId,
               title: r.title,
               verses: storyVerses,
+              titleAction:
+                artItems.length > 0 ? (
+                  <ArtPill
+                    count={artItems.length}
+                    onClick={() => {
+                      setModalItems(artItems);
+                      setModalIndex(0);
+                    }}
+                  />
+                ) : undefined,
             });
           }
 
@@ -290,7 +358,7 @@ export default function ChapterView() {
     return () => {
       alive = false;
     };
-  }, [version, book, chapter]);
+  }, [version, book, chapter, artworkMap]);
 
   const others = otherGospels(book);
   const chapterButtons = Array.from({ length: CHAPTER_COUNTS[book] }, (_, i) => i + 1);
@@ -396,6 +464,17 @@ export default function ChapterView() {
           blocks: otherBlocks[og] || [],
         }))}
       />
+
+      {modalIndex !== null ? (
+        <ArtworkModal
+          items={modalItems}
+          initialIndex={modalIndex}
+          onClose={() => {
+            setModalIndex(null);
+            setModalItems([]);
+          }}
+        />
+      ) : null}
     </div>
   );
 }

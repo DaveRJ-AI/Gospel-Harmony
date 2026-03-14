@@ -3,25 +3,20 @@ import type { Gospel, Version } from "../lib/refs";
 import type { Verse } from "../lib/bible";
 
 export type ColumnBlock = {
-  blockId: string; // shared id (pericopeId) for syncing
+  blockId: string;
   title?: string;
   verses: Verse[];
   emptyLabel?: string;
+  titleAction?: React.ReactNode;
 };
 
 export default function ColumnGrid(props: {
   version: Version;
-
-  // Sync/highlight options
   enableSync: boolean;
   activeBlockId: string | null;
   onPrimaryActiveBlockChange: (blockId: string | null) => void;
-
-  // Differences options
   showDifferences: boolean;
-
-  // Chapter-change behavior
-  scrollPrimaryToTopSignal: number; // increment to trigger scroll-to-top
+  scrollPrimaryToTopSignal: number;
 
   primary: { colKey: string; header: string; blocks: ColumnBlock[] };
   others: Array<{ book: Gospel; colKey: string; header: string; blocks: ColumnBlock[] }>;
@@ -86,14 +81,11 @@ function Column(props: {
   header: string;
   blocks: ColumnBlock[];
   isPrimary: boolean;
-
   enableSync: boolean;
   activeBlockId: string | null;
   onPrimaryActiveBlockChange: (blockId: string | null) => void;
-
   showDifferences: boolean;
   primaryWordSet: Set<string> | null;
-
   scrollToTopSignal: number;
 }) {
   const {
@@ -111,7 +103,6 @@ function Column(props: {
 
   const bodyRef = React.useRef<HTMLDivElement | null>(null);
 
-  // PRIMARY: scroll to top when chapter/book/version changes
   React.useEffect(() => {
     if (!isPrimary) return;
     const el = bodyRef.current;
@@ -119,7 +110,6 @@ function Column(props: {
     el.scrollTo({ top: 0, behavior: "auto" });
   }, [isPrimary, scrollToTopSignal]);
 
-  // PRIMARY: determine which block is active based on what's visible
   React.useEffect(() => {
     if (!isPrimary) return;
     if (!enableSync) return;
@@ -162,7 +152,6 @@ function Column(props: {
     };
   }, [isPrimary, enableSync, blocks, onPrimaryActiveBlockChange]);
 
-  // OTHER COLUMNS: scroll active block inside the column only
   React.useEffect(() => {
     if (isPrimary) return;
     if (!enableSync) return;
@@ -178,7 +167,6 @@ function Column(props: {
 
     const rootRect = rootEl.getBoundingClientRect();
     const targetRect = target.getBoundingClientRect();
-
     const currentTop = rootEl.scrollTop;
     const relativeTop = targetRect.top - rootRect.top + currentTop;
 
@@ -200,7 +188,6 @@ function Column(props: {
         {blocks.map((b) => {
           const isActive = enableSync && activeBlockId && b.blockId === activeBlockId;
           const isStory = !!b.title;
-
           const storyStyle = isStory ? storyColorStyle(b.blockId, !!isActive) : undefined;
 
           const className =
@@ -214,7 +201,22 @@ function Column(props: {
               className={className}
               style={storyStyle}
             >
-              {b.title ? <div className="blockTitle">{b.title}</div> : null}
+              {b.title ? (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    justifyContent: "space-between",
+                    gap: 8,
+                    marginBottom: 6,
+                  }}
+                >
+                  <div className="blockTitle" style={{ marginBottom: 0 }}>
+                    {b.title}
+                  </div>
+                  {b.titleAction ? <div>{b.titleAction}</div> : null}
+                </div>
+              ) : null}
 
               {b.verses.length === 0 ? (
                 <p className="muted">{b.emptyLabel ?? "—"}</p>
@@ -242,8 +244,6 @@ function blockDomId(colKey: string, blockId: string) {
   return `col-${colKey}-block-${blockId}`;
 }
 
-// --- Story color helpers ---
-
 function storyColorStyle(blockId: string, isActive: boolean): React.CSSProperties {
   const hue = hashToHue(blockId);
   const bg = `hsla(${hue}, 70%, 92%, 0.9)`;
@@ -269,8 +269,6 @@ function hashToHue(input: string): number {
   }
   return h % 360;
 }
-
-// --- Differences helpers ---
 
 function makeWordSet(text: string): Set<string> {
   const words = tokenizeWords(text);
