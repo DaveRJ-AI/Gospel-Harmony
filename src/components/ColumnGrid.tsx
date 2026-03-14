@@ -10,6 +10,17 @@ export type ColumnBlock = {
   titleAction?: React.ReactNode;
 };
 
+const STORY_PALETTE = [
+  { bg: "#EDF7FF", accent: "#3B82F6", outline: "#BFDBFE" }, // blue
+  { bg: "#ECFDF5", accent: "#22C55E", outline: "#BBF7D0" }, // green
+  { bg: "#FFF7ED", accent: "#F97316", outline: "#FED7AA" }, // orange
+  { bg: "#FAF5FF", accent: "#A855F7", outline: "#DDD6FE" }, // violet
+  { bg: "#FFF1F2", accent: "#F43F5E", outline: "#FECDD3" }, // rose
+  { bg: "#F0FDFA", accent: "#14B8A6", outline: "#99F6E4" }, // teal
+  { bg: "#FEF9C3", accent: "#CA8A04", outline: "#FDE68A" }, // amber
+  { bg: "#F3F4F6", accent: "#6B7280", outline: "#D1D5DB" }, // slate
+];
+
 export default function ColumnGrid(props: {
   version: Version;
   enableSync: boolean;
@@ -42,6 +53,24 @@ export default function ColumnGrid(props: {
     return makeWordSet(text);
   }, [showDifferences, activeBlockId, primary.blocks]);
 
+  // Chapter-aware / local-view-aware color assignment:
+  // assign colors in sequence based on story order in the PRIMARY column,
+  // then reuse that same color index for matching synced stories in other columns.
+  const storyColorIndexByBlockId = React.useMemo(() => {
+    const map = new Map<string, number>();
+    let storyIndex = 0;
+
+    for (const block of primary.blocks) {
+      if (!block.title) continue;
+      if (map.has(block.blockId)) continue;
+
+      map.set(block.blockId, storyIndex % STORY_PALETTE.length);
+      storyIndex += 1;
+    }
+
+    return map;
+  }, [primary.blocks]);
+
   return (
     <div className="grid4">
       <Column
@@ -55,6 +84,7 @@ export default function ColumnGrid(props: {
         showDifferences={false}
         primaryWordSet={null}
         scrollToTopSignal={scrollPrimaryToTopSignal}
+        storyColorIndexByBlockId={storyColorIndexByBlockId}
       />
 
       {others.map((c) => (
@@ -70,6 +100,7 @@ export default function ColumnGrid(props: {
           showDifferences={showDifferences}
           primaryWordSet={primaryActiveWordSet}
           scrollToTopSignal={0}
+          storyColorIndexByBlockId={storyColorIndexByBlockId}
         />
       ))}
     </div>
@@ -87,6 +118,7 @@ function Column(props: {
   showDifferences: boolean;
   primaryWordSet: Set<string> | null;
   scrollToTopSignal: number;
+  storyColorIndexByBlockId: Map<string, number>;
 }) {
   const {
     colKey,
@@ -99,6 +131,7 @@ function Column(props: {
     showDifferences,
     primaryWordSet,
     scrollToTopSignal,
+    storyColorIndexByBlockId,
   } = props;
 
   const bodyRef = React.useRef<HTMLDivElement | null>(null);
@@ -188,7 +221,12 @@ function Column(props: {
         {blocks.map((b) => {
           const isActive = enableSync && activeBlockId && b.blockId === activeBlockId;
           const isStory = !!b.title;
-          const storyStyle = isStory ? storyColorStyle(b.blockId, !!isActive) : undefined;
+
+          const paletteIndex = storyColorIndexByBlockId.get(b.blockId);
+          const storyStyle =
+            isStory && paletteIndex !== undefined
+              ? storyColorStyle(paletteIndex, !!isActive)
+              : undefined;
 
           const className =
             "blockWrap" + (isStory ? " storyBlock" : "") + (isActive ? " blockActive" : "");
@@ -244,20 +282,8 @@ function blockDomId(colKey: string, blockId: string) {
   return `col-${colKey}-block-${blockId}`;
 }
 
-const STORY_PALETTE = [
-  { bg: "rgba(237, 247, 255, 0.95)", accent: "rgba(59, 130, 246, 0.95)", outline: "rgba(37, 99, 235, 0.28)" },   // blue
-  { bg: "rgba(236, 253, 245, 0.95)", accent: "rgba(34, 197, 94, 0.95)", outline: "rgba(22, 163, 74, 0.28)" },    // green
-  { bg: "rgba(255, 247, 237, 0.95)", accent: "rgba(249, 115, 22, 0.95)", outline: "rgba(234, 88, 12, 0.28)" },   // orange
-  { bg: "rgba(250, 245, 255, 0.95)", accent: "rgba(168, 85, 247, 0.95)", outline: "rgba(147, 51, 234, 0.28)" },  // violet
-  { bg: "rgba(255, 241, 242, 0.95)", accent: "rgba(244, 63, 94, 0.95)", outline: "rgba(225, 29, 72, 0.28)" },    // rose
-  { bg: "rgba(240, 253, 250, 0.95)", accent: "rgba(20, 184, 166, 0.95)", outline: "rgba(13, 148, 136, 0.28)" },  // teal
-  { bg: "rgba(254, 249, 195, 0.95)", accent: "rgba(202, 138, 4, 0.95)", outline: "rgba(161, 98, 7, 0.28)" },     // amber
-  { bg: "rgba(243, 244, 246, 0.95)", accent: "rgba(107, 114, 128, 0.95)", outline: "rgba(75, 85, 99, 0.28)" },   // slate
-];
-
-function storyColorStyle(blockId: string, isActive: boolean): React.CSSProperties {
-  const idx = stableIndex(blockId, STORY_PALETTE.length);
-  const choice = STORY_PALETTE[idx];
+function storyColorStyle(index: number, isActive: boolean): React.CSSProperties {
+  const choice = STORY_PALETTE[index % STORY_PALETTE.length];
 
   return {
     // @ts-ignore
@@ -265,18 +291,8 @@ function storyColorStyle(blockId: string, isActive: boolean): React.CSSPropertie
     // @ts-ignore
     "--story-accent": choice.accent,
     // @ts-ignore
-    "--story-outline": isActive
-      ? choice.accent.replace("0.95", "0.45")
-      : choice.outline,
+    "--story-outline": isActive ? choice.accent : choice.outline,
   } as React.CSSProperties;
-}
-
-function stableIndex(input: string, size: number): number {
-  let h = 0;
-  for (let i = 0; i < input.length; i++) {
-    h = (h * 31 + input.charCodeAt(i)) >>> 0;
-  }
-  return h % size;
 }
 
 function makeWordSet(text: string): Set<string> {
