@@ -10,12 +10,16 @@ type TagGroup = {
   items: Pericope[];
 };
 
-function ArtPill({
-  onClick,
+function ArtThumbnail({
+  image,
+  title,
   count,
+  onClick,
 }: {
-  onClick: () => void;
+  image: string;
+  title: string;
   count: number;
+  onClick: () => void;
 }) {
   return (
     <button
@@ -26,17 +30,26 @@ function ArtPill({
       }}
       title={count > 1 ? `Open ${count} artwork images` : "Open artwork"}
       style={{
-        padding: "4px 8px",
-        borderRadius: 999,
-        border: "1px solid #cbd5e1",
+        flex: "0 0 auto",
+        border: "1px solid #d1d5db",
+        borderRadius: 10,
+        padding: 0,
         background: "#fff",
-        fontSize: 12,
-        fontWeight: 700,
         cursor: "pointer",
-        whiteSpace: "nowrap",
+        overflow: "hidden",
+        width: 92,
       }}
     >
-      Art
+      <img
+        src={image}
+        alt={title}
+        style={{
+          width: "100%",
+          height: 62,
+          objectFit: "cover",
+          display: "block",
+        }}
+      />
     </button>
   );
 }
@@ -225,6 +238,7 @@ export default function TypeView() {
                   <div style={{ marginTop: 12 }}>
                     {group.items.map((p) => {
                       const artItems = artworkForPericope(artworkMap, p.pericopeId);
+                      const firstArt = artItems[0];
 
                       return (
                         <button
@@ -245,18 +259,20 @@ export default function TypeView() {
                           <div
                             style={{
                               display: "flex",
-                              alignItems: "flex-start",
+                              alignItems: "center",
                               justifyContent: "space-between",
-                              gap: 10,
+                              gap: 12,
                             }}
                           >
-                            <div style={{ flex: 1 }}>
+                            <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={{ fontWeight: 700, marginBottom: 4 }}>{p.title}</div>
                               <div className="muted">{p.summary}</div>
                             </div>
 
-                            {artItems.length > 0 ? (
-                              <ArtPill
+                            {firstArt ? (
+                              <ArtThumbnail
+                                image={firstArt.thumbnail || firstArt.image}
+                                title={firstArt.title}
                                 count={artItems.length}
                                 onClick={() => {
                                   setModalItems(artItems);

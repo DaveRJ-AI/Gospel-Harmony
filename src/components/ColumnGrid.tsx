@@ -244,30 +244,39 @@ function blockDomId(colKey: string, blockId: string) {
   return `col-${colKey}-block-${blockId}`;
 }
 
+const STORY_PALETTE = [
+  { bg: "rgba(237, 247, 255, 0.95)", accent: "rgba(59, 130, 246, 0.95)", outline: "rgba(37, 99, 235, 0.28)" },   // blue
+  { bg: "rgba(236, 253, 245, 0.95)", accent: "rgba(34, 197, 94, 0.95)", outline: "rgba(22, 163, 74, 0.28)" },    // green
+  { bg: "rgba(255, 247, 237, 0.95)", accent: "rgba(249, 115, 22, 0.95)", outline: "rgba(234, 88, 12, 0.28)" },   // orange
+  { bg: "rgba(250, 245, 255, 0.95)", accent: "rgba(168, 85, 247, 0.95)", outline: "rgba(147, 51, 234, 0.28)" },  // violet
+  { bg: "rgba(255, 241, 242, 0.95)", accent: "rgba(244, 63, 94, 0.95)", outline: "rgba(225, 29, 72, 0.28)" },    // rose
+  { bg: "rgba(240, 253, 250, 0.95)", accent: "rgba(20, 184, 166, 0.95)", outline: "rgba(13, 148, 136, 0.28)" },  // teal
+  { bg: "rgba(254, 249, 195, 0.95)", accent: "rgba(202, 138, 4, 0.95)", outline: "rgba(161, 98, 7, 0.28)" },     // amber
+  { bg: "rgba(243, 244, 246, 0.95)", accent: "rgba(107, 114, 128, 0.95)", outline: "rgba(75, 85, 99, 0.28)" },   // slate
+];
+
 function storyColorStyle(blockId: string, isActive: boolean): React.CSSProperties {
-  const hue = hashToHue(blockId);
-  const bg = `hsla(${hue}, 70%, 92%, 0.9)`;
-  const accent = `hsla(${hue}, 70%, 45%, 0.9)`;
-  const outline = isActive
-    ? `hsla(${hue}, 80%, 35%, 0.55)`
-    : `hsla(${hue}, 60%, 35%, 0.25)`;
+  const idx = stableIndex(blockId, STORY_PALETTE.length);
+  const choice = STORY_PALETTE[idx];
 
   return {
     // @ts-ignore
-    "--story-bg": bg,
+    "--story-bg": choice.bg,
     // @ts-ignore
-    "--story-accent": accent,
+    "--story-accent": choice.accent,
     // @ts-ignore
-    "--story-outline": outline,
+    "--story-outline": isActive
+      ? choice.accent.replace("0.95", "0.45")
+      : choice.outline,
   } as React.CSSProperties;
 }
 
-function hashToHue(input: string): number {
+function stableIndex(input: string, size: number): number {
   let h = 0;
   for (let i = 0; i < input.length; i++) {
     h = (h * 31 + input.charCodeAt(i)) >>> 0;
   }
-  return h % 360;
+  return h % size;
 }
 
 function makeWordSet(text: string): Set<string> {
