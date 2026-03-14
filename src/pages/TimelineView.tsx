@@ -1,5 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import ArtworkModal from "../components/ArtworkModal";
+import { artworkForPericope, loadArtworkMap, type ArtworkItem, type ArtworkMap } from "../lib/artwork";
 import { loadHarmony, type Pericope } from "../lib/harmony";
 import type { Version } from "../lib/refs";
 
@@ -9,6 +11,37 @@ type TimelineSection = {
   items: Pericope[];
 };
 
+function ArtPill({
+  onClick,
+  count,
+}: {
+  onClick: () => void;
+  count: number;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      title={count > 1 ? `Open ${count} artwork images` : "Open artwork"}
+      style={{
+        padding: "4px 8px",
+        borderRadius: 999,
+        border: "1px solid #cbd5e1",
+        background: "#fff",
+        fontSize: 12,
+        fontWeight: 700,
+        cursor: "pointer",
+        whiteSpace: "nowrap",
+      }}
+    >
+      Art
+    </button>
+  );
+}
+
 export default function TimelineView() {
   const navigate = useNavigate();
 
@@ -17,7 +50,11 @@ export default function TimelineView() {
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [pericopes, setPericopes] = React.useState<Pericope[]>([]);
+  const [artworkMap, setArtworkMap] = React.useState<ArtworkMap>({});
   const [openSections, setOpenSections] = React.useState<Record<string, boolean>>({});
+
+  const [modalItems, setModalItems] = React.useState<ArtworkItem[]>([]);
+  const [modalIndex, setModalIndex] = React.useState<number | null>(null);
 
   React.useEffect(() => {
     let alive = true;
@@ -27,7 +64,7 @@ export default function TimelineView() {
         setLoading(true);
         setError(null);
 
-        const harmony = await loadHarmony();
+        const [harmony, artMap] = await Promise.all([loadHarmony(), loadArtworkMap()]);
         if (!alive) return;
 
         const sorted = [...harmony.pericopes].sort((a, b) => {
@@ -38,6 +75,7 @@ export default function TimelineView() {
         });
 
         setPericopes(sorted);
+        setArtworkMap(artMap);
       } catch (e: any) {
         if (!alive) return;
         setError(e?.message ?? "Failed to load timeline");
@@ -116,17 +154,13 @@ export default function TimelineView() {
 
   const expandAll = () => {
     const next: Record<string, boolean> = {};
-    for (const section of grouped) {
-      next[section.id] = true;
-    }
+    for (const section of grouped) next[section.id] = true;
     setOpenSections(next);
   };
 
   const collapseAll = () => {
     const next: Record<string, boolean> = {};
-    for (const section of grouped) {
-      next[section.id] = false;
-    }
+    for (const section of grouped) next[section.id] = false;
     setOpenSections(next);
   };
 
@@ -198,26 +232,51 @@ export default function TimelineView() {
 
                 {isOpen ? (
                   <div style={{ marginTop: 12 }}>
-                    {section.items.map((p) => (
-                      <button
-                        key={p.pericopeId}
-                        onClick={() => navigate(`/story/${p.pericopeId}?version=${version}`)}
-                        style={{
-                          display: "block",
-                          width: "100%",
-                          textAlign: "left",
-                          marginBottom: 10,
-                          padding: "12px 14px",
-                          borderRadius: 12,
-                          border: "1px solid #e6e6e6",
-                          background: "#fff",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <div style={{ fontWeight: 700, marginBottom: 4 }}>{p.title}</div>
-                        <div className="muted">{p.summary}</div>
-                      </button>
-                    ))}
+                    {section.items.map((p) => {
+                      const artItems = artworkForPericope(artworkMap, p.pericopeId);
+
+                      return (
+                        <button
+                          key={p.pericopeId}
+                          onClick={() => navigate(`/story/${p.pericopeId}?version=${version}`)}
+                          style={{
+                            display: "block",
+                            width: "100%",
+                            textAlign: "left",
+                            marginBottom: 10,
+                            padding: "12px 14px",
+                            borderRadius: 12,
+                            border: "1px solid #e6e6e6",
+                            background: "#fff",
+                            cursor: "pointer",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "flex-start",
+                              justifyContent: "space-between",
+                              gap: 10,
+                            }}
+                          >
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontWeight: 700, marginBottom: 4 }}>{p.title}</div>
+                              <div className="muted">{p.summary}</div>
+                            </div>
+
+                            {artItems.length > 0 ? (
+                              <ArtPill
+                                count={artItems.length}
+                                onClick={() => {
+                                  setModalItems(artItems);
+                                  setModalIndex(0);
+                                }}
+                              />
+                            ) : null}
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 ) : null}
               </div>
@@ -230,6 +289,17 @@ export default function TimelineView() {
             </div>
           ) : null}
         </div>
+      ) : null}
+
+      {modalIndex !== null ? (
+        <ArtworkModal
+          items={modalItems}
+          initialIndex={modalIndex}
+          onClose={() => {
+            setModalIndex(null);
+            setModalItems([]);
+          }}
+        />
       ) : null}
     </div>
   );

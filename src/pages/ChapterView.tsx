@@ -2,8 +2,8 @@ import React from "react";
 import ColumnGrid, { type ColumnBlock } from "../components/ColumnGrid";
 import ArtworkModal from "../components/ArtworkModal";
 import { getChapter, getPassage, type PassageRef } from "../lib/bible";
-import { loadHarmony, pericopesForChapter, passageForBook } from "../lib/harmony";
 import { artworkForPericope, loadArtworkMap, type ArtworkItem, type ArtworkMap } from "../lib/artwork";
+import { loadHarmony, pericopesForChapter, passageForBook } from "../lib/harmony";
 import { GOSPELS, otherGospels, type Gospel, type Version } from "../lib/refs";
 
 type ChapterVerse = { book: Gospel; chapter: number; verse: number; text: string };
@@ -36,9 +36,7 @@ function overlapWithinChapter(ref: PassageRef, chapter: number) {
 
 function formatPassageRef(ref: PassageRef) {
   if (ref.startChapter === ref.endChapter) {
-    if (ref.startVerse === ref.endVerse) {
-      return `${ref.book} ${ref.startChapter}:${ref.startVerse}`;
-    }
+    if (ref.startVerse === ref.endVerse) return `${ref.book} ${ref.startChapter}:${ref.startVerse}`;
     return `${ref.book} ${ref.startChapter}:${ref.startVerse}-${ref.endVerse}`;
   }
 
@@ -72,55 +70,113 @@ function SelectionPill({
   );
 }
 
-function InlineInfo({
+function InfoTooltip({
   label,
   description,
 }: {
   label: string;
   description: string;
 }) {
+  const [open, setOpen] = React.useState(false);
+
   return (
     <span
-      title={`${label}: ${description}`}
-      aria-label={`${label}: ${description}`}
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: 16,
-        height: 16,
-        marginLeft: 6,
-        borderRadius: "50%",
-        border: "1px solid #cbd5e1",
-        color: "#64748b",
-        fontSize: 11,
-        fontWeight: 700,
-        cursor: "help",
-        userSelect: "none",
-        verticalAlign: "middle",
-      }}
+      style={{ position: "relative", display: "inline-flex", alignItems: "center", marginLeft: 6 }}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      onFocus={() => setOpen(true)}
+      onBlur={() => setOpen(false)}
     >
-      i
+      <button
+        type="button"
+        aria-label={`${label}: ${description}`}
+        onClick={() => setOpen((v) => !v)}
+        style={{
+          width: 18,
+          height: 18,
+          borderRadius: "50%",
+          border: "1px solid #cbd5e1",
+          background: "#fff",
+          color: "#64748b",
+          fontSize: 12,
+          fontWeight: 700,
+          cursor: "help",
+          padding: 0,
+          lineHeight: 1,
+        }}
+      >
+        i
+      </button>
+
+      {open ? (
+        <div
+          role="tooltip"
+          style={{
+            position: "absolute",
+            top: "calc(100% + 8px)",
+            right: 0,
+            width: 240,
+            padding: "10px 12px",
+            borderRadius: 12,
+            border: "1px solid #dbe3ef",
+            background: "#fff",
+            boxShadow: "0 10px 30px rgba(15, 23, 42, 0.14)",
+            color: "#475569",
+            fontSize: 13,
+            fontWeight: 500,
+            zIndex: 20,
+          }}
+        >
+          {description}
+        </div>
+      ) : null}
     </span>
   );
 }
 
-function TogglePills({
-  value,
+function Switch({
+  checked,
   onChange,
+  label,
 }: {
-  value: boolean;
+  checked: boolean;
   onChange: (next: boolean) => void;
+  label: string;
 }) {
   return (
-    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-      <SelectionPill active={value} onClick={() => onChange(true)}>
-        On
-      </SelectionPill>
-      <SelectionPill active={!value} onClick={() => onChange(false)}>
-        Off
-      </SelectionPill>
-    </div>
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
+      onClick={() => onChange(!checked)}
+      style={{
+        position: "relative",
+        width: 52,
+        height: 30,
+        borderRadius: 999,
+        border: "1px solid " + (checked ? "#93c5fd" : "#d1d5db"),
+        background: checked ? "#60a5fa" : "#e5e7eb",
+        boxShadow: "inset 0 1px 2px rgba(0,0,0,0.06)",
+        transition: "all 160ms ease",
+        cursor: "pointer",
+        padding: 0,
+      }}
+    >
+      <span
+        style={{
+          position: "absolute",
+          top: 2,
+          left: checked ? 24 : 2,
+          width: 24,
+          height: 24,
+          borderRadius: "50%",
+          background: "#fff",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+          transition: "left 160ms ease",
+        }}
+      />
+    </button>
   );
 }
 
@@ -183,7 +239,6 @@ export default function ChapterView() {
 
   React.useEffect(() => {
     let alive = true;
-
     (async () => {
       try {
         const map = await loadArtworkMap();
@@ -194,7 +249,6 @@ export default function ChapterView() {
         setArtworkMap({});
       }
     })();
-
     return () => {
       alive = false;
     };
@@ -202,9 +256,7 @@ export default function ChapterView() {
 
   React.useEffect(() => {
     const maxChapter = CHAPTER_COUNTS[book];
-    if (chapter > maxChapter) {
-      setChapter(maxChapter);
-    }
+    if (chapter > maxChapter) setChapter(maxChapter);
   }, [book, chapter]);
 
   React.useEffect(() => {
@@ -223,12 +275,7 @@ export default function ChapterView() {
         const chapterVerses = (await getChapter(version, book, chapter)) as ChapterVerse[];
         const pericopes = pericopesForChapter(harmony, book, chapter);
 
-        const ranges: Array<{
-          blockId: string;
-          title?: string;
-          start: number;
-          end: number;
-        }> = [];
+        const ranges: Array<{ blockId: string; title?: string; start: number; end: number }> = [];
 
         for (const p of pericopes) {
           const ref = passageForBook(harmony, p.pericopeId, book);
@@ -247,12 +294,11 @@ export default function ChapterView() {
 
         ranges.sort((a, b) => a.start - b.start || a.end - b.end);
 
-        const takeVerses = (startPos: number, endPos: number) => {
-          return chapterVerses.filter((v) => {
+        const takeVerses = (startPos: number, endPos: number) =>
+          chapterVerses.filter((v) => {
             const p = pos(v.chapter, v.verse);
             return p >= startPos && p <= endPos;
           });
-        };
 
         const primary: ColumnBlock[] = [];
         let cursor = pos(chapter, 1);
@@ -401,26 +447,36 @@ export default function ChapterView() {
               </div>
             </div>
 
-            <div style={{ minWidth: 140 }}>
+            <div style={{ minWidth: 110 }}>
               <label>
                 Sync
-                <InlineInfo
+                <InfoTooltip
                   label="Sync"
                   description="Keeps the same story aligned across the parallel columns as you move through the primary column."
                 />
               </label>
-              <TogglePills value={enableSync} onChange={setEnableSync} />
+              <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 10 }}>
+                <Switch checked={enableSync} onChange={setEnableSync} label="Sync" />
+                <span style={{ fontSize: 14, color: "#64748b", fontWeight: 600 }}>
+                  {enableSync ? "On" : "Off"}
+                </span>
+              </div>
             </div>
 
-            <div style={{ minWidth: 150 }}>
+            <div style={{ minWidth: 130 }}>
               <label>
                 Differences
-                <InlineInfo
+                <InfoTooltip
                   label="Differences"
                   description="Highlights words in an active parallel passage that do not appear in the active primary passage."
                 />
               </label>
-              <TogglePills value={showDifferences} onChange={setShowDifferences} />
+              <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 10 }}>
+                <Switch checked={showDifferences} onChange={setShowDifferences} label="Differences" />
+                <span style={{ fontSize: 14, color: "#64748b", fontWeight: 600 }}>
+                  {showDifferences ? "On" : "Off"}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -437,12 +493,7 @@ export default function ChapterView() {
         </div>
       </div>
 
-      {error ? (
-        <p className="error" style={{ marginTop: 10 }}>
-          {error}
-        </p>
-      ) : null}
-
+      {error ? <p className="error" style={{ marginTop: 10 }}>{error}</p> : null}
       {loading ? <p className="muted">Loading…</p> : null}
 
       <ColumnGrid
