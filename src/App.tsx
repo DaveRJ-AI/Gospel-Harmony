@@ -6,12 +6,6 @@ import StoryView from "./pages/StoryView";
 import TimelineView from "./pages/TimelineView";
 import TypeView from "./pages/TypeView";
 
-<img
-  src="/logo.png"
-  alt="Gospel Harmonics logo"
-  style={{ width: "40px", height: "40px", objectFit: "contain" }}
-/>
-
 function navLinkStyle({ isActive }: { isActive: boolean }) {
   return {
     padding: "8px 12px",
@@ -33,7 +27,7 @@ export default function App() {
           style={{ display: "flex", alignItems: "center", gap: "12px" }}
         >
           <img
-            src={logo}
+            src="/logo.png"
             alt="Gospel Harmonics logo"
             style={{ width: "40px", height: "40px", objectFit: "contain" }}
           />
