@@ -36,7 +36,6 @@ export default function ColumnGrid(props: {
     scrollPrimaryToTopSignal,
   } = props;
 
-  // Build a word-set from the PRIMARY active story block (only)
   const primaryActiveWordSet = React.useMemo(() => {
     if (!showDifferences) return null;
     if (!activeBlockId) return null;
@@ -58,7 +57,7 @@ export default function ColumnGrid(props: {
         enableSync={enableSync}
         activeBlockId={activeBlockId}
         onPrimaryActiveBlockChange={onPrimaryActiveBlockChange}
-        showDifferences={false} // never highlight the primary column
+        showDifferences={false}
         primaryWordSet={null}
         scrollToTopSignal={scrollPrimaryToTopSignal}
       />
@@ -112,7 +111,7 @@ function Column(props: {
 
   const bodyRef = React.useRef<HTMLDivElement | null>(null);
 
-  // PRIMARY: scroll to top when chapter/book/version changes (signal increments)
+  // PRIMARY: scroll to top when chapter/book/version changes
   React.useEffect(() => {
     if (!isPrimary) return;
     const el = bodyRef.current;
@@ -149,6 +148,7 @@ function Column(props: {
             bestId = el.dataset.blockid || null;
           }
         }
+
         onPrimaryActiveBlockChange(bestId);
       });
     };
@@ -162,15 +162,30 @@ function Column(props: {
     };
   }, [isPrimary, enableSync, blocks, onPrimaryActiveBlockChange]);
 
-  // OTHER COLUMNS: scroll active block into view when it changes
+  // OTHER COLUMNS: scroll active block inside the column only
   React.useEffect(() => {
     if (isPrimary) return;
     if (!enableSync) return;
     if (!activeBlockId) return;
 
-    const el = document.getElementById(blockDomId(colKey, activeBlockId));
-    if (!el) return;
-    el.scrollIntoView({ block: "start", behavior: "smooth" });
+    const rootEl = bodyRef.current;
+    if (!rootEl) return;
+
+    const target = rootEl.querySelector<HTMLElement>(
+      `#${CSS.escape(blockDomId(colKey, activeBlockId))}`
+    );
+    if (!target) return;
+
+    const rootRect = rootEl.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+
+    const currentTop = rootEl.scrollTop;
+    const relativeTop = targetRect.top - rootRect.top + currentTop;
+
+    rootEl.scrollTo({
+      top: relativeTop,
+      behavior: "smooth",
+    });
   }, [activeBlockId, enableSync, isPrimary, colKey]);
 
   return (
@@ -230,7 +245,7 @@ function blockDomId(colKey: string, blockId: string) {
 // --- Story color helpers ---
 
 function storyColorStyle(blockId: string, isActive: boolean): React.CSSProperties {
-  const hue = hashToHue(blockId); // 0–359
+  const hue = hashToHue(blockId);
   const bg = `hsla(${hue}, 70%, 92%, 0.9)`;
   const accent = `hsla(${hue}, 70%, 45%, 0.9)`;
   const outline = isActive
@@ -238,7 +253,6 @@ function storyColorStyle(blockId: string, isActive: boolean): React.CSSPropertie
     : `hsla(${hue}, 60%, 35%, 0.25)`;
 
   return {
-    // CSS variables used by styles.css
     // @ts-ignore
     "--story-bg": bg,
     // @ts-ignore
@@ -266,7 +280,7 @@ function makeWordSet(text: string): Set<string> {
 function tokenizeWords(text: string): string[] {
   return text
     .toLowerCase()
-    .replace(/[\u2019']/g, "") // remove apostrophes
+    .replace(/[\u2019']/g, "")
     .replace(/[^a-z0-9\s]/g, " ")
     .split(/\s+/)
     .map((w) => w.trim())
@@ -274,7 +288,6 @@ function tokenizeWords(text: string): string[] {
 }
 
 function highlightDiff(text: string, primaryWords: Set<string>) {
-  // Split into tokens but preserve whitespace so output matches original spacing.
   const parts = text.split(/(\s+)/);
   return parts.map((part, i) => {
     if (/^\s+$/.test(part)) return <React.Fragment key={i}>{part}</React.Fragment>;
