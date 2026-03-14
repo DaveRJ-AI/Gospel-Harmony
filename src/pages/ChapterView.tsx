@@ -70,6 +70,39 @@ function SelectionPill({
   );
 }
 
+function InlineInfo({
+  label,
+  description,
+}: {
+  label: string;
+  description: string;
+}) {
+  return (
+    <span
+      title={`${label}: ${description}`}
+      aria-label={`${label}: ${description}`}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: 16,
+        height: 16,
+        marginLeft: 6,
+        borderRadius: "50%",
+        border: "1px solid #cbd5e1",
+        color: "#64748b",
+        fontSize: 11,
+        fontWeight: 700,
+        cursor: "help",
+        userSelect: "none",
+        verticalAlign: "middle",
+      }}
+    >
+      i
+    </span>
+  );
+}
+
 export default function ChapterView() {
   const [version, setVersion] = React.useState<Version>("KJV");
   const [book, setBook] = React.useState<Gospel>("Matthew");
@@ -246,9 +279,16 @@ export default function ChapterView() {
   return (
     <div>
       <div className="card">
-        <div style={{ display: "grid", gap: 14 }}>
-          <div className="row" style={{ alignItems: "flex-end", justifyContent: "space-between", gap: 16 }}>
-            <div>
+        <div style={{ display: "grid", gap: 16 }}>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 18,
+              alignItems: "flex-end",
+            }}
+          >
+            <div style={{ minWidth: 140 }}>
               <label>Version</label>
               <select value={version} onChange={(e) => setVersion(e.target.value as Version)}>
                 <option value="KJV">KJV</option>
@@ -256,7 +296,7 @@ export default function ChapterView() {
               </select>
             </div>
 
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: 1, minWidth: 280 }}>
               <label>Primary Gospel</label>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {GOSPELS.map((g) => (
@@ -273,6 +313,37 @@ export default function ChapterView() {
                 ))}
               </div>
             </div>
+
+            <div style={{ minWidth: 140 }}>
+              <label>
+                Sync
+                <InlineInfo
+                  label="Sync"
+                  description="Keeps the same story aligned across the parallel columns as you move through the primary column."
+                />
+              </label>
+              <select value={enableSync ? "on" : "off"} onChange={(e) => setEnableSync(e.target.value === "on")}>
+                <option value="on">On</option>
+                <option value="off">Off</option>
+              </select>
+            </div>
+
+            <div style={{ minWidth: 150 }}>
+              <label>
+                Differences
+                <InlineInfo
+                  label="Differences"
+                  description="Highlights words in an active parallel passage that do not appear in the active primary passage."
+                />
+              </label>
+              <select
+                value={showDifferences ? "on" : "off"}
+                onChange={(e) => setShowDifferences(e.target.value === "on")}
+              >
+                <option value="off">Off</option>
+                <option value="on">On</option>
+              </select>
+            </div>
           </div>
 
           <div>
@@ -283,35 +354,6 @@ export default function ChapterView() {
                   {ch}
                 </SelectionPill>
               ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="card" style={{ marginTop: 10 }}>
-        <div className="row" style={{ alignItems: "center", justifyContent: "space-between", gap: 16 }}>
-          <div className="muted" style={{ flex: 1 }}>
-            Sync keeps the same story aligned across columns. Differences highlights words unique to each Gospel’s telling.
-          </div>
-
-          <div className="row" style={{ alignItems: "center", gap: 12 }}>
-            <div>
-              <label style={{ margin: 0 }}>Sync</label>
-              <select value={enableSync ? "on" : "off"} onChange={(e) => setEnableSync(e.target.value === "on")}>
-                <option value="on">On</option>
-                <option value="off">Off</option>
-              </select>
-            </div>
-
-            <div>
-              <label style={{ margin: 0 }}>Differences</label>
-              <select
-                value={showDifferences ? "on" : "off"}
-                onChange={(e) => setShowDifferences(e.target.value === "on")}
-              >
-                <option value="off">Off</option>
-                <option value="on">On</option>
-              </select>
             </div>
           </div>
         </div>
