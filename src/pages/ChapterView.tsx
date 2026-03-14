@@ -103,6 +103,25 @@ function InlineInfo({
   );
 }
 
+function TogglePills({
+  value,
+  onChange,
+}: {
+  value: boolean;
+  onChange: (next: boolean) => void;
+}) {
+  return (
+    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <SelectionPill active={value} onClick={() => onChange(true)}>
+        On
+      </SelectionPill>
+      <SelectionPill active={!value} onClick={() => onChange(false)}>
+        Off
+      </SelectionPill>
+    </div>
+  );
+}
+
 export default function ChapterView() {
   const [version, setVersion] = React.useState<Version>("KJV");
   const [book, setBook] = React.useState<Gospel>("Matthew");
@@ -322,10 +341,7 @@ export default function ChapterView() {
                   description="Keeps the same story aligned across the parallel columns as you move through the primary column."
                 />
               </label>
-              <select value={enableSync ? "on" : "off"} onChange={(e) => setEnableSync(e.target.value === "on")}>
-                <option value="on">On</option>
-                <option value="off">Off</option>
-              </select>
+              <TogglePills value={enableSync} onChange={setEnableSync} />
             </div>
 
             <div style={{ minWidth: 150 }}>
@@ -336,13 +352,7 @@ export default function ChapterView() {
                   description="Highlights words in an active parallel passage that do not appear in the active primary passage."
                 />
               </label>
-              <select
-                value={showDifferences ? "on" : "off"}
-                onChange={(e) => setShowDifferences(e.target.value === "on")}
-              >
-                <option value="off">Off</option>
-                <option value="on">On</option>
-              </select>
+              <TogglePills value={showDifferences} onChange={setShowDifferences} />
             </div>
           </div>
 
