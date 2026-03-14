@@ -3,6 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { loadHarmony, type Pericope } from "../lib/harmony";
 import type { Version } from "../lib/refs";
 
+type TimelineSection = {
+  id: string;
+  title: string;
+  items: Pericope[];
+};
+
 export default function TimelineView() {
   const navigate = useNavigate();
 
@@ -11,6 +17,7 @@ export default function TimelineView() {
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [pericopes, setPericopes] = React.useState<Pericope[]>([]);
+  const [openSections, setOpenSections] = React.useState<Record<string, boolean>>({});
 
   React.useEffect(() => {
     let alive = true;
@@ -55,12 +62,8 @@ export default function TimelineView() {
     });
   }, [pericopes, query]);
 
-  const grouped = React.useMemo(() => {
-    const sections: Array<{
-      id: string;
-      title: string;
-      items: Pericope[];
-    }> = [
+  const grouped = React.useMemo<TimelineSection[]>(() => {
+    const sections: TimelineSection[] = [
       { id: "early", title: "Early Ministry", items: [] },
       { id: "galilee", title: "Galilean Ministry", items: [] },
       { id: "journey", title: "Journey / Later Ministry", items: [] },
@@ -94,10 +97,43 @@ export default function TimelineView() {
     return sections.filter((s) => s.items.length > 0);
   }, [filtered]);
 
+  React.useEffect(() => {
+    setOpenSections((prev) => {
+      const next: Record<string, boolean> = {};
+      for (const section of grouped) {
+        next[section.id] = prev[section.id] ?? false;
+      }
+      return next;
+    });
+  }, [grouped]);
+
+  const toggleSection = (id: string) => {
+    setOpenSections((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  const expandAll = () => {
+    const next: Record<string, boolean> = {};
+    for (const section of grouped) {
+      next[section.id] = true;
+    }
+    setOpenSections(next);
+  };
+
+  const collapseAll = () => {
+    const next: Record<string, boolean> = {};
+    for (const section of grouped) {
+      next[section.id] = false;
+    }
+    setOpenSections(next);
+  };
+
   return (
     <div>
       <div className="card">
-        <div className="row" style={{ alignItems: "flex-end", justifyContent: "space-between" }}>
+        <div className="row" style={{ alignItems: "flex-end", justifyContent: "space-between", gap: 16 }}>
           <div style={{ flex: 1, minWidth: 280 }}>
             <label>Search timeline</label>
             <input
@@ -117,9 +153,16 @@ export default function TimelineView() {
           </div>
         </div>
 
-        <p className="muted" style={{ marginTop: 10 }}>
-          Timeline View shows Gospel events in chronological order. Click any event to open the 4-column harmonized view.
-        </p>
+        <div className="row" style={{ marginTop: 10, justifyContent: "space-between", gap: 12 }}>
+          <p className="muted" style={{ margin: 0, flex: 1 }}>
+            Timeline View shows Gospel events in chronological order. Expand a section, then click an event to open the 4-column harmonized view.
+          </p>
+
+          <div className="row" style={{ gap: 8 }}>
+            <button onClick={expandAll}>Expand all</button>
+            <button onClick={collapseAll}>Collapse all</button>
+          </div>
+        </div>
       </div>
 
       {loading ? <p className="muted" style={{ marginTop: 12 }}>Loading timeline…</p> : null}
@@ -127,33 +170,59 @@ export default function TimelineView() {
 
       {!loading && !error ? (
         <div style={{ marginTop: 12 }}>
-          {grouped.map((section) => (
-            <div key={section.id} className="card" style={{ marginBottom: 12 }}>
-              <h2 style={{ marginTop: 0, marginBottom: 10, fontSize: 18 }}>{section.title}</h2>
+          {grouped.map((section) => {
+            const isOpen = !!openSections[section.id];
 
-              <div>
-                {section.items.map((p) => (
-                  <button
-                    key={p.pericopeId}
-                    onClick={() => navigate(`/story/${p.pericopeId}?version=${version}`)}
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      textAlign: "left",
-                      marginBottom: 10,
-                      padding: "12px 14px",
-                      borderRadius: 12,
-                      border: "1px solid #e6e6e6",
-                      background: "#fff",
-                    }}
-                  >
-                    <div style={{ fontWeight: 700, marginBottom: 4 }}>{p.title}</div>
-                    <div className="muted">{p.summary}</div>
-                  </button>
-                ))}
+            return (
+              <div key={section.id} className="card" style={{ marginBottom: 12 }}>
+                <button
+                  type="button"
+                  onClick={() => toggleSection(section.id)}
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    textAlign: "left",
+                    background: "transparent",
+                    border: "none",
+                    padding: 0,
+                    cursor: "pointer",
+                  }}
+                >
+                  <h2 style={{ marginTop: 0, marginBottom: 0, fontSize: 18 }}>{section.title}</h2>
+                  <span className="muted" style={{ fontSize: 14 }}>
+                    {isOpen ? "Hide" : "Show"} ({section.items.length})
+                  </span>
+                </button>
+
+                {isOpen ? (
+                  <div style={{ marginTop: 12 }}>
+                    {section.items.map((p) => (
+                      <button
+                        key={p.pericopeId}
+                        onClick={() => navigate(`/story/${p.pericopeId}?version=${version}`)}
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          textAlign: "left",
+                          marginBottom: 10,
+                          padding: "12px 14px",
+                          borderRadius: 12,
+                          border: "1px solid #e6e6e6",
+                          background: "#fff",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <div style={{ fontWeight: 700, marginBottom: 4 }}>{p.title}</div>
+                        <div className="muted">{p.summary}</div>
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {grouped.length === 0 ? (
             <div className="card">
