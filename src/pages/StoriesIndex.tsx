@@ -1,5 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import ArtworkModal from "../components/ArtworkModal";
+import { artworkForPericope, loadArtworkMap, type ArtworkItem, type ArtworkMap } from "../lib/artwork";
 import { loadHarmony, type Pericope } from "../lib/harmony";
 import type { Version } from "../lib/refs";
 
@@ -10,7 +12,11 @@ export default function StoriesIndex() {
   const [query, setQuery] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const [pericopes, setPericopes] = React.useState<Pericope[]>([]);
+  const [artworkMap, setArtworkMap] = React.useState<ArtworkMap>({});
   const [loading, setLoading] = React.useState(true);
+
+  const [modalItems, setModalItems] = React.useState<ArtworkItem[]>([]);
+  const [modalIndex, setModalIndex] = React.useState<number | null>(null);
 
   React.useEffect(() => {
     let alive = true;
@@ -20,10 +26,10 @@ export default function StoriesIndex() {
         setLoading(true);
         setError(null);
 
-        const h = await loadHarmony();
+        const [harmony, artMap] = await Promise.all([loadHarmony(), loadArtworkMap()]);
         if (!alive) return;
 
-        const sorted = [...h.pericopes].sort((a, b) => {
+        const sorted = [...harmony.pericopes].sort((a, b) => {
           const sa = a.sortOrder ?? 999999;
           const sb = b.sortOrder ?? 999999;
           if (sa !== sb) return sa - sb;
@@ -31,6 +37,7 @@ export default function StoriesIndex() {
         });
 
         setPericopes(sorted);
+        setArtworkMap(artMap);
       } catch (e: any) {
         if (!alive) return;
         setError(e?.message ?? "Failed to load events");
@@ -85,30 +92,83 @@ export default function StoriesIndex() {
         </p>
       </div>
 
-      {loading ? <p className="muted" style={{ marginTop: 12 }}>Loading events…</p> : null}
+      {loading ? (
+        <p className="muted" style={{ marginTop: 12 }}>
+          Loading events…
+        </p>
+      ) : null}
 
       {!loading ? (
         <div style={{ marginTop: 12 }}>
-          {filtered.map((p) => (
-            <button
-              key={p.pericopeId}
-              onClick={() => nav(`/story/${p.pericopeId}?version=${version}`)}
-              style={{
-                display: "block",
-                width: "100%",
-                textAlign: "left",
-                marginBottom: 10,
-                padding: "12px 14px",
-                borderRadius: 12,
-                border: "1px solid #e6e6e6",
-                background: "#fff",
-                cursor: "pointer",
-              }}
-            >
-              <div style={{ fontWeight: 700, marginBottom: 4 }}>{p.title}</div>
-              <div className="muted">{p.summary}</div>
-            </button>
-          ))}
+          {filtered.map((p) => {
+            const artItems = artworkForPericope(artworkMap, p.pericopeId);
+            const firstArt = artItems[0];
+
+            return (
+              <div
+                key={p.pericopeId}
+                onClick={() => nav(`/story/${p.pericopeId}?version=${version}`)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    nav(`/story/${p.pericopeId}?version=${version}`);
+                  }
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 16,
+                  marginBottom: 10,
+                  padding: "12px 14px",
+                  borderRadius: 12,
+                  border: "1px solid #e6e6e6",
+                  background: "#fff",
+                  cursor: "pointer",
+                }}
+              >
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontWeight: 700, marginBottom: 4 }}>{p.title}</div>
+                  <div className="muted">{p.summary}</div>
+                </div>
+
+                {firstArt ? (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setModalItems(artItems);
+                      setModalIndex(0);
+                    }}
+                    title={artItems.length > 1 ? `Open ${artItems.length} artwork images` : "Open artwork"}
+                    style={{
+                      flex: "0 0 auto",
+                      border: "1px solid #d1d5db",
+                      borderRadius: 10,
+                      padding: 0,
+                      background: "#fff",
+                      cursor: "pointer",
+                      overflow: "hidden",
+                      width: 110,
+                    }}
+                  >
+                    <img
+                      src={firstArt.thumbnail || firstArt.image}
+                      alt={firstArt.title}
+                      style={{
+                        width: "100%",
+                        height: 70,
+                        objectFit: "cover",
+                        display: "block",
+                      }}
+                    />
+                  </button>
+                ) : null}
+              </div>
+            );
+          })}
 
           {filtered.length === 0 ? (
             <div className="card">
@@ -116,6 +176,17 @@ export default function StoriesIndex() {
             </div>
           ) : null}
         </div>
+      ) : null}
+
+      {modalIndex !== null ? (
+        <ArtworkModal
+          items={modalItems}
+          initialIndex={modalIndex}
+          onClose={() => {
+            setModalIndex(null);
+            setModalItems([]);
+          }}
+        />
       ) : null}
     </div>
   );
