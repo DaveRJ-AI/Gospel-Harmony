@@ -1,11 +1,23 @@
 import React from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { NavLink, Route, Routes } from "react-router-dom";
 import ChapterView from "./pages/ChapterView";
 import StoriesIndex from "./pages/StoriesIndex";
 import StoryView from "./pages/StoryView";
 import TimelineView from "./pages/TimelineView";
 import TypeView from "./pages/TypeView";
-import logo from "./assets/Logo.png";
+import logo from "./assets/logo.png";
+
+function navLinkStyle({ isActive }: { isActive: boolean }) {
+  return {
+    padding: "8px 12px",
+    borderRadius: 999,
+    textDecoration: "none",
+    border: isActive ? "1px solid #6b7280" : "1px solid transparent",
+    background: isActive ? "#eef2ff" : "transparent",
+    fontWeight: isActive ? 700 : 500,
+    color: "inherit",
+  } as React.CSSProperties;
+}
 
 export default function App() {
   return (
@@ -26,11 +38,22 @@ export default function App() {
           </div>
         </div>
 
-        <div className="nav">
-          <Link to="/">Chapter View</Link>
-          <Link to="/stories">Events</Link>
-          <Link to="/timeline">Timeline</Link>
-          <Link to="/types">Type</Link>
+        <div
+          className="nav"
+          style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}
+        >
+          <NavLink to="/" end style={navLinkStyle}>
+            Chapter View
+          </NavLink>
+          <NavLink to="/stories" style={navLinkStyle}>
+            Events
+          </NavLink>
+          <NavLink to="/timeline" style={navLinkStyle}>
+            Timeline
+          </NavLink>
+          <NavLink to="/types" style={navLinkStyle}>
+            Type
+          </NavLink>
         </div>
       </div>
 

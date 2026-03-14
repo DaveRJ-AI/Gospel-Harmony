@@ -1,9 +1,20 @@
 import React from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import ColumnGrid, { type ColumnBlock } from "../components/ColumnGrid";
-import { getPassage } from "../lib/bible";
+import { getPassage, type PassageRef } from "../lib/bible";
 import { loadHarmony, passagesForPericope, type Pericope } from "../lib/harmony";
 import { GOSPELS, type Gospel, type Version } from "../lib/refs";
+
+function formatPassageRef(ref: PassageRef) {
+  if (ref.startChapter === ref.endChapter) {
+    if (ref.startVerse === ref.endVerse) {
+      return `${ref.book} ${ref.startChapter}:${ref.startVerse}`;
+    }
+    return `${ref.book} ${ref.startChapter}:${ref.startVerse}-${ref.endVerse}`;
+  }
+
+  return `${ref.book} ${ref.startChapter}:${ref.startVerse}-${ref.endChapter}:${ref.endVerse}`;
+}
 
 export default function StoryView() {
   const { pericopeId } = useParams();
@@ -17,6 +28,8 @@ export default function StoryView() {
   const [title, setTitle] = React.useState<string>("");
   const [summary, setSummary] = React.useState<string>("");
   const [allPericopes, setAllPericopes] = React.useState<Pericope[]>([]);
+  const [referenceMap, setReferenceMap] = React.useState<Partial<Record<Gospel, string>>>({});
+  const [primaryBook, setPrimaryBook] = React.useState<Gospel>("Matthew");
 
   const [cols, setCols] = React.useState<Record<Gospel, ColumnBlock[]>>({
     Matthew: [],
@@ -52,26 +65,33 @@ export default function StoryView() {
           John: [],
         };
 
+        const refs: Partial<Record<Gospel, string>> = {};
         const passages = passagesForPericope(h, pericopeId);
+
+        const firstAvailable = GOSPELS.find((g) => passages.some((x) => x.book === g)) || "Matthew";
 
         for (const g of GOSPELS) {
           const ref = passages.find((x) => x.book === g) || null;
 
           if (!ref) {
+            refs[g] = "—";
             blocksByBook[g] = [
               {
                 blockId: pericopeId,
-                title: p.title,
+                title: `${g} — no parallel`,
                 verses: [],
                 emptyLabel: "— (not in this Gospel)",
               },
             ];
           } else {
+            const label = formatPassageRef(ref);
             const verses = await getPassage(version, ref);
+            refs[g] = label;
+
             blocksByBook[g] = [
               {
                 blockId: pericopeId,
-                title: p.title,
+                title: label,
                 verses,
               },
             ];
@@ -83,6 +103,8 @@ export default function StoryView() {
         setTitle(p.title);
         setSummary(p.summary);
         setAllPericopes(sorted);
+        setReferenceMap(refs);
+        setPrimaryBook(firstAvailable);
         setCols(blocksByBook);
       } catch (e: any) {
         if (!alive) return;
@@ -107,6 +129,8 @@ export default function StoryView() {
     navigate(`/story/${targetId}?version=${version}`);
   };
 
+  const otherBooks = GOSPELS.filter((g) => g !== primaryBook);
+
   if (error) {
     return (
       <div className="card">
@@ -121,13 +145,30 @@ export default function StoryView() {
   return (
     <div>
       <div className="card">
-        <div className="row" style={{ alignItems: "center", justifyContent: "space-between" }}>
-          <div>
+        <div className="row" style={{ alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+          <div style={{ flex: 1 }}>
             <div className="muted">
               <Link to="/stories">← Back to events</Link>
             </div>
             <h2 style={{ margin: "6px 0" }}>{title}</h2>
             <div className="muted">{summary}</div>
+
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
+              {GOSPELS.map((g) => (
+                <div
+                  key={g}
+                  style={{
+                    padding: "8px 10px",
+                    borderRadius: 10,
+                    border: "1px solid #e5e7eb",
+                    background: g === primaryBook ? "#eef2ff" : "#fafafa",
+                    fontSize: 14,
+                  }}
+                >
+                  <strong>{g}:</strong> {referenceMap[g] || "—"}
+                </div>
+              ))}
+            </div>
           </div>
 
           <div>
@@ -139,7 +180,7 @@ export default function StoryView() {
           </div>
         </div>
 
-        <div className="row" style={{ marginTop: 12, justifyContent: "space-between" }}>
+        <div className="row" style={{ marginTop: 12, justifyContent: "space-between", gap: 12 }}>
           <div>
             {prevPericope ? (
               <button onClick={() => goToPericope(prevPericope.pericopeId)}>
@@ -169,12 +210,17 @@ export default function StoryView() {
         onPrimaryActiveBlockChange={() => {}}
         showDifferences={false}
         scrollPrimaryToTopSignal={0}
-        primary={{ colKey: "Matthew", header: `Matthew (${version})`, blocks: cols.Matthew }}
-        others={[
-          { book: "Mark", colKey: "Mark", header: `Mark (${version})`, blocks: cols.Mark },
-          { book: "Luke", colKey: "Luke", header: `Luke (${version})`, blocks: cols.Luke },
-          { book: "John", colKey: "John", header: `John (${version})`, blocks: cols.John },
-        ]}
+        primary={{
+          colKey: `${primaryBook}-primary`,
+          header: `${primaryBook} (${version})`,
+          blocks: cols[primaryBook],
+        }}
+        others={otherBooks.map((book) => ({
+          book,
+          colKey: book,
+          header: `${book} (${version})`,
+          blocks: cols[book],
+        }))}
       />
     </div>
   );

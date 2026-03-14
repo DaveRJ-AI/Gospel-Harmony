@@ -16,6 +16,7 @@ export default function TypeView() {
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [groups, setGroups] = React.useState<TagGroup[]>([]);
+  const [openGroups, setOpenGroups] = React.useState<Record<string, boolean>>({});
 
   React.useEffect(() => {
     let alive = true;
@@ -80,10 +81,46 @@ export default function TypeView() {
       .filter((g) => g.items.length > 0);
   }, [groups, query]);
 
+  React.useEffect(() => {
+    setOpenGroups((prev) => {
+      const next: Record<string, boolean> = {};
+      for (const group of filteredGroups) {
+        next[group.tag] = prev[group.tag] ?? false;
+      }
+      return next;
+    });
+  }, [filteredGroups]);
+
+  const toggleGroup = (tag: string) => {
+    setOpenGroups((prev) => ({
+      ...prev,
+      [tag]: !prev[tag],
+    }));
+  };
+
+  const expandAll = () => {
+    const next: Record<string, boolean> = {};
+    for (const group of filteredGroups) {
+      next[group.tag] = true;
+    }
+    setOpenGroups(next);
+  };
+
+  const collapseAll = () => {
+    const next: Record<string, boolean> = {};
+    for (const group of filteredGroups) {
+      next[group.tag] = false;
+    }
+    setOpenGroups(next);
+  };
+
   return (
     <div>
       <div className="card">
-        <div className="row" style={{ alignItems: "flex-end", justifyContent: "space-between" }}>
+        <div
+          className="row"
+          style={{ alignItems: "flex-end", justifyContent: "space-between", gap: 16 }}
+        >
           <div style={{ flex: 1, minWidth: 280 }}>
             <label>Search type</label>
             <input
@@ -103,9 +140,17 @@ export default function TypeView() {
           </div>
         </div>
 
-        <p className="muted" style={{ marginTop: 10 }}>
-          Type View groups Gospel events by category or tag such as miracle, parable, passion week, resurrection, and more.
-        </p>
+        <div className="row" style={{ marginTop: 10, justifyContent: "space-between", gap: 12 }}>
+          <p className="muted" style={{ margin: 0, flex: 1 }}>
+            Type View groups Gospel events by category or tag such as miracle, parable,
+            passion week, resurrection, and more.
+          </p>
+
+          <div className="row" style={{ gap: 8 }}>
+            <button onClick={expandAll}>Expand all</button>
+            <button onClick={collapseAll}>Collapse all</button>
+          </div>
+        </div>
       </div>
 
       {loading ? <p className="muted" style={{ marginTop: 12 }}>Loading types…</p> : null}
@@ -113,35 +158,68 @@ export default function TypeView() {
 
       {!loading && !error ? (
         <div style={{ marginTop: 12 }}>
-          {filteredGroups.map((group) => (
-            <div key={group.tag} className="card" style={{ marginBottom: 12 }}>
-              <h2 style={{ marginTop: 0, marginBottom: 10, fontSize: 18, textTransform: "capitalize" }}>
-                {group.tag}
-              </h2>
+          {filteredGroups.map((group) => {
+            const isOpen = !!openGroups[group.tag];
 
-              <div>
-                {group.items.map((p) => (
-                  <button
-                    key={p.pericopeId}
-                    onClick={() => navigate(`/story/${p.pericopeId}?version=${version}`)}
+            return (
+              <div key={group.tag} className="card" style={{ marginBottom: 12 }}>
+                <button
+                  type="button"
+                  onClick={() => toggleGroup(group.tag)}
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    textAlign: "left",
+                    background: "transparent",
+                    border: "none",
+                    padding: 0,
+                    cursor: "pointer",
+                  }}
+                >
+                  <h2
                     style={{
-                      display: "block",
-                      width: "100%",
-                      textAlign: "left",
-                      marginBottom: 10,
-                      padding: "12px 14px",
-                      borderRadius: 12,
-                      border: "1px solid #e6e6e6",
-                      background: "#fff",
+                      marginTop: 0,
+                      marginBottom: 0,
+                      fontSize: 18,
+                      textTransform: "capitalize",
                     }}
                   >
-                    <div style={{ fontWeight: 700, marginBottom: 4 }}>{p.title}</div>
-                    <div className="muted">{p.summary}</div>
-                  </button>
-                ))}
+                    {group.tag}
+                  </h2>
+                  <span className="muted" style={{ fontSize: 14 }}>
+                    {isOpen ? "Hide" : "Show"} ({group.items.length})
+                  </span>
+                </button>
+
+                {isOpen ? (
+                  <div style={{ marginTop: 12 }}>
+                    {group.items.map((p) => (
+                      <button
+                        key={p.pericopeId}
+                        onClick={() => navigate(`/story/${p.pericopeId}?version=${version}`)}
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          textAlign: "left",
+                          marginBottom: 10,
+                          padding: "12px 14px",
+                          borderRadius: 12,
+                          border: "1px solid #e6e6e6",
+                          background: "#fff",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <div style={{ fontWeight: 700, marginBottom: 4 }}>{p.title}</div>
+                        <div className="muted">{p.summary}</div>
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {filteredGroups.length === 0 ? (
             <div className="card">
