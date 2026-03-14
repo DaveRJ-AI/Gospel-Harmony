@@ -5,7 +5,12 @@ import StoriesIndex from "./pages/StoriesIndex";
 import StoryView from "./pages/StoryView";
 import TimelineView from "./pages/TimelineView";
 import TypeView from "./pages/TypeView";
-import logo from "./assets/logo.png";
+
+<img
+  src="/logo.png"
+  alt="Gospel Harmonics logo"
+  style={{ width: "40px", height: "40px", objectFit: "contain" }}
+/>
 
 function navLinkStyle({ isActive }: { isActive: boolean }) {
   return {
