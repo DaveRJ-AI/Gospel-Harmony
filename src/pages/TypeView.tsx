@@ -24,6 +24,7 @@ function ArtThumbnail({
   return (
     <button
       type="button"
+      className="artThumbButton"
       onClick={(e) => {
         e.stopPropagation();
         onClick();
@@ -31,10 +32,10 @@ function ArtThumbnail({
       title={count > 1 ? `Open ${count} artwork images` : "Open artwork"}
       style={{
         flex: "0 0 auto",
-        border: "1px solid #d1d5db",
-        borderRadius: 10,
+        border: "1px solid #D1D5DB",
+        borderRadius: 12,
         padding: 0,
-        background: "#fff",
+        background: "#FFFFFF",
         cursor: "pointer",
         overflow: "hidden",
         width: 92,
@@ -243,6 +244,7 @@ export default function TypeView() {
                       return (
                         <button
                           key={p.pericopeId}
+                          className="interactiveCard"
                           onClick={() => navigate(`/story/${p.pericopeId}?version=${version}`)}
                           style={{
                             display: "block",
@@ -250,9 +252,9 @@ export default function TypeView() {
                             textAlign: "left",
                             marginBottom: 10,
                             padding: "12px 14px",
-                            borderRadius: 12,
-                            border: "1px solid #e6e6e6",
-                            background: "#fff",
+                            borderRadius: 16,
+                            border: "1px solid #E6E6E6",
+                            background: "#FFFFFF",
                             cursor: "pointer",
                           }}
                         >
@@ -265,7 +267,7 @@ export default function TypeView() {
                             }}
                           >
                             <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ fontWeight: 700, marginBottom: 4 }}>{p.title}</div>
+                              <div style={{ fontWeight: 800, marginBottom: 4 }}>{p.title}</div>
                               <div className="muted">{p.summary}</div>
                             </div>
 

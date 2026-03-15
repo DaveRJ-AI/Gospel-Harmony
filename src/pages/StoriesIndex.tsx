@@ -92,11 +92,7 @@ export default function StoriesIndex() {
         </p>
       </div>
 
-      {loading ? (
-        <p className="muted" style={{ marginTop: 12 }}>
-          Loading events…
-        </p>
-      ) : null}
+      {loading ? <p className="muted" style={{ marginTop: 12 }}>Loading events…</p> : null}
 
       {!loading ? (
         <div style={{ marginTop: 12 }}>
@@ -107,6 +103,7 @@ export default function StoriesIndex() {
             return (
               <div
                 key={p.pericopeId}
+                className="interactiveCard"
                 onClick={() => nav(`/story/${p.pericopeId}?version=${version}`)}
                 role="button"
                 tabIndex={0}
@@ -123,20 +120,21 @@ export default function StoriesIndex() {
                   gap: 16,
                   marginBottom: 10,
                   padding: "12px 14px",
-                  borderRadius: 12,
-                  border: "1px solid #e6e6e6",
-                  background: "#fff",
+                  borderRadius: 16,
+                  border: "1px solid #E5E7EB",
+                  background: "#FFFFFF",
                   cursor: "pointer",
                 }}
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 700, marginBottom: 4 }}>{p.title}</div>
+                  <div style={{ fontWeight: 800, marginBottom: 4 }}>{p.title}</div>
                   <div className="muted">{p.summary}</div>
                 </div>
 
                 {firstArt ? (
                   <button
                     type="button"
+                    className="artThumbButton"
                     onClick={(e) => {
                       e.stopPropagation();
                       setModalItems(artItems);
@@ -145,10 +143,10 @@ export default function StoriesIndex() {
                     title={artItems.length > 1 ? `Open ${artItems.length} artwork images` : "Open artwork"}
                     style={{
                       flex: "0 0 auto",
-                      border: "1px solid #d1d5db",
-                      borderRadius: 10,
+                      border: "1px solid #D1D5DB",
+                      borderRadius: 12,
                       padding: 0,
-                      background: "#fff",
+                      background: "#FFFFFF",
                       cursor: "pointer",
                       overflow: "hidden",
                       width: 110,

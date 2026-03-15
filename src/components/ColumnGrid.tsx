@@ -53,9 +53,6 @@ export default function ColumnGrid(props: {
     return makeWordSet(text);
   }, [showDifferences, activeBlockId, primary.blocks]);
 
-  // Chapter-aware / local-view-aware color assignment:
-  // assign colors in sequence based on story order in the PRIMARY column,
-  // then reuse that same color index for matching synced stories in other columns.
   const storyColorIndexByBlockId = React.useMemo(() => {
     const map = new Map<string, number>();
     let storyIndex = 0;
@@ -218,7 +215,7 @@ function Column(props: {
       <div className="colBody" ref={bodyRef}>
         {blocks.length === 0 ? <p className="muted">No content</p> : null}
 
-        {blocks.map((b) => {
+        {blocks.map((b, index) => {
           const isActive = enableSync && activeBlockId && b.blockId === activeBlockId;
           const isStory = !!b.title;
 
@@ -229,7 +226,10 @@ function Column(props: {
               : undefined;
 
           const className =
-            "blockWrap" + (isStory ? " storyBlock" : "") + (isActive ? " blockActive" : "");
+            "blockWrap" +
+            (isStory ? " storyBlock" : "") +
+            (isActive ? " blockActive" : "") +
+            (index === 0 ? " firstBlock" : "");
 
           return (
             <div
@@ -246,7 +246,7 @@ function Column(props: {
                     alignItems: "flex-start",
                     justifyContent: "space-between",
                     gap: 8,
-                    marginBottom: 6,
+                    marginBottom: 8,
                   }}
                 >
                   <div className="blockTitle" style={{ marginBottom: 0 }}>

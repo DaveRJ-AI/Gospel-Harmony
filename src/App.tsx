@@ -9,13 +9,14 @@ import ArtView from "./pages/ArtView";
 
 function navLinkStyle({ isActive }: { isActive: boolean }) {
   return {
-    padding: "8px 12px",
+    padding: "10px 16px",
     borderRadius: 999,
     textDecoration: "none",
-    border: isActive ? "1px solid #6b7280" : "1px solid transparent",
-    background: isActive ? "#eef2ff" : "transparent",
-    fontWeight: isActive ? 700 : 500,
-    color: "inherit",
+    border: isActive ? "1px solid #94A3B8" : "1px solid transparent",
+    background: isActive ? "#EEF4FF" : "transparent",
+    fontWeight: isActive ? 800 : 600,
+    color: "#0F172A",
+    transition: "all 140ms ease",
   } as React.CSSProperties;
 }
 
@@ -25,16 +26,20 @@ export default function App() {
       <div className="header">
         <div
           className="brand"
-          style={{ display: "flex", alignItems: "center", gap: "12px" }}
+          style={{ display: "flex", alignItems: "center", gap: "18px" }}
         >
           <img
             src="/logo.png"
             alt="Gospel Harmonics logo"
-            style={{ width: "40px", height: "40px", objectFit: "contain" }}
+            style={{ width: "80px", height: "80px", objectFit: "contain" }}
           />
           <div>
-            <h1 style={{ margin: 0 }}>Gospel Harmonics</h1>
-            <small>Chapter + Event parallels in 4 columns</small>
+            <h1 style={{ margin: 0, fontSize: "2.15rem", lineHeight: 1.05 }}>
+              Gospel Harmonics
+            </h1>
+            <small style={{ fontSize: "1rem" }}>
+              Chapter + Event parallels in 4 columns
+            </small>
           </div>
         </div>
 

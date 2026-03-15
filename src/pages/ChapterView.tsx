@@ -57,11 +57,11 @@ function SelectionPill({
       type="button"
       onClick={onClick}
       style={{
-        padding: "8px 12px",
+        padding: "8px 14px",
         borderRadius: 999,
-        border: active ? "1px solid #6b7280" : "1px solid #d1d5db",
-        background: active ? "#eef2ff" : "#fff",
-        fontWeight: active ? 700 : 500,
+        border: active ? "1px solid #64748B" : "1px solid #CBD5E1",
+        background: active ? "#EEF4FF" : "#FFFFFF",
+        fontWeight: active ? 800 : 600,
         cursor: "pointer",
       }}
     >
@@ -95,9 +95,9 @@ function InfoTooltip({
           width: 18,
           height: 18,
           borderRadius: "50%",
-          border: "1px solid #cbd5e1",
-          background: "#fff",
-          color: "#64748b",
+          border: "1px solid #CBD5E1",
+          background: "#FFFFFF",
+          color: "#64748B",
           fontSize: 12,
           fontWeight: 700,
           cursor: "help",
@@ -118,8 +118,8 @@ function InfoTooltip({
             width: 240,
             padding: "10px 12px",
             borderRadius: 12,
-            border: "1px solid #dbe3ef",
-            background: "#fff",
+            border: "1px solid #DBE3EF",
+            background: "#FFFFFF",
             boxShadow: "0 10px 30px rgba(15, 23, 42, 0.14)",
             color: "#475569",
             fontSize: 13,
@@ -155,8 +155,8 @@ function Switch({
         width: 52,
         height: 30,
         borderRadius: 999,
-        border: "1px solid " + (checked ? "#93c5fd" : "#d1d5db"),
-        background: checked ? "#60a5fa" : "#e5e7eb",
+        border: "1px solid " + (checked ? "#93C5FD" : "#D1D5DB"),
+        background: checked ? "#60A5FA" : "#E5E7EB",
         boxShadow: "inset 0 1px 2px rgba(0,0,0,0.06)",
         transition: "all 160ms ease",
         cursor: "pointer",
@@ -171,7 +171,7 @@ function Switch({
           width: 24,
           height: 24,
           borderRadius: "50%",
-          background: "#fff",
+          background: "#FFFFFF",
           boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
           transition: "left 160ms ease",
         }}
@@ -198,8 +198,8 @@ function ArtPill({
       style={{
         padding: "4px 8px",
         borderRadius: 999,
-        border: "1px solid #cbd5e1",
-        background: "#fff",
+        border: "1px solid #CBD5E1",
+        background: "#FFFFFF",
         fontSize: 12,
         fontWeight: 700,
         cursor: "pointer",
@@ -457,7 +457,7 @@ export default function ChapterView() {
               </label>
               <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 10 }}>
                 <Switch checked={enableSync} onChange={setEnableSync} label="Sync" />
-                <span style={{ fontSize: 14, color: "#64748b", fontWeight: 600 }}>
+                <span style={{ fontSize: 14, color: "#64748B", fontWeight: 700 }}>
                   {enableSync ? "On" : "Off"}
                 </span>
               </div>
@@ -473,7 +473,7 @@ export default function ChapterView() {
               </label>
               <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 10 }}>
                 <Switch checked={showDifferences} onChange={setShowDifferences} label="Differences" />
-                <span style={{ fontSize: 14, color: "#64748b", fontWeight: 600 }}>
+                <span style={{ fontSize: 14, color: "#64748B", fontWeight: 700 }}>
                   {showDifferences ? "On" : "Off"}
                 </span>
               </div>
@@ -505,7 +505,7 @@ export default function ChapterView() {
         scrollPrimaryToTopSignal={scrollPrimaryToTopSignal}
         primary={{
           colKey: `${book}-primary`,
-          header: `${book} ${chapter} (${version})`,
+          header: `Primary: ${book} ${chapter}`,
           blocks: primaryBlocks,
         }}
         others={others.map((og) => ({

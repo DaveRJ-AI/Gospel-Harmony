@@ -162,7 +162,7 @@ export default function ArtView() {
             return (
               <div
                 key={`${card.pericopeId}-${card.artworkIndex}-${card.artwork.image}`}
-                className="card"
+                className="card interactiveCard"
                 style={{
                   padding: 0,
                   overflow: "hidden",
@@ -172,6 +172,7 @@ export default function ArtView() {
               >
                 <button
                   type="button"
+                  className="artThumbButton"
                   onClick={() => {
                     setModalItems(storyArtItems);
                     setModalIndex(card.artworkIndex);
@@ -180,9 +181,10 @@ export default function ArtView() {
                     border: "none",
                     padding: 0,
                     margin: 0,
-                    background: "#fff",
+                    background: "#FFFFFF",
                     cursor: "pointer",
                     display: "block",
+                    borderRadius: 0,
                   }}
                   title="Open artwork"
                 >
@@ -199,7 +201,7 @@ export default function ArtView() {
                 </button>
 
                 <div style={{ padding: 14, display: "grid", gap: 8 }}>
-                  <div style={{ fontWeight: 700 }}>{card.storyTitle}</div>
+                  <div style={{ fontWeight: 800 }}>{card.storyTitle}</div>
 
                   {card.artwork.title && card.artwork.title !== card.storyTitle ? (
                     <div className="muted" style={{ fontSize: 14 }}>
