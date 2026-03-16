@@ -6,6 +6,7 @@ import StoryView from "./pages/StoryView";
 import TimelineView from "./pages/TimelineView";
 import TypeView from "./pages/TypeView";
 import ArtView from "./pages/ArtView";
+import AboutView from "./pages/AboutView";
 
 function navLinkStyle({ isActive }: { isActive: boolean }) {
   return {
@@ -62,6 +63,9 @@ export default function App() {
           <NavLink to="/art" style={navLinkStyle}>
             Art
           </NavLink>
+          <NavLink to="/about" style={navLinkStyle}>
+            About
+          </NavLink>
         </div>
       </div>
 
@@ -72,7 +76,18 @@ export default function App() {
         <Route path="/timeline" element={<TimelineView />} />
         <Route path="/types" element={<TypeView />} />
         <Route path="/art" element={<ArtView />} />
+        <Route path="/about" element={<AboutView />} />
       </Routes>
+
+      <footer className="siteFooter">
+        <div>© 2026 Gospel Harmonics. All rights reserved.</div>
+        <div>
+          Original site design, code structure, and original artwork may not be reproduced without permission.
+        </div>
+        <div>
+          Scripture text rights remain with their respective publishers where applicable.
+        </div>
+      </footer>
     </div>
   );
 }
