@@ -1,0 +1,133 @@
+{
+  "version": "1.0.0",
+  "scope": "gospels",
+  "sequenceModel": "high-level",
+  "notes": "These are intentionally simplified harmonization-friendly movement sequences for map overlay and comparison, not exhaustive verse-by-verse itineraries.",
+  "gospels": [
+    {
+      "gospel": "matthew",
+      "segments": [
+        {
+          "id": "mt-1",
+          "label": "Birth and early setting",
+          "placeIds": ["bethlehem", "nazareth"]
+        },
+        {
+          "id": "mt-2",
+          "label": "Baptism and temptation",
+          "placeIds": ["nazareth", "jordan-river", "wilderness"]
+        },
+        {
+          "id": "mt-3",
+          "label": "Galilean ministry",
+          "placeIds": ["capernaum", "sea-of-galilee", "capernaum", "galilee"]
+        },
+        {
+          "id": "mt-4",
+          "label": "Toward Judea and Jerusalem",
+          "placeIds": ["galilee", "jericho", "bethany", "jerusalem"]
+        },
+        {
+          "id": "mt-5",
+          "label": "Passion and resurrection",
+          "placeIds": ["mount-of-olives", "gethsemane", "golgotha", "empty-tomb"]
+        }
+      ]
+    },
+    {
+      "gospel": "mark",
+      "segments": [
+        {
+          "id": "mk-1",
+          "label": "Beginning at the Jordan",
+          "placeIds": ["jordan-river", "wilderness"]
+        },
+        {
+          "id": "mk-2",
+          "label": "Galilean ministry concentration",
+          "placeIds": ["capernaum", "sea-of-galilee", "bethsaida", "galilee"]
+        },
+        {
+          "id": "mk-3",
+          "label": "Northern and eastern movements",
+          "placeIds": ["galilee", "deca polis", "sea-of-galilee"]
+        },
+        {
+          "id": "mk-4",
+          "label": "Journey to Jerusalem",
+          "placeIds": ["galilee", "jericho", "bethany", "jerusalem"]
+        },
+        {
+          "id": "mk-5",
+          "label": "Passion",
+          "placeIds": ["mount-of-olives", "gethsemane", "golgotha", "empty-tomb"]
+        }
+      ]
+    },
+    {
+      "gospel": "luke",
+      "segments": [
+        {
+          "id": "lk-1",
+          "label": "Birth and youth",
+          "placeIds": ["bethlehem", "jerusalem", "nazareth"]
+        },
+        {
+          "id": "lk-2",
+          "label": "Baptism and wilderness",
+          "placeIds": ["jordan-river", "wilderness"]
+        },
+        {
+          "id": "lk-3",
+          "label": "Galilee ministry",
+          "placeIds": ["nazareth", "capernaum", "nain", "sea-of-galilee", "galilee"]
+        },
+        {
+          "id": "lk-4",
+          "label": "Travel narrative southward",
+          "placeIds": ["galilee", "samaria", "judea", "jericho", "jerusalem"]
+        },
+        {
+          "id": "lk-5",
+          "label": "Passion and resurrection",
+          "placeIds": ["mount-of-olives", "gethsemane", "golgotha", "empty-tomb"]
+        }
+      ]
+    },
+    {
+      "gospel": "john",
+      "segments": [
+        {
+          "id": "jn-1",
+          "label": "Witness and baptism context",
+          "placeIds": ["jordan-river"]
+        },
+        {
+          "id": "jn-2",
+          "label": "Cana and Capernaum",
+          "placeIds": ["cana", "capernaum"]
+        },
+        {
+          "id": "jn-3",
+          "label": "Jerusalem festival movements",
+          "placeIds": ["jerusalem", "judea", "jordan-river"]
+        },
+        {
+          "id": "jn-4",
+          "label": "Samaria return route",
+          "placeIds": ["judea", "sychar", "galilee"]
+        },
+        {
+          "id": "jn-5",
+          "label": "Later Judean and Perean ministry",
+          "placeIds": ["jerusalem", "bethany", "jordan-river", "perea"]
+        },
+        {
+          "id": "jn-6",
+          "label": "Passion and resurrection",
+          "placeIds": ["bethany", "mount-of-olives", "jerusalem", "golgotha", "empty-tomb"]
+        }
+      ]
+    }
+  ]
+}

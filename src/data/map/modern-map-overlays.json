@@ -1,0 +1,132 @@
+{
+  "version": "1.0.0",
+  "scope": "gospels",
+  "overlays": [
+    {
+      "placeId": "nazareth",
+      "modernName": "Nazareth",
+      "latitude": 32.6996,
+      "longitude": 35.3035,
+      "certainty": "high"
+    },
+    {
+      "placeId": "bethlehem",
+      "modernName": "Bethlehem",
+      "latitude": 31.7054,
+      "longitude": 35.2024,
+      "certainty": "high"
+    },
+    {
+      "placeId": "jerusalem",
+      "modernName": "Jerusalem",
+      "latitude": 31.7780,
+      "longitude": 35.2350,
+      "certainty": "high"
+    },
+    {
+      "placeId": "bethany",
+      "modernName": "al-Eizariya / Bethany area",
+      "latitude": 31.7690,
+      "longitude": 35.2610,
+      "certainty": "high"
+    },
+    {
+      "placeId": "jericho",
+      "modernName": "Jericho",
+      "latitude": 31.8667,
+      "longitude": 35.4500,
+      "certainty": "high"
+    },
+    {
+      "placeId": "capernaum",
+      "modernName": "Capernaum archaeological area",
+      "latitude": 32.8803,
+      "longitude": 35.5736,
+      "certainty": "high"
+    },
+    {
+      "placeId": "cana",
+      "modernName": "Kafr Kanna or nearby candidate site",
+      "latitude": 32.7460,
+      "longitude": 35.3420,
+      "certainty": "medium"
+    },
+    {
+      "placeId": "nain",
+      "modernName": "Nein",
+      "latitude": 32.6300,
+      "longitude": 35.3480,
+      "certainty": "medium"
+    },
+    {
+      "placeId": "magdala",
+      "modernName": "Migdal / Magdala",
+      "latitude": 32.8330,
+      "longitude": 35.5190,
+      "certainty": "medium"
+    },
+    {
+      "placeId": "bethsaida",
+      "modernName": "Bethsaida candidate region",
+      "latitude": 32.9010,
+      "longitude": 35.6130,
+      "certainty": "medium"
+    },
+    {
+      "placeId": "chorazin",
+      "modernName": "Korazim / Chorazin",
+      "latitude": 32.9070,
+      "longitude": 35.5650,
+      "certainty": "medium"
+    },
+    {
+      "placeId": "sea-of-galilee",
+      "modernName": "Sea of Galilee",
+      "latitude": 32.8250,
+      "longitude": 35.5900,
+      "certainty": "high"
+    },
+    {
+      "placeId": "jordan-river",
+      "modernName": "Jordan River baptism region",
+      "latitude": 31.8370,
+      "longitude": 35.5500,
+      "certainty": "medium"
+    },
+    {
+      "placeId": "sychar",
+      "modernName": "Sychar / Nablus area candidate",
+      "latitude": 32.2210,
+      "longitude": 35.2540,
+      "certainty": "medium"
+    },
+    {
+      "placeId": "mount-of-olives",
+      "modernName": "Mount of Olives",
+      "latitude": 31.7787,
+      "longitude": 35.2439,
+      "certainty": "high"
+    },
+    {
+      "placeId": "gethsemane",
+      "modernName": "Gethsemane traditional site",
+      "latitude": 31.7795,
+      "longitude": 35.2430,
+      "certainty": "high"
+    },
+    {
+      "placeId": "golgotha",
+      "modernName": "Traditional Golgotha area",
+      "latitude": 31.7785,
+      "longitude": 35.2296,
+      "certainty": "medium"
+    },
+    {
+      "placeId": "empty-tomb",
+      "modernName": "Traditional tomb area",
+      "latitude": 31.7786,
+      "longitude": 35.2298,
+      "certainty": "medium"
+    }
+  ]
+}

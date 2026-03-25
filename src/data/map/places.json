@@ -1,0 +1,222 @@
+{
+  "version": "1.0.0",
+  "scope": "gospels",
+  "places": [
+    {
+      "id": "nazareth",
+      "name": "Nazareth",
+      "type": "town",
+      "region": "galilee",
+      "aliases": [],
+      "tags": ["childhood", "galilee", "home-base"],
+      "certainty": "high"
+    },
+    {
+      "id": "bethlehem",
+      "name": "Bethlehem",
+      "type": "town",
+      "region": "judea",
+      "aliases": [],
+      "tags": ["birth", "judea"],
+      "certainty": "high"
+    },
+    {
+      "id": "jerusalem",
+      "name": "Jerusalem",
+      "type": "city",
+      "region": "judea",
+      "aliases": [],
+      "tags": ["temple", "passover", "crucifixion", "resurrection"],
+      "certainty": "high"
+    },
+    {
+      "id": "bethany",
+      "name": "Bethany",
+      "type": "village",
+      "region": "judea",
+      "aliases": [],
+      "tags": ["lazarus", "mary", "martha", "mount-of-olives"],
+      "certainty": "high"
+    },
+    {
+      "id": "jericho",
+      "name": "Jericho",
+      "type": "city",
+      "region": "judea",
+      "aliases": [],
+      "tags": ["travel-route", "zacchaeus", "blind-bartimaeus"],
+      "certainty": "high"
+    },
+    {
+      "id": "capernaum",
+      "name": "Capernaum",
+      "type": "town",
+      "region": "galilee",
+      "aliases": [],
+      "tags": ["ministry-center", "galilee"],
+      "certainty": "high"
+    },
+    {
+      "id": "cana",
+      "name": "Cana",
+      "type": "town",
+      "region": "galilee",
+      "aliases": [],
+      "tags": ["wedding", "first-sign"],
+      "certainty": "medium"
+    },
+    {
+      "id": "nain",
+      "name": "Nain",
+      "type": "town",
+      "region": "galilee",
+      "aliases": [],
+      "tags": ["widows-son"],
+      "certainty": "medium"
+    },
+    {
+      "id": "magdala",
+      "name": "Magdala",
+      "type": "town",
+      "region": "galilee",
+      "aliases": [],
+      "tags": ["galilee"],
+      "certainty": "medium"
+    },
+    {
+      "id": "bethsaida",
+      "name": "Bethsaida",
+      "type": "town",
+      "region": "galilee",
+      "aliases": [],
+      "tags": ["disciples", "feeding-miracles-region"],
+      "certainty": "medium"
+    },
+    {
+      "id": "chorazin",
+      "name": "Chorazin",
+      "type": "town",
+      "region": "galilee",
+      "aliases": [],
+      "tags": ["galilee"],
+      "certainty": "medium"
+    },
+    {
+      "id": "sea-of-galilee",
+      "name": "Sea of Galilee",
+      "type": "lake",
+      "region": "galilee",
+      "aliases": ["Lake Gennesaret", "Sea of Tiberias"],
+      "tags": ["boats", "crossings", "storms", "fishing"],
+      "certainty": "high"
+    },
+    {
+      "id": "jordan-river",
+      "name": "Jordan River",
+      "type": "river",
+      "region": "transjordan",
+      "aliases": [],
+      "tags": ["baptism", "crossing", "beyond-jordan"],
+      "certainty": "high"
+    },
+    {
+      "id": "wilderness",
+      "name": "Wilderness",
+      "type": "area",
+      "region": "judean-wilderness",
+      "aliases": ["Desert", "Desert Place"],
+      "tags": ["temptation", "withdrawal", "solitude"],
+      "certainty": "medium"
+    },
+    {
+      "id": "galilee",
+      "name": "Galilee",
+      "type": "region",
+      "region": null,
+      "aliases": [],
+      "tags": ["northern-ministry"],
+      "certainty": "high"
+    },
+    {
+      "id": "judea",
+      "name": "Judea",
+      "type": "region",
+      "region": null,
+      "aliases": ["Judaea"],
+      "tags": ["jerusalem-region", "southern-ministry"],
+      "certainty": "high"
+    },
+    {
+      "id": "samaria",
+      "name": "Samaria",
+      "type": "region",
+      "region": null,
+      "aliases": [],
+      "tags": ["travel-corridor", "woman-at-well"],
+      "certainty": "high"
+    },
+    {
+      "id": "decapolis",
+      "name": "Decapolis",
+      "type": "region",
+      "region": null,
+      "aliases": [],
+      "tags": ["gentile-region", "eastern-side"],
+      "certainty": "medium"
+    },
+    {
+      "id": "perea",
+      "name": "Perea",
+      "type": "region",
+      "region": null,
+      "aliases": ["Beyond Jordan"],
+      "tags": ["transjordan-ministry"],
+      "certainty": "medium"
+    },
+    {
+      "id": "sychar",
+      "name": "Sychar",
+      "type": "town",
+      "region": "samaria",
+      "aliases": [],
+      "tags": ["woman-at-well"],
+      "certainty": "medium"
+    },
+    {
+      "id": "mount-of-olives",
+      "name": "Mount of Olives",
+      "type": "mount",
+      "region": "judea",
+      "aliases": [],
+      "tags": ["jerusalem", "bethany", "triumphal-entry", "eschatological-discourse"],
+      "certainty": "high"
+    },
+    {
+      "id": "gethsemane",
+      "name": "Gethsemane",
+      "type": "garden",
+      "region": "judea",
+      "aliases": [],
+      "tags": ["passion", "mount-of-olives"],
+      "certainty": "high"
+    },
+    {
+      "id": "golgotha",
+      "name": "Golgotha",
+      "type": "site",
+      "region": "judea",
+      "aliases": ["Place of a Skull", "Calvary"],
+      "tags": ["crucifixion"],
+      "certainty": "high"
+    },
+    {
+      "id": "empty-tomb",
+      "name": "Tomb Garden Area",
+      "type": "site",
+      "region": "judea",
+      "aliases": ["Sepulchre Area"],
+      "tags": ["burial", "resurrection"],
+      "certainty": "medium"
+    }
+  ]
+}

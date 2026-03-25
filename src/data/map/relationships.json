@@ -1,0 +1,342 @@
+{
+  "version": "1.0.0",
+  "scope": "gospels",
+  "relationships": [
+    {
+      "id": "r1",
+      "source": "nazareth",
+      "target": "galilee",
+      "relationType": "located-in",
+      "weight": 1.0,
+      "confidence": "high"
+    },
+    {
+      "id": "r2",
+      "source": "capernaum",
+      "target": "galilee",
+      "relationType": "located-in",
+      "weight": 1.0,
+      "confidence": "high"
+    },
+    {
+      "id": "r3",
+      "source": "cana",
+      "target": "galilee",
+      "relationType": "located-in",
+      "weight": 1.0,
+      "confidence": "high"
+    },
+    {
+      "id": "r4",
+      "source": "nain",
+      "target": "galilee",
+      "relationType": "located-in",
+      "weight": 1.0,
+      "confidence": "medium"
+    },
+    {
+      "id": "r5",
+      "source": "bethsaida",
+      "target": "galilee",
+      "relationType": "located-in",
+      "weight": 1.0,
+      "confidence": "medium"
+    },
+    {
+      "id": "r6",
+      "source": "chorazin",
+      "target": "galilee",
+      "relationType": "located-in",
+      "weight": 1.0,
+      "confidence": "medium"
+    },
+    {
+      "id": "r7",
+      "source": "magdala",
+      "target": "galilee",
+      "relationType": "located-in",
+      "weight": 1.0,
+      "confidence": "medium"
+    },
+    {
+      "id": "r8",
+      "source": "sea-of-galilee",
+      "target": "galilee",
+      "relationType": "located-in",
+      "weight": 1.0,
+      "confidence": "high"
+    },
+    {
+      "id": "r9",
+      "source": "bethlehem",
+      "target": "judea",
+      "relationType": "located-in",
+      "weight": 1.0,
+      "confidence": "high"
+    },
+    {
+      "id": "r10",
+      "source": "jerusalem",
+      "target": "judea",
+      "relationType": "located-in",
+      "weight": 1.0,
+      "confidence": "high"
+    },
+    {
+      "id": "r11",
+      "source": "bethany",
+      "target": "judea",
+      "relationType": "located-in",
+      "weight": 1.0,
+      "confidence": "high"
+    },
+    {
+      "id": "r12",
+      "source": "jericho",
+      "target": "judea",
+      "relationType": "located-in",
+      "weight": 1.0,
+      "confidence": "high"
+    },
+    {
+      "id": "r13",
+      "source": "mount-of-olives",
+      "target": "judea",
+      "relationType": "located-in",
+      "weight": 1.0,
+      "confidence": "high"
+    },
+    {
+      "id": "r14",
+      "source": "gethsemane",
+      "target": "judea",
+      "relationType": "located-in",
+      "weight": 1.0,
+      "confidence": "high"
+    },
+    {
+      "id": "r15",
+      "source": "golgotha",
+      "target": "judea",
+      "relationType": "located-in",
+      "weight": 1.0,
+      "confidence": "high"
+    },
+    {
+      "id": "r16",
+      "source": "empty-tomb",
+      "target": "judea",
+      "relationType": "located-in",
+      "weight": 1.0,
+      "confidence": "medium"
+    },
+    {
+      "id": "r17",
+      "source": "sychar",
+      "target": "samaria",
+      "relationType": "located-in",
+      "weight": 1.0,
+      "confidence": "medium"
+    },
+    {
+      "id": "r18",
+      "source": "jordan-river",
+      "target": "perea",
+      "relationType": "borders-or-runs-through",
+      "weight": 0.7,
+      "confidence": "medium"
+    },
+    {
+      "id": "r19",
+      "source": "jerusalem",
+      "target": "bethany",
+      "relationType": "near",
+      "weight": 0.95,
+      "confidence": "high"
+    },
+    {
+      "id": "r20",
+      "source": "bethany",
+      "target": "mount-of-olives",
+      "relationType": "near",
+      "weight": 0.95,
+      "confidence": "high"
+    },
+    {
+      "id": "r21",
+      "source": "gethsemane",
+      "target": "mount-of-olives",
+      "relationType": "part-of-or-on",
+      "weight": 1.0,
+      "confidence": "high"
+    },
+    {
+      "id": "r22",
+      "source": "golgotha",
+      "target": "jerusalem",
+      "relationType": "near",
+      "weight": 0.9,
+      "confidence": "high"
+    },
+    {
+      "id": "r23",
+      "source": "empty-tomb",
+      "target": "jerusalem",
+      "relationType": "near",
+      "weight": 0.85,
+      "confidence": "medium"
+    },
+    {
+      "id": "r24",
+      "source": "capernaum",
+      "target": "sea-of-galilee",
+      "relationType": "shoreline-associated",
+      "weight": 0.95,
+      "confidence": "high"
+    },
+    {
+      "id": "r25",
+      "source": "bethsaida",
+      "target": "sea-of-galilee",
+      "relationType": "shoreline-associated",
+      "weight": 0.95,
+      "confidence": "medium"
+    },
+    {
+      "id": "r26",
+      "source": "magdala",
+      "target": "sea-of-galilee",
+      "relationType": "shoreline-associated",
+      "weight": 0.95,
+      "confidence": "medium"
+    },
+    {
+      "id": "r27",
+      "source": "chorazin",
+      "target": "capernaum",
+      "relationType": "regional-cluster",
+      "weight": 0.8,
+      "confidence": "medium"
+    },
+    {
+      "id": "r28",
+      "source": "bethsaida",
+      "target": "capernaum",
+      "relationType": "regional-cluster",
+      "weight": 0.8,
+      "confidence": "medium"
+    },
+    {
+      "id": "r29",
+      "source": "nazareth",
+      "target": "cana",
+      "relationType": "regional-cluster",
+      "weight": 0.75,
+      "confidence": "medium"
+    },
+    {
+      "id": "r30",
+      "source": "galilee",
+      "target": "samaria",
+      "relationType": "adjacent-travel-corridor",
+      "weight": 0.8,
+      "confidence": "high"
+    },
+    {
+      "id": "r31",
+      "source": "samaria",
+      "target": "judea",
+      "relationType": "adjacent-travel-corridor",
+      "weight": 0.8,
+      "confidence": "high"
+    },
+    {
+      "id": "r32",
+      "source": "jericho",
+      "target": "jerusalem",
+      "relationType": "travel-route",
+      "weight": 0.95,
+      "confidence": "high"
+    },
+    {
+      "id": "r33",
+      "source": "nazareth",
+      "target": "bethlehem",
+      "relationType": "nativity-sequence-link",
+      "weight": 0.55,
+      "confidence": "medium"
+    },
+    {
+      "id": "r34",
+      "source": "jordan-river",
+      "target": "wilderness",
+      "relationType": "sequence-association",
+      "weight": 0.8,
+      "confidence": "high"
+    },
+    {
+      "id": "r35",
+      "source": "nazareth",
+      "target": "jordan-river",
+      "relationType": "travel-sequence",
+      "weight": 0.7,
+      "confidence": "medium"
+    },
+    {
+      "id": "r36",
+      "source": "jordan-river",
+      "target": "cana",
+      "relationType": "travel-sequence",
+      "weight": 0.6,
+      "confidence": "medium"
+    },
+    {
+      "id": "r37",
+      "source": "cana",
+      "target": "capernaum",
+      "relationType": "travel-sequence",
+      "weight": 0.75,
+      "confidence": "high"
+    },
+    {
+      "id": "r38",
+      "source": "capernaum",
+      "target": "jerusalem",
+      "relationType": "festival-travel",
+      "weight": 0.65,
+      "confidence": "medium"
+    },
+    {
+      "id": "r39",
+      "source": "judea",
+      "target": "jordan-river",
+      "relationType": "beyond-jordan-association",
+      "weight": 0.65,
+      "confidence": "medium"
+    },
+    {
+      "id": "r40",
+      "source": "jordan-river",
+      "target": "perea",
+      "relationType": "beyond-jordan-association",
+      "weight": 0.75,
+      "confidence": "medium"
+    },
+    {
+      "id": "r41",
+      "source": "decapolis",
+      "target": "sea-of-galilee",
+      "relationType": "regional-proximity",
+      "weight": 0.7,
+      "confidence": "medium"
+    },
+    {
+      "id": "r42",
+      "source": "decapolis",
+      "target": "galilee",
+      "relationType": "regional-proximity",
+      "weight": 0.6,
+      "confidence": "medium"
+    }
+  ]
+}

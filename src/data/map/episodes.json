@@ -1,0 +1,126 @@
+{
+  "version": "1.0.0",
+  "scope": "gospels",
+  "episodes": [
+    {
+      "id": "ep-nativity-bethlehem",
+      "title": "Birth Narrative",
+      "placeIds": ["bethlehem"],
+      "themes": ["birth", "nativity"],
+      "gospels": ["matthew", "luke"],
+      "confidence": "high"
+    },
+    {
+      "id": "ep-childhood-nazareth",
+      "title": "Nazareth Childhood and Early Life",
+      "placeIds": ["nazareth"],
+      "themes": ["childhood", "hidden-years"],
+      "gospels": ["matthew", "luke"],
+      "confidence": "high"
+    },
+    {
+      "id": "ep-baptism-jordan",
+      "title": "Baptism of Jesus",
+      "placeIds": ["jordan-river"],
+      "themes": ["baptism", "john-the-baptist"],
+      "gospels": ["matthew", "mark", "luke", "john"],
+      "confidence": "high"
+    },
+    {
+      "id": "ep-temptation-wilderness",
+      "title": "Temptation in the Wilderness",
+      "placeIds": ["wilderness"],
+      "themes": ["temptation", "fasting"],
+      "gospels": ["matthew", "mark", "luke"],
+      "confidence": "high"
+    },
+    {
+      "id": "ep-cana-wedding",
+      "title": "Wedding at Cana",
+      "placeIds": ["cana"],
+      "themes": ["signs", "water-to-wine"],
+      "gospels": ["john"],
+      "confidence": "high"
+    },
+    {
+      "id": "ep-capernaum-ministry",
+      "title": "Capernaum Ministry Hub",
+      "placeIds": ["capernaum"],
+      "themes": ["teaching", "healing", "galilean-ministry"],
+      "gospels": ["matthew", "mark", "luke", "john"],
+      "confidence": "high"
+    },
+    {
+      "id": "ep-sea-calls-and-crossings",
+      "title": "Calls, Crossings, and Miracles by the Sea",
+      "placeIds": ["sea-of-galilee", "capernaum", "bethsaida"],
+      "themes": ["disciples", "boat-crossings", "storm", "walking-on-water"],
+      "gospels": ["matthew", "mark", "luke", "john"],
+      "confidence": "high"
+    },
+    {
+      "id": "ep-sychar-woman-at-well",
+      "title": "Woman at the Well",
+      "placeIds": ["sychar", "samaria"],
+      "themes": ["samaria", "living-water"],
+      "gospels": ["john"],
+      "confidence": "high"
+    },
+    {
+      "id": "ep-nain-widows-son",
+      "title": "Raising the Widow's Son",
+      "placeIds": ["nain"],
+      "themes": ["miracle", "compassion"],
+      "gospels": ["luke"],
+      "confidence": "high"
+    },
+    {
+      "id": "ep-bethany-lazarus",
+      "title": "Raising of Lazarus",
+      "placeIds": ["bethany"],
+      "themes": ["lazarus", "resurrection-sign"],
+      "gospels": ["john"],
+      "confidence": "high"
+    },
+    {
+      "id": "ep-jericho-zacchaeus",
+      "title": "Jericho Ministry",
+      "placeIds": ["jericho"],
+      "themes": ["zacchaeus", "blind-bartimaeus", "journey-to-jerusalem"],
+      "gospels": ["matthew", "mark", "luke"],
+      "confidence": "high"
+    },
+    {
+      "id": "ep-triumphal-entry",
+      "title": "Triumphal Entry",
+      "placeIds": ["bethany", "mount-of-olives", "jerusalem"],
+      "themes": ["entry", "passion-week"],
+      "gospels": ["matthew", "mark", "luke", "john"],
+      "confidence": "high"
+    },
+    {
+      "id": "ep-gethsemane",
+      "title": "Agony in Gethsemane",
+      "placeIds": ["gethsemane", "mount-of-olives"],
+      "themes": ["prayer", "betrayal", "passion"],
+      "gospels": ["matthew", "mark", "luke"],
+      "confidence": "high"
+    },
+    {
+      "id": "ep-crucifixion",
+      "title": "Crucifixion",
+      "placeIds": ["golgotha", "jerusalem"],
+      "themes": ["cross", "atonement", "passion"],
+      "gospels": ["matthew", "mark", "luke", "john"],
+      "confidence": "high"
+    },
+    {
+      "id": "ep-burial-resurrection",
+      "title": "Burial and Resurrection",
+      "placeIds": ["empty-tomb", "jerusalem"],
+      "themes": ["burial", "resurrection"],
+      "gospels": ["matthew", "mark", "luke", "john"],
+      "confidence": "high"
+    }
+  ]
+}
