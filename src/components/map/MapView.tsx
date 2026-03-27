@@ -1257,7 +1257,7 @@ export default function MapView() {
 
 <text
   x={880}
-  y={620}
+  y={590}
   textAnchor="middle"
   fontSize={selectedRegionId === "samaria" ? "22" : "20"}
   fontWeight={selectedRegionId === "samaria" ? 700 : 400}
@@ -1283,9 +1283,6 @@ onClick={() => togglePlace("judea")}
 </text>
 
 
-
-
-
 <text
   x={180}
   y={1035}
@@ -1293,7 +1290,7 @@ onClick={() => togglePlace("judea")}
   fontSize={selectedRegionId === "egypt" ? "22" : "20"}
   fontWeight={selectedRegionId === "egypt" ? 700 : 400}
   fill={REGION_TEXT_COLORS.egypt}
-  opacity={selectedRegionId === "egypt" ? 0.85 : 0.55}
+  opacity={selectedRegionId === "egypt" ? 0.85 : 0.99}
   style={{ cursor: "pointer" }}
 onClick={() => togglePlace("<egypt")}
 >

@@ -85,7 +85,7 @@ export default function App() {
       </Routes>
 
       <footer className="siteFooter">
-        <div>© 2026 Gospel Harmonics. All rights reserved.</div>
+        <div>© 2026 Nascentic, LLC. All rights reserved.</div>
         <div>
           Original site design, code structure, and original artwork may not be
           reproduced without permission.
