@@ -59,7 +59,7 @@ export default function App() {
             Timeline
           </NavLink>
           <NavLink to="/types" style={navLinkStyle}>
-            Type
+            Themes
           </NavLink>
           <NavLink to="/map" style={navLinkStyle}>
             Map

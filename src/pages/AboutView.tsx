@@ -44,7 +44,7 @@ export default function AboutView() {
       <div className="card">
         <h3 style={{ marginBottom: 10 }}>Copyright and Use</h3>
         <p style={{ marginTop: 0 }}>
-          © 2026 Gospel Harmonics. All rights reserved.
+          © 2026 Nascentics, LLC. All rights reserved.
         </p>
         <p>
           The original site design, code structure, arrangement, and original artwork created

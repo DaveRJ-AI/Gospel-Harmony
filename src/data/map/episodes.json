@@ -5,7 +5,7 @@
     {
       "id": "ep-nativity-bethlehem",
       "title": "Birth Narrative",
-      "placeIds": ["bethlehem"],
+      "placeIds": ["bethlehem", "judea"],
       "themes": ["birth", "nativity"],
       "gospels": ["matthew", "luke"],
       "confidence": "high"
@@ -13,11 +13,19 @@
     {
       "id": "ep-childhood-nazareth",
       "title": "Nazareth Childhood and Early Life",
-      "placeIds": ["nazareth"],
+      "placeIds": ["nazareth", "galilee"],
       "themes": ["childhood", "hidden-years"],
       "gospels": ["matthew", "luke"],
       "confidence": "high"
     },
+    {
+  "id": "ep-flight-egypt",
+  "title": "Flight to Egypt and Return",
+  "placeIds": ["egypt", "nazareth"],
+  "themes": ["infancy", "protection", "fulfillment"],
+  "gospels": ["matthew"],
+  "confidence": "high"
+},
     {
       "id": "ep-baptism-jordan",
       "title": "Baptism of Jesus",
@@ -37,7 +45,7 @@
     {
       "id": "ep-cana-wedding",
       "title": "Wedding at Cana",
-      "placeIds": ["cana"],
+      "placeIds": ["cana", "galilee"],
       "themes": ["signs", "water-to-wine"],
       "gospels": ["john"],
       "confidence": "high"
@@ -45,7 +53,7 @@
     {
       "id": "ep-capernaum-ministry",
       "title": "Capernaum Ministry Hub",
-      "placeIds": ["capernaum"],
+      "placeIds": ["capernaum", "galilee"],
       "themes": ["teaching", "healing", "galilean-ministry"],
       "gospels": ["matthew", "mark", "luke", "john"],
       "confidence": "high"
@@ -53,7 +61,7 @@
     {
       "id": "ep-sea-calls-and-crossings",
       "title": "Calls, Crossings, and Miracles by the Sea",
-      "placeIds": ["sea-of-galilee", "capernaum", "bethsaida"],
+      "placeIds": ["sea-of-galilee", "capernaum", "bethsaida", "galilee"],
       "themes": ["disciples", "boat-crossings", "storm", "walking-on-water"],
       "gospels": ["matthew", "mark", "luke", "john"],
       "confidence": "high"
@@ -67,9 +75,17 @@
       "confidence": "high"
     },
     {
+  "id": "ep-tyre-sidon-canaanite-woman",
+  "title": "Ministry in Tyre and Sidon",
+  "placeIds": ["tyre-and-sidon"],
+  "themes": ["gentile-ministry", "faith", "healing"],
+  "gospels": ["matthew", "mark"],
+  "confidence": "high"
+},
+    {
       "id": "ep-nain-widows-son",
       "title": "Raising the Widow's Son",
-      "placeIds": ["nain"],
+      "placeIds": ["nain", "galilee"],
       "themes": ["miracle", "compassion"],
       "gospels": ["luke"],
       "confidence": "high"
@@ -77,7 +93,7 @@
     {
       "id": "ep-bethany-lazarus",
       "title": "Raising of Lazarus",
-      "placeIds": ["bethany"],
+      "placeIds": ["bethany", "judea"],
       "themes": ["lazarus", "resurrection-sign"],
       "gospels": ["john"],
       "confidence": "high"
@@ -85,7 +101,7 @@
     {
       "id": "ep-jericho-zacchaeus",
       "title": "Jericho Ministry",
-      "placeIds": ["jericho"],
+      "placeIds": ["jericho", "judea"],
       "themes": ["zacchaeus", "blind-bartimaeus", "journey-to-jerusalem"],
       "gospels": ["matthew", "mark", "luke"],
       "confidence": "high"
@@ -93,7 +109,7 @@
     {
       "id": "ep-triumphal-entry",
       "title": "Triumphal Entry",
-      "placeIds": ["bethany", "mount-of-olives", "jerusalem"],
+      "placeIds": ["bethany", "mount-of-olives", "jerusalem", "judea"],
       "themes": ["entry", "passion-week"],
       "gospels": ["matthew", "mark", "luke", "john"],
       "confidence": "high"
@@ -101,7 +117,7 @@
     {
       "id": "ep-gethsemane",
       "title": "Agony in Gethsemane",
-      "placeIds": ["gethsemane", "mount-of-olives"],
+      "placeIds": ["gethsemane", "mount-of-olives", "judea"],
       "themes": ["prayer", "betrayal", "passion"],
       "gospels": ["matthew", "mark", "luke"],
       "confidence": "high"
@@ -109,7 +125,7 @@
     {
       "id": "ep-crucifixion",
       "title": "Crucifixion",
-      "placeIds": ["golgotha", "jerusalem"],
+      "placeIds": ["golgotha", "jerusalem", "judea"],
       "themes": ["cross", "atonement", "passion"],
       "gospels": ["matthew", "mark", "luke", "john"],
       "confidence": "high"
@@ -117,7 +133,7 @@
     {
       "id": "ep-burial-resurrection",
       "title": "Burial and Resurrection",
-      "placeIds": ["empty-tomb", "jerusalem"],
+      "placeIds": ["empty-tomb", "jerusalem", "judea"],
       "themes": ["burial", "resurrection"],
       "gospels": ["matthew", "mark", "luke", "john"],
       "confidence": "high"

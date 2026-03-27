@@ -165,11 +165,11 @@ export default function TypeView() {
       <div className="card">
         <div className="row" style={{ alignItems: "flex-end", justifyContent: "space-between", gap: 16 }}>
           <div style={{ flex: 1, minWidth: 280 }}>
-            <label>Search type</label>
+            <label>Search themes</label>
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search type, title, summary..."
+              placeholder="Search themes, title, summary..."
               style={{ width: "100%" }}
             />
           </div>
@@ -185,7 +185,7 @@ export default function TypeView() {
 
         <div className="row" style={{ marginTop: 10, justifyContent: "space-between", gap: 12 }}>
           <p className="muted" style={{ margin: 0, flex: 1 }}>
-            Type View groups Gospel events by category or tag such as miracle, parable, passion week, resurrection, and more.
+            Themes View groups Gospel events by category or tag such as miracle, parable, passion week, resurrection, and more.
           </p>
 
           <div className="row" style={{ gap: 8 }}>
