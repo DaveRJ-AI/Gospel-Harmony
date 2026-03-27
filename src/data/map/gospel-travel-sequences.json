@@ -10,7 +10,7 @@
         {
           "id": "mt-1",
           "label": "Birth and early setting",
-          "placeIds": ["bethlehem", "nazareth"]
+          "placeIds": ["bethlehem", "egypt", "nazareth"]
         },
         {
           "id": "mt-2",
@@ -20,7 +20,7 @@
         {
           "id": "mt-3",
           "label": "Galilean ministry",
-          "placeIds": ["capernaum", "sea-of-galilee", "capernaum", "galilee"]
+  "placeIds": ["capernaum", "sea-of-galilee", "capernaum", "galilee", "tyre-and-sidon", "galilee"]
         },
         {
           "id": "mt-4",
@@ -50,7 +50,7 @@
         {
           "id": "mk-3",
           "label": "Northern and eastern movements",
-          "placeIds": ["galilee", "deca polis", "sea-of-galilee"]
+"placeIds": ["galilee", "tyre-and-sidon", "decapolis", "sea-of-galilee"]
         },
         {
           "id": "mk-4",

@@ -1223,105 +1223,46 @@ export default function MapView() {
                 role="img"
                 aria-label="Gospel map visualization"
               >
-<RegionUnderlay
-  cx={400}
-  cy={380}
-  rx={360}
-  ry={250}
-  color={REGION_TEXT_COLORS.galilee}
-  rotate={-8}
-    isSelected={selectedRegionId === "galilee"}
-    onClick={() => togglePlace("galilee")}
-/>
 
-<RegionUnderlay
-  cx={760}
-  cy={620}
-  rx={130}
-  ry={100}
-  color={REGION_TEXT_COLORS.samaria}
-  rotate={8}
-  isSelected={selectedRegionId === "samaria"}
-  onClick={() => togglePlace("samaria")}
-/>
 
-<RegionUnderlay
-  cx={1010}
-  cy={930}
-  rx={340}
-  ry={235}
-  color={REGION_TEXT_COLORS.judea}
-  rotate={6}
-   isSelected={selectedRegionId === "judea"}
-   onClick={() => togglePlace("judea")}
-/>
+
+
+
 
 <RegionUnderlay
   cx={1205}
   cy={620}
-  rx={125}
-  ry={100}
+  rx={25}
+  ry={10}
   color={REGION_TEXT_COLORS.perea}
   rotate={-10}
    isSelected={selectedRegionId === "perea"}
    onClick={() => togglePlace("perea")}
 />
 
-<RegionUnderlay
-  cx={1290}
-  cy={400}
-  rx={170}
-  ry={120}
-  color={REGION_TEXT_COLORS.decapolis}
-  rotate={8}
-   isSelected={selectedRegionId === "decapolis"}
-   onClick={() => togglePlace("decapolis")}
-/>
+
 
 <RegionUnderlay
   cx={180}
   cy={1060}
-  rx={130}
-  ry={95}
+  rx={25}
+  ry={20}
   color={REGION_TEXT_COLORS.egypt}
   rotate={-8}
   isSelected={selectedRegionId === "egypt"}
   onClick={() => togglePlace("egypt")}
 />
 
-<RegionUnderlay
-  cx={160}
-  cy={95}
-  rx={110}
-  ry={68}
-  color={REGION_TEXT_COLORS["tyre-and-sidon"]}
-  rotate={-10}
-  isSelected={selectedRegionId === "tyre-and-sidon"}
-  onClick={() => togglePlace("tyre-and-sidon")}
-/>
+
 
 <text
-  x={395}
-  y={170}
-  textAnchor="middle"
-  fontSize={selectedRegionId === "galilee" ? "22" : "20"}
-  fontWeight={selectedRegionId === "galilee" ? 700 : 400}
-  fill={REGION_TEXT_COLORS.galilee}
-  opacity={selectedRegionId === "galilee" ? 0.85 : 0.55}
-  style={{ cursor: "pointer" }}
-onClick={() => togglePlace("galilee")}
->
-  Galilee
-</text>
-
-<text
-  x={790}
-  y={590}
+  x={880}
+  y={620}
   textAnchor="middle"
   fontSize={selectedRegionId === "samaria" ? "22" : "20"}
   fontWeight={selectedRegionId === "samaria" ? 700 : 400}
   fill={REGION_TEXT_COLORS.samaria}
-  opacity={selectedRegionId === "samaria" ? 0.85 : 0.55}
+  opacity={selectedRegionId === "samaria" ? .55 : 1.0}
   style={{ cursor: "pointer" }}
 onClick={() => togglePlace("samaria")}
 >
@@ -1329,7 +1270,7 @@ onClick={() => togglePlace("samaria")}
 </text>
 
 <text
-  x={1100}
+  x={1000}
   y={750}
   fontSize={selectedRegionId === "judea" ? "22" : "20"}
   fontWeight={selectedRegionId === "judea" ? 700 : 400}
@@ -1341,31 +1282,9 @@ onClick={() => togglePlace("judea")}
   Judea
 </text>
 
-<text
-  x={1205}
-  y={570}
-  fontSize={selectedRegionId === "perea" ? "22" : "20"}
-  fontWeight={selectedRegionId === "perea" ? 700 : 400}
-  fill={REGION_TEXT_COLORS.perea}
-  opacity={selectedRegionId === "perea" ? 0.85 : 0.55}
-  style={{ cursor: "pointer" }}
-onClick={() => togglePlace("perea")}
->
-  Perea
-</text>
 
-<text
-  x={1255}
-  y={345}
-  fontSize={selectedRegionId === "decapolis" ? "22" : "20"}
-  fontWeight={selectedRegionId === "decapolis" ? 700 : 400}
-  fill={REGION_TEXT_COLORS.decapolis}
-  opacity={selectedRegionId === "decapolis" ? 0.85 : 0.55}
-  style={{ cursor: "pointer" }}
-onClick={() => togglePlace("<decapolis>")}
->
-  Decapolis
-</text>
+
+
 
 <text
   x={180}
@@ -1381,19 +1300,104 @@ onClick={() => togglePlace("<egypt")}
   Egypt
 </text>
 
-<text
-  x={160}
-  y={78}
-  textAnchor="middle"
-  fontSize={selectedRegionId === "tyre-and-sidon" ? "22" : "20"}
-  fontWeight={selectedRegionId === "tyre-and-sidon" ? 700 : 400}
-  fill={REGION_TEXT_COLORS["tyre-and-sidon"]}
-  opacity={selectedRegionId === "tyre-and-sidon" ? 0.85 : 0.55}
-  style={{ cursor: "pointer" }}
-onClick={() => togglePlace("<tyre-and-sidon")}
->
-  Tyre & Sidon
-</text>
+
+{/* Full map parchment background underlay */}
+<image
+  href="/assets/map/map-parchment-underlay.png"
+  x={-240}
+  y={0}
+  width={1800}
+  height={1200}
+  opacity={0.5}
+  preserveAspectRatio="none"
+  style={{ pointerEvents: "none" }}
+/>
+
+
+{/* Decorative wilderness underlay for Samaria */}
+<image
+  href="/assets/map/judea-wilderness-underlay.png"
+  x={560}
+  y={395}
+  width={620}
+  height={330}
+  opacity={0.80}
+  preserveAspectRatio="xMidYMid meet"
+  style={{ pointerEvents: "none" }}
+/>
+
+
+{/* Decorative Egypt underlay */}
+<image
+  href="/assets/map/egypt-underlay.png"
+  x={-130}
+  y={840}
+  width={500}
+  height={300}
+  opacity={0.7}
+  preserveAspectRatio="xMidYMid meet"
+  style={{ pointerEvents: "none" }}
+/>
+
+{/* Decorative Jordan River underlay */}
+<image
+  href="/assets/map/jordan-river-underlay.png"
+  x={1115}
+  y={400}
+  width={195}
+  height={305}
+  opacity={0.45}
+  preserveAspectRatio="xMidYMid meet"
+  style={{ pointerEvents: "none" }}
+/>
+
+{/* Decorative vintage map-style underlay for Judea */}
+<image
+  href="/assets/map/judea-vintage-underlay.png"
+  x={240}
+  y={520}
+  width={1370}
+  height={764}
+  opacity={0.45}
+  preserveAspectRatio="xMidYMid meet"
+  style={{ pointerEvents: "none" }}
+/>
+
+{/* Decorative vintage map-style underlay for Decapolis */}
+<image
+  href="/assets/map/decapolis-vintage-underlay.png"
+  x={1065}
+  y={245}
+  width={500}
+  height={300}
+  opacity={0.6}
+  preserveAspectRatio="xMidYMid meet"
+  style={{ pointerEvents: "none" }}
+/>
+
+{/* Decorative vintage map-style underlay for Galilee */}
+<image
+  href="/assets/map/galilee-vintage-underlay.png"
+  x={-80}
+  y={120}
+  width={988}
+  height={559}
+  opacity={0.45}
+  preserveAspectRatio="xMidYMid meet"
+  style={{ pointerEvents: "none" }}
+/>
+
+{/* Decorative vintage map-style underlay for Tyre & Sidon */}
+<image
+  href="/assets/map/tyre-sidon-vintage-underlay.png"
+  x={-220}
+  y={-30}
+  width={560}
+  height={300}
+  opacity={0.45}
+  preserveAspectRatio="xMidYMid meet"
+  style={{ pointerEvents: "none" }}
+/>
 
                 {enabledGospels.map((gospel) => {
                   const gospelPoints = travelPoints
