@@ -1,6 +1,7 @@
 import React from "react";
 import ColumnGrid, { type ColumnBlock } from "../components/ColumnGrid";
 import ArtworkModal from "../components/ArtworkModal";
+import { useEsvAvailability } from "../hooks/useEsvAvailability";
 import { getChapter, getPassage, type PassageRef } from "../lib/bible";
 import { artworkForPericope, loadArtworkMap, type ArtworkItem, type ArtworkMap } from "../lib/artwork";
 import { loadHarmony, pericopesForChapter, passageForBook } from "../lib/harmony";
@@ -212,6 +213,7 @@ function ArtPill({
 }
 
 export default function ChapterView() {
+  const { esvAvailable, esvStatusChecked } = useEsvAvailability();
   const [version, setVersion] = React.useState<Version>("KJV");
   const [book, setBook] = React.useState<Gospel>("Matthew");
   const [chapter, setChapter] = React.useState<number>(1);
@@ -221,6 +223,12 @@ export default function ChapterView() {
 
   const [activeBlockId, setActiveBlockId] = React.useState<string | null>(null);
   const [scrollPrimaryToTopSignal, setScrollPrimaryToTopSignal] = React.useState(0);
+
+  React.useEffect(() => {
+    if (version === "ESV" && esvStatusChecked && !esvAvailable) {
+      setVersion("KJV");
+    }
+  }, [version, esvAvailable, esvStatusChecked]);
 
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
@@ -425,8 +433,13 @@ export default function ChapterView() {
               <label>Version</label>
               <select value={version} onChange={(e) => setVersion(e.target.value as Version)}>
                 <option value="KJV">KJV</option>
-                <option value="ESV">ESV</option>
+                <option value="ESV" disabled={esvStatusChecked && !esvAvailable}>ESV</option>
               </select>
+              {esvStatusChecked && !esvAvailable ? (
+                <div className="muted" style={{ marginTop: 8, fontSize: 12 }}>
+                  ESV unavailable
+                </div>
+              ) : null}
             </div>
 
             <div style={{ flex: 1, minWidth: 280 }}>

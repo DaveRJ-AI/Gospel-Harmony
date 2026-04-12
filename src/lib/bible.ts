@@ -21,6 +21,10 @@ function rangeLabel(r: PassageRef) {
   return r.startChapter === r.endChapter ? `${a}-${r.endVerse}` : `${a}-${r.book} ${b}`;
 }
 
+function getEsvEndpoint() {
+  return "/.netlify/functions/esvPassage";
+}
+
 export async function getChapterKJV(book: Gospel, chapter: number): Promise<Verse[]> {
   // generated file path: /public/data/kjv/Matthew/1.json etc
   const res = await fetch(`/data/kjv/${encodeURIComponent(book)}/${chapter}.json`);
@@ -46,9 +50,29 @@ export async function getPassageKJV(ref: PassageRef): Promise<Verse[]> {
 
 export async function getPassageESV(ref: PassageRef): Promise<Verse[]> {
   const q = rangeLabel(ref);
-  const res = await fetch(`/api/esvPassage?q=${encodeURIComponent(q)}`);
-  if (!res.ok) return [];
-  const data = (await res.json()) as { text: string };
+  const endpoint = `${getEsvEndpoint()}?q=${encodeURIComponent(q)}`;
+  const res = await fetch(endpoint);
+  const contentType = res.headers.get("content-type") ?? "";
+
+  if (!res.ok) {
+    const detail = contentType.includes("application/json")
+      ? JSON.stringify(await res.json())
+      : await res.text();
+    throw new Error(`ESV request failed (${res.status}): ${detail.slice(0, 240)}`);
+  }
+
+  if (!contentType.includes("application/json")) {
+    const text = await res.text();
+    throw new Error(
+      `ESV endpoint did not return JSON. Received: ${text.slice(0, 120)}`
+    );
+  }
+
+  const data = (await res.json()) as { text?: string; error?: string; detail?: string };
+
+  if (data.error) {
+    throw new Error(data.detail ? `${data.error}: ${data.detail}` : data.error);
+  }
 
   // ESV API returns text; we keep it as “verse-like” blocks for v1.
   // Advanced versioning could parse verse numbers if you configure ESV API options.

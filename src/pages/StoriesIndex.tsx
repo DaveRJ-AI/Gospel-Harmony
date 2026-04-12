@@ -1,12 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import ArtworkModal from "../components/ArtworkModal";
+import { useEsvAvailability } from "../hooks/useEsvAvailability";
 import { artworkForPericope, loadArtworkMap, type ArtworkItem, type ArtworkMap } from "../lib/artwork";
 import { loadHarmony, type Pericope } from "../lib/harmony";
 import type { Version } from "../lib/refs";
 
 export default function StoriesIndex() {
   const nav = useNavigate();
+  const { esvAvailable, esvStatusChecked } = useEsvAvailability();
 
   const [version, setVersion] = React.useState<Version>("KJV");
   const [query, setQuery] = React.useState("");
@@ -17,6 +19,12 @@ export default function StoriesIndex() {
 
   const [modalItems, setModalItems] = React.useState<ArtworkItem[]>([]);
   const [modalIndex, setModalIndex] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    if (version === "ESV" && esvStatusChecked && !esvAvailable) {
+      setVersion("KJV");
+    }
+  }, [version, esvAvailable, esvStatusChecked]);
 
   React.useEffect(() => {
     let alive = true;
@@ -82,7 +90,7 @@ export default function StoriesIndex() {
             <label>Version</label>
             <select value={version} onChange={(e) => setVersion(e.target.value as Version)}>
               <option value="KJV">KJV</option>
-              <option value="ESV">ESV</option>
+              <option value="ESV" disabled={esvStatusChecked && !esvAvailable}>ESV</option>
             </select>
           </div>
         </div>
@@ -90,6 +98,11 @@ export default function StoriesIndex() {
         <p className="muted" style={{ marginTop: 10 }}>
           Events shows Gospel events in harmony order. Click any event to open the 4-column harmonized view.
         </p>
+        {esvStatusChecked && !esvAvailable ? (
+          <p className="muted" style={{ marginTop: 8 }}>
+            ESV is unavailable until <code>ESV_API_KEY</code> is configured.
+          </p>
+        ) : null}
       </div>
 
       {loading ? <p className="muted" style={{ marginTop: 12 }}>Loading events…</p> : null}

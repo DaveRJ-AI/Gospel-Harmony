@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import ArtworkModal from "../components/ArtworkModal";
+import { useEsvAvailability } from "../hooks/useEsvAvailability";
 import {
   artworkForPericope,
   loadArtworkMap,
@@ -20,6 +21,7 @@ type ArtCardItem = {
 
 export default function ArtView() {
   const navigate = useNavigate();
+  const { esvAvailable, esvStatusChecked } = useEsvAvailability();
 
   const [version, setVersion] = React.useState<Version>("KJV");
   const [query, setQuery] = React.useState("");
@@ -31,6 +33,12 @@ export default function ArtView() {
 
   const [modalItems, setModalItems] = React.useState<ArtworkItem[]>([]);
   const [modalIndex, setModalIndex] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    if (version === "ESV" && esvStatusChecked && !esvAvailable) {
+      setVersion("KJV");
+    }
+  }, [version, esvAvailable, esvStatusChecked]);
 
   React.useEffect(() => {
     let alive = true;
@@ -131,7 +139,9 @@ export default function ArtView() {
               onChange={(e) => setVersion(e.target.value as Version)}
             >
               <option value="KJV">KJV</option>
-              <option value="ESV">ESV</option>
+              <option value="ESV" disabled={esvStatusChecked && !esvAvailable}>
+                ESV
+              </option>
             </select>
           </div>
         </div>
@@ -139,6 +149,11 @@ export default function ArtView() {
         <p className="muted" style={{ marginTop: 10 }}>
           Browse artwork by story. View the image or jump directly to the related passages.
         </p>
+        {esvStatusChecked && !esvAvailable ? (
+          <p className="muted" style={{ marginTop: 8 }}>
+            ESV is unavailable until <code>ESV_API_KEY</code> is configured.
+          </p>
+        ) : null}
       </div>
 
       {loading ? (

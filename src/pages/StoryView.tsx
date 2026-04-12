@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import ColumnGrid, { type ColumnBlock } from "../components/ColumnGrid";
 import ArtworkModal from "../components/ArtworkModal";
+import { useEsvAvailability } from "../hooks/useEsvAvailability";
 import { getPassage, type PassageRef } from "../lib/bible";
 import { artworkForPericope, loadArtworkMap, type ArtworkItem } from "../lib/artwork";
 import { loadHarmony, passagesForPericope, type Pericope } from "../lib/harmony";
@@ -53,6 +54,7 @@ export default function StoryView() {
   const { pericopeId } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { esvAvailable, esvStatusChecked } = useEsvAvailability();
 
   const initialVersion = (searchParams.get("version") === "ESV" ? "ESV" : "KJV") as Version;
   const [version, setVersion] = React.useState<Version>(initialVersion);
@@ -72,6 +74,12 @@ export default function StoryView() {
     Luke: [],
     John: [],
   });
+
+  React.useEffect(() => {
+    if (version === "ESV" && esvStatusChecked && !esvAvailable) {
+      setVersion("KJV");
+    }
+  }, [version, esvAvailable, esvStatusChecked]);
 
   React.useEffect(() => {
     let alive = true;
@@ -222,8 +230,13 @@ export default function StoryView() {
             <label>Version</label>
             <select value={version} onChange={(e) => setVersion(e.target.value as Version)}>
               <option value="KJV">KJV</option>
-              <option value="ESV">ESV</option>
+              <option value="ESV" disabled={esvStatusChecked && !esvAvailable}>ESV</option>
             </select>
+            {esvStatusChecked && !esvAvailable ? (
+              <div className="muted" style={{ marginTop: 8, fontSize: 12, maxWidth: 220 }}>
+                ESV is unavailable until <code>ESV_API_KEY</code> is configured.
+              </div>
+            ) : null}
           </div>
         </div>
 
