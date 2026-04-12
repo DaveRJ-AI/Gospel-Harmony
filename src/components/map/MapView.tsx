@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import type {
   Episode,
   GospelId,
@@ -43,6 +43,13 @@ type SegmentMarker = {
 
 const SVG_WIDTH = 1450;
 const SVG_HEIGHT = 1220;
+const VIEWBOX_X = -240;
+const VIEWBOX_Y = -30;
+const VIEWBOX_WIDTH = 1800;
+const VIEWBOX_HEIGHT = 1280;
+const MIN_ZOOM = 0.7;
+const MAX_ZOOM = 2.4;
+const ZOOM_STEP = 0.1;
 
 const REGION_TEXT_COLORS: Record<string, string> = {
   galilee: "#3B82F6",
@@ -59,13 +66,13 @@ const REGION_TEXT_COLORS: Record<string, string> = {
 
 const RELATIONAL_NODE_POSITIONS: Record<string, { x: number; y: number }> = {
   // Galilee
-  nazareth: { x: 220, y: 275 },
-  capernaum: { x: 410, y: 205 },
-  chorazin: { x: 420, y: 330 },
-  cana: { x: 555, y: 285 },
-  bethsaida: { x: 650, y: 400 },
-  magdala: { x: 540, y: 470 },
-  "sea-of-galilee": { x: 375, y: 535 },
+  nazareth: { x: 160, y: 495 },
+  capernaum: { x: 330, y: 305 },
+  chorazin: { x: 480, y: 330 },
+  cana: { x: 255, y: 385 },
+  bethsaida: { x: 550, y: 350 },
+  magdala: { x: 340, y: 390 },
+  "sea-of-galilee": { x: 395, y: 435 },
   nain: { x: 240, y: 455 },
   egypt: { x: 180, y: 1060 },
 "tyre-and-sidon": { x: 220, y: 120 },
@@ -77,15 +84,15 @@ const RELATIONAL_NODE_POSITIONS: Record<string, { x: number; y: number }> = {
   "jordan-river": { x: 1215, y: 620 },
 
   // Judea
-  bethlehem: { x: 835, y: 765 },
-  jerusalem: { x: 980, y: 835 },
-  gethsemane: { x: 1095, y: 900 },
-  "mount-of-olives": { x: 905, y: 955 },
-  bethany: { x: 1045, y: 955 },
+  bethlehem: { x: 835, y: 1050 },
+  jerusalem: { x: 850, y: 930 },
+  gethsemane: { x: 935, y: 900 },
+  "mount-of-olives": { x: 900, y: 925 },
+  bethany: { x: 900, y: 975 },
   wilderness: { x: 1265, y: 940 },
-  jericho: { x: 760, y: 1015 },
-  "empty-tomb": { x: 950, y: 1125 },
-  golgotha: { x: 1115, y: 1135 },
+  jericho: { x: 1035, y: 825 },
+  "empty-tomb": { x: 830, y: 845 },
+  golgotha: { x: 845, y: 900 },
 };
 
 
@@ -371,9 +378,32 @@ export default function MapView() {
   const bundle = useMemo(() => loadMapDataBundle(), []);
   const graph = useMemo(() => buildMapGraphData(bundle), [bundle]);
 
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const placesListRef = useRef<HTMLDivElement | null>(null);
+  const zoomFrameRef = useRef<{
+    clientX: number;
+    clientY: number;
+    previousZoom: number;
+    nextZoom: number;
+  } | null>(null);
+  const panStateRef = useRef<{
+    active: boolean;
+    startX: number;
+    startY: number;
+    startScrollLeft: number;
+    startScrollTop: number;
+    moved: boolean;
+  }>({
+    active: false,
+    startX: 0,
+    startY: 0,
+    startScrollLeft: 0,
+    startScrollTop: 0,
+    moved: false,
+  });
+  const suppressMapClickRef = useRef(false);
 
   const [enabledGospels, setEnabledGospels] = useState<GospelId[]>([]);
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
@@ -382,6 +412,12 @@ export default function MapView() {
   );
   const [hoverTooltip, setHoverTooltip] = useState<HoverTooltipData | null>(null);
   const [placesOverflow, setPlacesOverflow] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const [isPanning, setIsPanning] = useState(false);
+  const [mapViewportSize, setMapViewportSize] = useState({
+    width: VIEWBOX_WIDTH,
+    height: 820,
+  });
 
   const nodes = useMemo<PositionedNode[]>(() => {
     return buildRelationalLayout(graph.nodes);
@@ -467,6 +503,21 @@ export default function MapView() {
     window.addEventListener("resize", checkOverflow);
     return () => window.removeEventListener("resize", checkOverflow);
   }, [nodes]);
+
+  useEffect(() => {
+    const updateViewportSize = () => {
+      const el = mapContainerRef.current;
+      if (!el) return;
+      setMapViewportSize({
+        width: el.clientWidth,
+        height: el.clientHeight,
+      });
+    };
+
+    updateViewportSize();
+    window.addEventListener("resize", updateViewportSize);
+    return () => window.removeEventListener("resize", updateViewportSize);
+  }, []);
 
   const travelStopsByPlace = useMemo(() => {
     const map = new Map<string, TravelStopBadge[]>();
@@ -658,6 +709,143 @@ export default function MapView() {
       setSelectedPlaceId(episode.placeIds[0]);
     }
   }
+
+  function openEpisodeStory(
+    event: React.MouseEvent | React.KeyboardEvent,
+    pericopeId: string
+  ) {
+    event.stopPropagation();
+    navigate(`/story/${pericopeId}?version=KJV`);
+  }
+
+  function clampZoom(value: number) {
+    return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, Number(value.toFixed(2))));
+  }
+
+  function setZoomAnchored(
+    nextZoom: number,
+    clientX?: number,
+    clientY?: number
+  ) {
+    const container = mapContainerRef.current;
+    const normalized = clampZoom(nextZoom);
+
+    if (!container || (normalized === zoom && clientX === undefined)) {
+      setZoom(normalized);
+      return;
+    }
+
+    if (clientX !== undefined && clientY !== undefined) {
+      zoomFrameRef.current = {
+        clientX,
+        clientY,
+        previousZoom: actualScale,
+        nextZoom: fitScale * normalized,
+      };
+    } else {
+      const rect = container.getBoundingClientRect();
+      zoomFrameRef.current = {
+        clientX: rect.left + rect.width / 2,
+        clientY: rect.top + rect.height / 2,
+        previousZoom: actualScale,
+        nextZoom: fitScale * normalized,
+      };
+    }
+
+    setZoom(normalized);
+  }
+
+  function handleMapWheel(event: React.WheelEvent<HTMLDivElement>) {
+    event.preventDefault();
+    const direction = event.deltaY > 0 ? -1 : 1;
+    const nextZoom = zoom + direction * ZOOM_STEP;
+    setZoomAnchored(nextZoom, event.clientX, event.clientY);
+  }
+
+  function beginPan(event: React.MouseEvent<HTMLDivElement>) {
+    if (zoom <= 1 || event.button !== 0 || !mapContainerRef.current) return;
+
+    panStateRef.current = {
+      active: true,
+      startX: event.clientX,
+      startY: event.clientY,
+      startScrollLeft: mapContainerRef.current.scrollLeft,
+      startScrollTop: mapContainerRef.current.scrollTop,
+      moved: false,
+    };
+    suppressMapClickRef.current = false;
+
+    setIsPanning(true);
+  }
+
+  useEffect(() => {
+    function handleWindowMouseMove(event: MouseEvent) {
+      const container = mapContainerRef.current;
+      const panState = panStateRef.current;
+      if (!container || !panState.active) return;
+
+      const deltaX = event.clientX - panState.startX;
+      const deltaY = event.clientY - panState.startY;
+
+      if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+        panState.moved = true;
+      }
+
+      container.scrollLeft = panState.startScrollLeft - deltaX;
+      container.scrollTop = panState.startScrollTop - deltaY;
+    }
+
+    function endPan() {
+      if (!panStateRef.current.active) return;
+      if (panStateRef.current.moved) {
+        suppressMapClickRef.current = true;
+      }
+      panStateRef.current.active = false;
+      setIsPanning(false);
+    }
+
+    window.addEventListener("mousemove", handleWindowMouseMove);
+    window.addEventListener("mouseup", endPan);
+
+    return () => {
+      window.removeEventListener("mousemove", handleWindowMouseMove);
+      window.removeEventListener("mouseup", endPan);
+    };
+  }, []);
+
+  function suppressClickAfterPan(event: React.MouseEvent<SVGSVGElement>) {
+    if (!suppressMapClickRef.current) return;
+    event.preventDefault();
+    event.stopPropagation();
+    suppressMapClickRef.current = false;
+  }
+
+  useEffect(() => {
+    const frame = zoomFrameRef.current;
+    const container = mapContainerRef.current;
+    if (!frame || !container) return;
+
+    const rect = container.getBoundingClientRect();
+    const pointerX = frame.clientX - rect.left;
+    const pointerY = frame.clientY - rect.top;
+
+    const worldX = (container.scrollLeft + pointerX) / frame.previousZoom;
+    const worldY = (container.scrollTop + pointerY) / frame.previousZoom;
+
+    container.scrollLeft = worldX * frame.nextZoom - pointerX;
+    container.scrollTop = worldY * frame.nextZoom - pointerY;
+
+    zoomFrameRef.current = null;
+  }, [zoom]);
+
+  const fitScale = Math.min(
+    mapViewportSize.width / VIEWBOX_WIDTH,
+    mapViewportSize.height / VIEWBOX_HEIGHT
+  );
+  const actualScale = fitScale * zoom;
+  const zoomPercent = Math.round(zoom * 100);
+  const zoomedWidth = Math.round(VIEWBOX_WIDTH * actualScale);
+  const zoomedHeight = Math.round(VIEWBOX_HEIGHT * actualScale);
 
   function updateTooltipPosition(
     event: React.MouseEvent,
@@ -938,10 +1126,17 @@ export default function MapView() {
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {placeEpisodes.map((episode) => (
-                  <button
+                  <div
                     key={episode.id}
-                    type="button"
                     onClick={() => toggleEpisode(episode.id)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        toggleEpisode(episode.id);
+                      }
+                    }}
                     style={{
                       display: "block",
                       width: "100%",
@@ -961,18 +1156,64 @@ export default function MapView() {
                       cursor: "pointer",
                     }}
                   >
-                    <div style={{ fontWeight: 600 }}>{episode.title}</div>
                     <div
                       style={{
-                        marginTop: 4,
-                        fontSize: 12,
-                        color: "#64748B",
-                        textTransform: "capitalize",
+                        display: "flex",
+                        alignItems: "flex-start",
+                        justifyContent: "space-between",
+                        gap: 12,
                       }}
                     >
-                      {episode.gospels.join(", ")}
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <div style={{ fontWeight: 600 }}>{episode.title}</div>
+                        <div
+                          style={{
+                            marginTop: 4,
+                            fontSize: 12,
+                            color: "#64748B",
+                            textTransform: "capitalize",
+                          }}
+                        >
+                          {episode.gospels.join(", ")}
+                        </div>
+                      </div>
+
+                      {episode.pericopeId ? (
+                        <button
+                          type="button"
+                          aria-label={`Open ${episode.title} in harmonized Gospel view`}
+                          title="Open harmonized Gospel view"
+                          onClick={(event) =>
+                            openEpisodeStory(event, episode.pericopeId!)
+                          }
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: 30,
+                            height: 30,
+                            borderRadius: 999,
+                            border: "1px solid #CBD5E1",
+                            background: "#FFFFFF",
+                            color: "#475569",
+                            flex: "0 0 auto",
+                            cursor: "pointer",
+                          }}
+                        >
+                          <span
+                            aria-hidden="true"
+                            style={{
+                              display: "block",
+                              fontSize: 16,
+                              lineHeight: 1,
+                            }}
+                          >
+                            📖
+                          </span>
+                        </button>
+                      ) : null}
                     </div>
-                  </button>
+                  </div>
                 ))}
               </div>
             )}
@@ -1029,38 +1270,100 @@ export default function MapView() {
               <div
                 style={{
                   display: "flex",
-                  gap: 8,
-                  flexWrap: "wrap",
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                  gap: 10,
+                  flex: "0 0 auto",
                 }}
               >
-                {enabledGospels.map((gospel) => (
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 8,
+                    flexWrap: "wrap",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  {enabledGospels.map((gospel) => (
+                    <div
+                      key={gospel}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        borderRadius: 999,
+                        padding: "6px 10px",
+                        background: "#F8FAFC",
+                        border: "1px solid #E2E8F0",
+                        fontSize: 12,
+                        color: "#334155",
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      <span
+                        style={{
+                          display: "inline-block",
+                          width: 10,
+                          height: 10,
+                          borderRadius: 999,
+                          background: travelColorByGospel[gospel],
+                        }}
+                      />
+                      <span>{gospel}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: 8,
+                    background: "#FFFFFF",
+                    border: "1px solid #E2E8F0",
+                    borderRadius: 999,
+                    boxShadow: "0 8px 20px rgba(15, 23, 42, 0.06)",
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setZoomAnchored(zoom - ZOOM_STEP)}
+                    disabled={zoom <= MIN_ZOOM}
+                    aria-label="Zoom out"
+                    style={{ borderRadius: 999, padding: "6px 10px" }}
+                  >
+                    -
+                  </button>
                   <div
-                    key={gospel}
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      borderRadius: 999,
-                      padding: "6px 10px",
-                      background: "#F8FAFC",
-                      border: "1px solid #E2E8F0",
-                      fontSize: 12,
+                      minWidth: 58,
+                      textAlign: "center",
+                      fontSize: 13,
+                      fontWeight: 700,
                       color: "#334155",
-                      textTransform: "capitalize",
                     }}
                   >
-                    <span
-                      style={{
-                        display: "inline-block",
-                        width: 10,
-                        height: 10,
-                        borderRadius: 999,
-                        background: travelColorByGospel[gospel],
-                      }}
-                    />
-                    <span>{gospel}</span>
+                    {zoomPercent}%
                   </div>
-                ))}
+                  <button
+                    type="button"
+                    onClick={() => setZoomAnchored(zoom + ZOOM_STEP)}
+                    disabled={zoom >= MAX_ZOOM}
+                    aria-label="Zoom in"
+                    style={{ borderRadius: 999, padding: "6px 10px" }}
+                  >
+                    +
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setZoomAnchored(1)}
+                    disabled={Math.abs(zoom - 1) < 0.01}
+                    style={{ borderRadius: 999, padding: "6px 12px" }}
+                  >
+                    Reset
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -1209,20 +1512,35 @@ export default function MapView() {
                 height: 820,
                 overflow: "auto",
                 background: "#F8FAFC",
+                borderTop: "1px solid #E2E8F0",
+                cursor: zoom > 1 ? (isPanning ? "grabbing" : "grab") : "default",
               }}
               onMouseLeave={() => setHoverTooltip(null)}
+              onWheel={handleMapWheel}
+              onMouseDown={beginPan}
             >
-              <svg
-                viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
+              <div
                 style={{
-                  width: "100%",
-                  height: "100%",
+                  position: "relative",
+                  width: `max(100%, ${zoomedWidth}px)`,
+                  height: zoomedHeight,
                   minWidth: 900,
-                  display: "block",
+                  minHeight: zoomedHeight,
                 }}
-                role="img"
-                aria-label="Gospel map visualization"
               >
+                <svg
+                  viewBox={`${VIEWBOX_X} ${VIEWBOX_Y} ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
+                  style={{
+                    width: zoomedWidth,
+                    height: zoomedHeight,
+                    display: "block",
+                    margin: "0 auto",
+                    userSelect: "none",
+                  }}
+                  role="img"
+                  aria-label="Gospel map visualization"
+                  onClickCapture={suppressClickAfterPan}
+                >
 
 
 
@@ -1546,7 +1864,8 @@ onClick={() => togglePlace("<egypt")}
                     </g>
                   );
                 })}
-              </svg>
+                </svg>
+              </div>
 
               {hoverTooltip && (
                 <div

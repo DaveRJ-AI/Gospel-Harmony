@@ -1,0 +1,198 @@
+{
+  "baptism": [
+    {
+      "image": "/art/baptism.webp",
+      "thumbnail": "/art/baptism-thumb.webp",
+      "title": "Baptism of Jesus"
+    }
+  ],
+  "birth-jesus": [
+    {
+      "image": "/art/birth-jesus.webp",
+      "thumbnail": "/art/birth-jesus-thumb.webp",
+      "title": "Birth of Jesus"
+    }
+  ],
+  "born-blind": [
+    {
+      "image": "/art/born-blind.webp",
+      "thumbnail": "/art/born-blind-thumb.webp",
+      "title": "Man Born Blind"
+    }
+  ],
+  "boy-jesus-temple": [
+    {
+      "image": "/art/boy-jesus-temple.webp",
+      "thumbnail": "/art/boy-jesus-temple-thumb.webp",
+      "title": "Boy Jesus in the Temple"
+    }
+  ],
+  "call-fishermen": [
+    {
+      "image": "/art/call-fishermen.webp",
+      "thumbnail": "/art/call-fishermen-thumb.webp",
+      "title": "Calling of the Fishermen"
+    }
+  ],
+  "calming-storm": [
+    {
+      "image": "/art/calming-storm.webp",
+      "thumbnail": "/art/calming-storm-thumb.webp",
+      "title": "Jesus Calms the Storm"
+    }
+  ],
+  "crucifixion": [
+    {
+      "image": "/art/crucifixion.webp",
+      "thumbnail": "/art/crucifixion-thumb.webp",
+      "title": "Crucifixion"
+    }
+  ],
+  "emmaus": [
+    {
+      "image": "/art/emmaus.webp",
+      "thumbnail": "/art/emmaus-thumb.webp",
+      "title": "Road to Emmaus"
+    }
+  ],
+  "feeding-5000": [
+    {
+      "image": "/art/feeding-5000.webp",
+      "thumbnail": "/art/feeding-5000-thumb.webp",
+      "title": "Feeding of the Five Thousand"
+    }
+  ],
+  "gethsemane": [
+    {
+      "image": "/art/gethsemane.webp",
+      "thumbnail": "/art/gethsemane-thumb.webp",
+      "title": "Prayer in Gethsemane"
+    }
+  ],
+  "good-shepherd": [
+    {
+      "image": "/art/good-shepherd.webp",
+      "thumbnail": "/art/good-shepherd-thumb.webp",
+      "title": "Good Shepherd"
+    }
+  ],
+  "great-commission": [
+    {
+      "image": "/art/great-commission.webp",
+      "thumbnail": "/art/great-commission-thumb.webp",
+      "title": "Great Commission"
+    }
+  ],
+  "last-supper": [
+    {
+      "image": "/art/last-supper.webp",
+      "thumbnail": "/art/last-supper-thumb.webp",
+      "title": "Last Supper"
+    }
+  ],
+  "lazarus": [
+    {
+      "image": "/art/lazarus.webp",
+      "thumbnail": "/art/lazarus-thumb.webp",
+      "title": "Raising of Lazarus"
+    }
+  ],
+  "lost-sheep": [
+    {
+      "image": "/art/lost-sheep.webp",
+      "thumbnail": "/art/lost-sheep-thumb.webp",
+      "title": "Parable of the Lost Sheep"
+    }
+  ],
+  "magi": [
+    {
+      "image": "/art/magi.webp",
+      "thumbnail": "/art/magi-thumb.webp",
+      "title": "Visit of the Magi"
+    }
+  ],
+  "nicodemus": [
+    {
+      "image": "/art/nicodemus.webp",
+      "thumbnail": "/art/nicodemus-thumb.webp",
+      "title": "Jesus and Nicodemus"
+    }
+  ],
+  "paralytic": [
+    {
+      "image": "/art/paralytic.webp",
+      "thumbnail": "/art/paralytic-thumb.webp",
+      "title": "Healing the Paralytic"
+    }
+  ],
+  "pilate-herod": [
+    {
+      "image": "/art/pilate-herod.webp",
+      "thumbnail": "/art/pilate-herod-thumb.webp",
+      "title": "Before Pilate and Herod"
+    }
+  ],
+  "resurrection": [
+    {
+      "image": "/art/resurrection.webp",
+      "thumbnail": "/art/resurrection-thumb.webp",
+      "title": "Resurrection Morning"
+    }
+  ],
+  "samaritan-woman": [
+    {
+      "image": "/art/samaritan-woman.webp",
+      "thumbnail": "/art/samaritan-woman-thumb.webp",
+      "title": "Woman at the Well"
+    }
+  ],
+  "sermon-mount": [
+    {
+      "image": "/art/sermon-mount.webp",
+      "thumbnail": "/art/sermon-mount-thumb.webp",
+      "title": "Sermon on the Mount / Plain"
+    }
+  ],
+  "thomas": [
+    {
+      "image": "/art/thomas.webp",
+      "thumbnail": "/art/thomas-thumb.webp",
+      "title": "Jesus and Thomas"
+    }
+  ],
+  "transfiguration": [
+    {
+      "image": "/art/transfiguration.webp",
+      "thumbnail": "/art/transfiguration-thumb.webp",
+      "title": "Transfiguration"
+    }
+  ],
+  "triumphal-entry": [
+    {
+      "image": "/art/triumphal-entry.webp",
+      "thumbnail": "/art/triumphal-entry-thumb.webp",
+      "title": "Triumphal Entry"
+    }
+  ],
+  "walk-water": [
+    {
+      "image": "/art/walk-water.webp",
+      "thumbnail": "/art/walk-water-thumb.webp",
+      "title": "Walking on Water"
+    }
+  ],
+  "wedding-cana": [
+    {
+      "image": "/art/wedding-cana.webp",
+      "thumbnail": "/art/wedding-cana-thumb.webp",
+      "title": "Wedding at Cana"
+    }
+  ],
+  "woman-caught": [
+    {
+      "image": "/art/woman-caught.webp",
+      "thumbnail": "/art/woman-caught-thumb.webp",
+      "title": "Woman Caught in Adultery"
+    }
+  ]
+}

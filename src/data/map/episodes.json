@@ -32,6 +32,7 @@
       "placeIds": ["jordan-river"],
       "themes": ["baptism", "john-the-baptist"],
       "gospels": ["matthew", "mark", "luke", "john"],
+      "pericopeId": "baptism",
       "confidence": "high"
     },
     {
@@ -40,6 +41,7 @@
       "placeIds": ["wilderness"],
       "themes": ["temptation", "fasting"],
       "gospels": ["matthew", "mark", "luke"],
+      "pericopeId": "temptation",
       "confidence": "high"
     },
     {
@@ -48,6 +50,7 @@
       "placeIds": ["cana", "galilee"],
       "themes": ["signs", "water-to-wine"],
       "gospels": ["john"],
+      "pericopeId": "wedding-cana",
       "confidence": "high"
     },
     {
@@ -72,6 +75,7 @@
       "placeIds": ["sychar", "samaria"],
       "themes": ["samaria", "living-water"],
       "gospels": ["john"],
+      "pericopeId": "samaritan-woman",
       "confidence": "high"
     },
     {
@@ -80,6 +84,7 @@
   "placeIds": ["tyre-and-sidon"],
   "themes": ["gentile-ministry", "faith", "healing"],
   "gospels": ["matthew", "mark"],
+  "pericopeId": "syrophoenician",
   "confidence": "high"
 },
     {
@@ -88,6 +93,7 @@
       "placeIds": ["nain", "galilee"],
       "themes": ["miracle", "compassion"],
       "gospels": ["luke"],
+      "pericopeId": "widows-son-naim",
       "confidence": "high"
     },
     {
@@ -96,6 +102,7 @@
       "placeIds": ["bethany", "judea"],
       "themes": ["lazarus", "resurrection-sign"],
       "gospels": ["john"],
+      "pericopeId": "lazarus",
       "confidence": "high"
     },
     {
@@ -112,6 +119,7 @@
       "placeIds": ["bethany", "mount-of-olives", "jerusalem", "judea"],
       "themes": ["entry", "passion-week"],
       "gospels": ["matthew", "mark", "luke", "john"],
+      "pericopeId": "triumphal-entry",
       "confidence": "high"
     },
     {
@@ -120,6 +128,7 @@
       "placeIds": ["gethsemane", "mount-of-olives", "judea"],
       "themes": ["prayer", "betrayal", "passion"],
       "gospels": ["matthew", "mark", "luke"],
+      "pericopeId": "gethsemane",
       "confidence": "high"
     },
     {
@@ -128,6 +137,7 @@
       "placeIds": ["golgotha", "jerusalem", "judea"],
       "themes": ["cross", "atonement", "passion"],
       "gospels": ["matthew", "mark", "luke", "john"],
+      "pericopeId": "crucifixion",
       "confidence": "high"
     },
     {

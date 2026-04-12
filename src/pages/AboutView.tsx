@@ -7,7 +7,7 @@ export default function AboutView() {
         <h2 style={{ marginBottom: 10 }}>About Gospel Harmonics</h2>
         <p className="muted" style={{ marginTop: 0 }}>
           Gospel Harmonics is a scripture study tool designed to help readers compare
-          parallel Gospel passages side by side by chapter, event, timeline, type, and artwork.
+          parallel Gospel passages side by side by chapter, event, timeline, type, or location and accompanied with artwork.
         </p>
       </div>
 
@@ -29,6 +29,7 @@ export default function AboutView() {
           <li>Timeline and Type filtering</li>
           <li>Artwork thumbnails and viewer</li>
           <li>Responsive study layout</li>
+          <li>Relational map linking travel sequences with locations and events</li>
           <li>KJV with optional ESV support where configured</li>
         </ul>
       </div>
@@ -36,15 +37,14 @@ export default function AboutView() {
       <div className="card">
         <h3 style={{ marginBottom: 10 }}>Version</h3>
         <p style={{ marginTop: 0 }}>
-          This release represents a solid V1 foundation. Future versions may include maps,
-          location-based browsing, expanded artwork management, and additional study tools.
+          This release represents V3. Future versions may include additional study tools.
         </p>
       </div>
 
       <div className="card">
         <h3 style={{ marginBottom: 10 }}>Copyright and Use</h3>
         <p style={{ marginTop: 0 }}>
-          © 2026 Nascentics, LLC. All rights reserved.
+          © 2026 Nascentic, LLC. All rights reserved. (www.nascenticai.com)
         </p>
         <p>
           The original site design, code structure, arrangement, and original artwork created
@@ -58,10 +58,9 @@ export default function AboutView() {
       </div>
 
       <div className="card">
-        <h3 style={{ marginBottom: 10 }}>Contact / Notes</h3>
+        <h3 style={{ marginBottom: 10 }}>Notes</h3>
         <p style={{ marginTop: 0 }}>
-          This page can be updated later with contact information, acknowledgments,
-          licensing details, or formal terms of use.
+          Original artwork on this site was all created with the assistance of an AI image generator. 
         </p>
       </div>
     </div>

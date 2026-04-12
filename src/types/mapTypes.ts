@@ -55,6 +55,7 @@ export interface Episode {
   placeIds: PlaceId[];
   themes: string[];
   gospels: GospelId[];
+  pericopeId?: string;
   confidence: ConfidenceLevel;
 }
 
