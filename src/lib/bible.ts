@@ -75,10 +75,60 @@ export async function getPassageESV(ref: PassageRef): Promise<Verse[]> {
   }
 
   // ESV API returns text; we keep it as “verse-like” blocks for v1.
-  // Advanced versioning could parse verse numbers if you configure ESV API options.
   const text = data.text?.trim() || "";
   if (!text) return [];
-  return [{ book: ref.book, chapter: ref.startChapter, verse: ref.startVerse, text }];
+
+  return parseEsvVerses(ref, text);
+}
+
+function parseEsvVerses(ref: PassageRef, text: string): Verse[] {
+  const cleaned = text
+    .replace(/\s*\(ESV\)\s*$/i, "")
+    .replace(/\r/g, "")
+    .trim();
+
+  const matches = Array.from(cleaned.matchAll(/\[(\d+)\]\s*/g));
+  if (matches.length === 0) {
+    return [
+      {
+        book: ref.book,
+        chapter: ref.startChapter,
+        verse: ref.startVerse,
+        text: cleaned,
+      },
+    ];
+  }
+
+  const verses: Verse[] = [];
+
+  for (let i = 0; i < matches.length; i += 1) {
+    const current = matches[i];
+    const next = matches[i + 1];
+    const verseNumber = Number(current[1]);
+    const start = current.index! + current[0].length;
+    const end = next ? next.index! : cleaned.length;
+    const verseText = cleaned.slice(start, end).replace(/\s+/g, " ").trim();
+
+    if (!verseText) continue;
+
+    verses.push({
+      book: ref.book,
+      chapter: ref.startChapter,
+      verse: verseNumber,
+      text: verseText,
+    });
+  }
+
+  return verses.length > 0
+    ? verses
+    : [
+        {
+          book: ref.book,
+          chapter: ref.startChapter,
+          verse: ref.startVerse,
+          text: cleaned,
+        },
+      ];
 }
 
 export async function getChapter(version: Version, book: Gospel, chapter: number) {

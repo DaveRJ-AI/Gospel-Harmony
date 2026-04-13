@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink, Route, Routes } from "react-router-dom";
+import { NavLink, Route, Routes, useLocation, useSearchParams } from "react-router-dom";
 import ChapterView from "./pages/ChapterView";
 import StoriesIndex from "./pages/StoriesIndex";
 import StoryView from "./pages/StoryView";
@@ -8,6 +8,12 @@ import TypeView from "./pages/TypeView";
 import ArtView from "./pages/ArtView";
 import AboutView from "./pages/AboutView";
 import MapView from "./components/map/MapView";
+import EsvAttribution from "./components/EsvAttribution";
+import {
+  getEsvDisplayActive,
+  getEsvDisplayEventName,
+  setEsvDisplayActive,
+} from "./lib/esvDisplayState";
 
 function navLinkStyle({ isActive }: { isActive: boolean }) {
   return {
@@ -23,6 +29,43 @@ function navLinkStyle({ isActive }: { isActive: boolean }) {
 }
 
 export default function App() {
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const [esvDisplayActive, setFooterEsvDisplayActive] = React.useState(
+    getEsvDisplayActive()
+  );
+  const isStoryRoute = location.pathname.startsWith("/story/");
+  const isChapterRoute = location.pathname === "/";
+  const versionParam = searchParams.get("version");
+  const showEsvAttribution =
+    esvDisplayActive && (isStoryRoute || isChapterRoute);
+
+  React.useEffect(() => {
+    const isEligibleRoute = location.pathname === "/" || location.pathname.startsWith("/story/");
+    if (!isEligibleRoute) {
+      setEsvDisplayActive(false);
+      setFooterEsvDisplayActive(false);
+      return;
+    }
+
+    if (location.pathname.startsWith("/story/")) {
+      const active = versionParam === "ESV";
+      setEsvDisplayActive(active);
+      setFooterEsvDisplayActive(active);
+    }
+  }, [location.pathname, versionParam]);
+
+  React.useEffect(() => {
+    function handleEsvDisplayChange(event: Event) {
+      const customEvent = event as CustomEvent<{ active?: boolean }>;
+      setFooterEsvDisplayActive(Boolean(customEvent.detail?.active));
+    }
+
+    window.addEventListener(getEsvDisplayEventName(), handleEsvDisplayChange);
+    return () =>
+      window.removeEventListener(getEsvDisplayEventName(), handleEsvDisplayChange);
+  }, []);
+
   return (
     <div className="container">
       <div className="header">
@@ -83,6 +126,8 @@ export default function App() {
         <Route path="/art" element={<ArtView />} />
         <Route path="/about" element={<AboutView />} />
       </Routes>
+
+      {showEsvAttribution ? <EsvAttribution /> : null}
 
       <footer className="siteFooter">
         <div>© 2026 Nascentic, LLC. All rights reserved.</div>

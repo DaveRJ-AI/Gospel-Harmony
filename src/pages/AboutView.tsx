@@ -55,6 +55,12 @@ export default function AboutView() {
           Users should respect the rights and terms associated with any non-public-domain
           scripture text or artwork source.
         </p>
+        <p>
+          English Standard Version passages, when enabled, are from The Holy Bible,
+          English Standard Version, copyright © 2001 by Crossway Bibles, a publishing
+          ministry of Good News Publishers. Used by permission. All rights reserved.
+          See <a href="https://www.esv.org/" target="_blank" rel="noreferrer">www.esv.org</a>.
+        </p>
       </div>
 
       <div className="card">

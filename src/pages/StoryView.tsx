@@ -4,6 +4,7 @@ import ColumnGrid, { type ColumnBlock } from "../components/ColumnGrid";
 import ArtworkModal from "../components/ArtworkModal";
 import { useEsvAvailability } from "../hooks/useEsvAvailability";
 import { getPassage, type PassageRef } from "../lib/bible";
+import { setEsvDisplayActive } from "../lib/esvDisplayState";
 import { artworkForPericope, loadArtworkMap, type ArtworkItem } from "../lib/artwork";
 import { loadHarmony, passagesForPericope, type Pericope } from "../lib/harmony";
 import { GOSPELS, type Gospel, type Version } from "../lib/refs";
@@ -80,6 +81,11 @@ export default function StoryView() {
       setVersion("KJV");
     }
   }, [version, esvAvailable, esvStatusChecked]);
+
+  React.useEffect(() => {
+    setEsvDisplayActive(version === "ESV");
+    return () => setEsvDisplayActive(false);
+  }, [version]);
 
   React.useEffect(() => {
     let alive = true;
