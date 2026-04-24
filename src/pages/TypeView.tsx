@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import ArtworkModal from "../components/ArtworkModal";
 import { useEsvAvailability } from "../hooks/useEsvAvailability";
 import { artworkForPericope, loadArtworkMap, type ArtworkItem, type ArtworkMap } from "../lib/artwork";
@@ -58,7 +58,10 @@ function ArtThumbnail({
 
 export default function TypeView() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { esvAvailable, esvStatusChecked } = useEsvAvailability();
+  const themeParam = searchParams.get("theme")?.trim().toLowerCase() ?? "";
+  const returnTo = searchParams.get("returnTo");
 
   const [version, setVersion] = React.useState<Version>("KJV");
   const [query, setQuery] = React.useState("");
@@ -127,6 +130,10 @@ export default function TypeView() {
   }, []);
 
   const filteredGroups = React.useMemo(() => {
+    if (themeParam) {
+      return groups.filter((g) => g.tag.toLowerCase() === themeParam);
+    }
+
     const q = query.trim().toLowerCase();
     if (!q) return groups;
 
@@ -139,15 +146,19 @@ export default function TypeView() {
         }),
       }))
       .filter((g) => g.items.length > 0);
-  }, [groups, query]);
+  }, [groups, query, themeParam]);
 
   React.useEffect(() => {
     setOpenGroups((prev) => {
       const next: Record<string, boolean> = {};
-      for (const group of filteredGroups) next[group.tag] = prev[group.tag] ?? false;
+      for (const group of filteredGroups) {
+        next[group.tag] = themeParam
+          ? group.tag.toLowerCase() === themeParam
+          : prev[group.tag] ?? false;
+      }
       return next;
     });
-  }, [filteredGroups]);
+  }, [filteredGroups, themeParam]);
 
   const toggleGroup = (tag: string) => {
     setOpenGroups((prev) => ({
@@ -171,6 +182,12 @@ export default function TypeView() {
   return (
     <div>
       <div className="card">
+        {returnTo ? (
+          <div className="muted" style={{ marginBottom: 10 }}>
+            <Link to={returnTo}>← Back to map</Link>
+          </div>
+        ) : null}
+
         <div className="row" style={{ alignItems: "flex-end", justifyContent: "space-between", gap: 16 }}>
           <div style={{ flex: 1, minWidth: 280 }}>
             <label>Search themes</label>
@@ -179,6 +196,7 @@ export default function TypeView() {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search themes, title, summary..."
               style={{ width: "100%" }}
+              disabled={Boolean(themeParam)}
             />
           </div>
 
@@ -202,10 +220,12 @@ export default function TypeView() {
             Themes View groups Gospel events by category or tag such as miracle, parable, passion week, resurrection, and more.
           </p>
 
-          <div className="row" style={{ gap: 8 }}>
-            <button onClick={expandAll}>Expand all</button>
-            <button onClick={collapseAll}>Collapse all</button>
-          </div>
+          {!themeParam ? (
+            <div className="row" style={{ gap: 8 }}>
+              <button onClick={expandAll}>Expand all</button>
+              <button onClick={collapseAll}>Collapse all</button>
+            </div>
+          ) : null}
         </div>
       </div>
 

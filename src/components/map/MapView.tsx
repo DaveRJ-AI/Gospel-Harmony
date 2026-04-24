@@ -19,12 +19,6 @@ type PositionedNode = PlaceWithOverlay & {
   y: number;
 };
 
-type HoverTooltipData = {
-  node: PositionedNode;
-  x: number;
-  y: number;
-};
-
 type TravelStopBadge = {
   gospel: GospelId;
   order: number;
@@ -41,6 +35,20 @@ type SegmentMarker = {
   isRegionTransition?: boolean;
 };
 
+type MapCoordinate = {
+  x: number;
+  y: number;
+};
+
+type EpisodeStoryTarget = {
+  episodeId: string;
+  pericopeId: string;
+  title: string;
+  gospels: GospelId[];
+};
+
+type TravelSegmentBendKey = `${GospelId}:${string}->${string}`;
+
 const SVG_WIDTH = 1450;
 const SVG_HEIGHT = 1220;
 const VIEWBOX_X = -240;
@@ -48,8 +56,11 @@ const VIEWBOX_Y = -30;
 const VIEWBOX_WIDTH = 1800;
 const VIEWBOX_HEIGHT = 1280;
 const MIN_ZOOM = 0.7;
-const MAX_ZOOM = 2.4;
+const MAX_ZOOM = 4;
 const ZOOM_STEP = 0.1;
+const WHEEL_ZOOM_SENSITIVITY = 0.0008;
+const DESIGNER_COORDINATE_ASSIST_ENABLED = true;
+const MAP_FULL_UNDERLAY_SRC = "/assets/map/Israel_underlay.png";
 
 const REGION_TEXT_COLORS: Record<string, string> = {
   galilee: "#3B82F6",
@@ -64,35 +75,87 @@ const REGION_TEXT_COLORS: Record<string, string> = {
   default: "#94A3B8",
 };
 
+const REGION_LABEL_COLOR = REGION_TEXT_COLORS.egypt;
+const REGION_LABEL_FONT_SIZE = 30;
+const REGION_LABEL_SELECTED_FONT_SIZE = 33;
+
+const EPISODE_THEME_TO_HARMONY_TAG: Record<string, string> = {
+  atonement: "passion week",
+  baptism: "baptism",
+  betrayal: "passion week",
+  birth: "birth",
+  "blind-bartimaeus": "healing",
+  "boat-crossings": "miracle",
+  burial: "resurrection",
+  childhood: "early life",
+  compassion: "miracle",
+  cross: "passion week",
+  disciples: "discipleship",
+  entry: "passion week",
+  faith: "faith",
+  fasting: "temptation",
+  fulfillment: "birth",
+  "galilean-ministry": "teaching",
+  "gentile-ministry": "mission",
+  healing: "healing",
+  "hidden-years": "early life",
+  infancy: "birth",
+  "john-the-baptist": "john the baptist",
+  "journey-to-jerusalem": "journey",
+  lazarus: "miracle",
+  "living-water": "teaching",
+  miracle: "miracle",
+  nativity: "birth",
+  passion: "passion",
+  "passion-week": "passion week",
+  prayer: "prayer",
+  protection: "birth",
+  resurrection: "resurrection",
+  "resurrection-sign": "miracle",
+  samaria: "teaching",
+  signs: "miracle",
+  storm: "miracle",
+  teaching: "teaching",
+  temptation: "temptation",
+  "walking-on-water": "miracle",
+  "water-to-wine": "miracle",
+  zacchaeus: "journey",
+};
+
 const RELATIONAL_NODE_POSITIONS: Record<string, { x: number; y: number }> = {
   // Galilee
-  nazareth: { x: 160, y: 495 },
-  capernaum: { x: 330, y: 305 },
-  chorazin: { x: 480, y: 330 },
-  cana: { x: 255, y: 385 },
-  bethsaida: { x: 550, y: 350 },
-  magdala: { x: 340, y: 390 },
-  "sea-of-galilee": { x: 395, y: 435 },
-  nain: { x: 240, y: 455 },
-  egypt: { x: 180, y: 1060 },
-"tyre-and-sidon": { x: 220, y: 120 },
+  nazareth: { x: 914, y: 236 },
+  capernaum: { x: 998, y: 162 },
+  chorazin: { x: 958, y: 151 },
+  cana: { x: 903, y: 188 },
+  bethsaida: { x: 1024, y: 148 },
+  magdala: { x: 981, y: 185 },
+  "sea-of-galilee": { x: 1025, y: 186 },
+  nain: { x: 935, y: 288 },
+  galilee: { x: 988, y: 220 },
+  egypt: { x: 378, y: 1141 },
+"tyre-and-sidon": { x: 827, y: 47 },
 
   // Samaria
-  sychar: { x: 735, y: 600 },
+  sychar: { x: 997, y: 395 },
 
   // Perea / Decapolis gateway
-  "jordan-river": { x: 1215, y: 620 },
+  "jordan-river": { x: 1064, y: 456 },
 
   // Judea
-  bethlehem: { x: 835, y: 1050 },
-  jerusalem: { x: 850, y: 930 },
-  gethsemane: { x: 935, y: 900 },
-  "mount-of-olives": { x: 900, y: 925 },
-  bethany: { x: 900, y: 975 },
-  wilderness: { x: 1265, y: 940 },
-  jericho: { x: 1035, y: 825 },
-  "empty-tomb": { x: 830, y: 845 },
-  golgotha: { x: 845, y: 900 },
+  bethlehem: { x: 995, y: 664 },
+  jerusalem: { x: 994, y: 632 },
+  "mount-of-olives": { x: 1021, y: 663 },
+  bethany: { x: 1030, y: 645 },
+  wilderness: { x: 1038, y: 617 },
+  jericho: { x: 1065, y: 565 },
+  "empty-tomb": { x: 967, y: 630 },
+  golgotha: { x: 985, y: 617 },
+  gethsemane: { x: 1008, y: 632 },
+  decapolis: { x: 1002, y: -20 },
+  samaria: { x: 934, y: 722 },
+  judea: { x: 982, y: 700 },
+  perea: { x: 1120, y: 520 },
 };
 
 
@@ -101,12 +164,12 @@ const LABEL_OFFSETS: Record<
   { dx?: number; dy?: number; anchor?: "start" | "middle" | "end" }
 > = {
   nazareth: { dx: 0, dy: 18, anchor: "middle" },
-  capernaum: { dx: 0, dy: 18, anchor: "middle" },
+  capernaum: { dx: 14, dy: 4, anchor: "start" },
   chorazin: { dx: 0, dy: 18, anchor: "middle" },
   cana: { dx: 0, dy: 18, anchor: "middle" },
   bethsaida: { dx: 0, dy: 18, anchor: "middle" },
   magdala: { dx: 0, dy: 18, anchor: "middle" },
-  "sea-of-galilee": { dx: 0, dy: 20, anchor: "middle" },
+  "sea-of-galilee": { dx: 18, dy: 4, anchor: "start" },
   nain: { dx: 0, dy: 18, anchor: "middle" },
 
   sychar: { dx: 0, dy: 18, anchor: "middle" },
@@ -114,14 +177,62 @@ const LABEL_OFFSETS: Record<
 
   bethlehem: { dx: 0, dy: 18, anchor: "middle" },
   jerusalem: { dx: 0, dy: 18, anchor: "middle" },
-  gethsemane: { dx: 12, dy: 12, anchor: "start" },
-  "mount-of-olives": { dx: 0, dy: 18, anchor: "middle" },
-  bethany: { dx: 0, dy: 18, anchor: "middle" },
-  wilderness: { dx: 0, dy: 20, anchor: "middle" },
-  jericho: { dx: 0, dy: 18, anchor: "middle" },
-  golgotha: { dx: 0, dy: 18, anchor: "middle" },
-  "empty-tomb": { dx: 0, dy: 18, anchor: "middle" },
+  gethsemane: { dx: 14, dy: 4, anchor: "start" },
+  "mount-of-olives": { dx: 14, dy: 4, anchor: "start" },
+  bethany: { dx: 14, dy: 4, anchor: "start" },
+  wilderness: { dx: 0, dy: -14, anchor: "middle" },
+  jericho: { dx: 14, dy: 4, anchor: "start" },
+  golgotha: { dx: -14, dy: 4, anchor: "end" },
+  "empty-tomb": { dx: -14, dy: 4, anchor: "end" },
 };
+
+const MAP_GEOGRAPHY_LABELS: Array<{
+  id: string;
+  text: string;
+  x: number;
+  y: number;
+  anchor?: "start" | "middle" | "end";
+  fontSize?: number;
+  opacity?: number;
+}> = [
+  {
+    id: "tyre-and-sidon-label",
+    text: "Tyre and Sidon",
+    x: 900,
+    y: 56,
+    anchor: "middle",
+    fontSize: 22,
+    opacity: 0.92,
+  },
+  {
+    id: "dead-sea-label",
+    text: "Dead Sea",
+    x: 1106,
+    y: 703,
+    anchor: "middle",
+    fontSize: 22,
+    opacity: 0.92,
+  },
+  {
+    id: "damascus-label",
+    text: "Damascus",
+    x: 987,
+    y: 12,
+    anchor: "middle",
+    fontSize: 22,
+    opacity: 0.92,
+  },
+];
+
+const TRAVEL_SEGMENT_BENDS: Partial<Record<TravelSegmentBendKey, MapCoordinate[]>> =
+  {
+    "matthew:egypt->nazareth": [{ x: 696, y: 979 }],
+    "matthew:galilee->tyre-and-sidon": [{ x: 925, y: 126 }],
+    "mark:galilee->tyre-and-sidon": [{ x: 925, y: 126 }],
+    "luke:sea-of-galilee->galilee": [{ x: 1000, y: 210 }],
+    "luke:galilee->samaria": [{ x: 978, y: 300 }],
+    "john:sychar->galilee": [{ x: 980, y: 300 }],
+  };
 
 const MARKER_NUDGES: Record<string, { dx: number; dy: number }> = {
   "matthew-7": { dx: -22, dy: -12 },
@@ -175,6 +286,91 @@ const panelTitleStyle: React.CSSProperties = {
   color: "#64748B",
 };
 
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
+
+function getTravelSegmentBendPoints(
+  gospel: GospelId,
+  fromPlaceId: string,
+  toPlaceId: string
+): MapCoordinate[] {
+  const key = `${gospel}:${fromPlaceId}->${toPlaceId}` as TravelSegmentBendKey;
+  return TRAVEL_SEGMENT_BENDS[key] ?? [];
+}
+
+function getTravelSegmentPathPoints(
+  gospel: GospelId,
+  from: PositionedNode,
+  to: PositionedNode
+): MapCoordinate[] {
+  return [
+    { x: from.x, y: from.y },
+    ...getTravelSegmentBendPoints(gospel, from.id, to.id),
+    { x: to.x, y: to.y },
+  ];
+}
+
+function getPointAlongPolyline(points: MapCoordinate[], t: number): MapCoordinate {
+  if (points.length <= 1) return points[0] ?? { x: 0, y: 0 };
+
+  const segments = points.slice(0, -1).map((point, index) => {
+    const next = points[index + 1];
+    const dx = next.x - point.x;
+    const dy = next.y - point.y;
+    const length = Math.max(Math.sqrt(dx * dx + dy * dy), 0.0001);
+
+    return {
+      from: point,
+      to: next,
+      dx,
+      dy,
+      length,
+    };
+  });
+
+  const totalLength = segments.reduce((sum, segment) => sum + segment.length, 0);
+  const targetLength = totalLength * clamp(t, 0, 1);
+
+  let traversed = 0;
+  for (const segment of segments) {
+    if (traversed + segment.length >= targetLength) {
+      const localT = (targetLength - traversed) / segment.length;
+      return {
+        x: segment.from.x + segment.dx * localT,
+        y: segment.from.y + segment.dy * localT,
+      };
+    }
+    traversed += segment.length;
+  }
+
+  return points[points.length - 1];
+}
+
+function clampPan(
+  pan: { x: number; y: number },
+  zoom: number
+): { x: number; y: number } {
+  if (zoom <= 1) {
+    return { x: 0, y: 0 };
+  }
+
+  const minX = VIEWBOX_X;
+  const maxX = VIEWBOX_X + VIEWBOX_WIDTH;
+  const minY = VIEWBOX_Y;
+  const maxY = VIEWBOX_Y + VIEWBOX_HEIGHT;
+
+  const minPanX = maxX * (1 - zoom);
+  const maxPanX = minX * (1 - zoom);
+  const minPanY = maxY * (1 - zoom);
+  const maxPanY = minY * (1 - zoom);
+
+  return {
+    x: clamp(pan.x, minPanX, maxPanX),
+    y: clamp(pan.y, minPanY, maxPanY),
+  };
+}
+
 function getRegionColor(region: string | null): string {
   if (!region) return REGION_TEXT_COLORS.default;
   return REGION_TEXT_COLORS[region] ?? REGION_TEXT_COLORS.default;
@@ -203,6 +399,14 @@ function getNodeRadius(type: string): number {
     default:
       return 7;
   }
+}
+
+function resolveEpisodeThemesToHarmonyTags(episode: Episode): string[] {
+  const resolved = (episode.themes ?? [])
+    .map((theme) => EPISODE_THEME_TO_HARMONY_TAG[theme] ?? null)
+    .filter((theme): theme is string => Boolean(theme));
+
+  return Array.from(new Set(resolved));
 }
 
 function getNodeFill(
@@ -293,26 +497,43 @@ function StartPin({
   y,
   color,
   label,
+  scale = 1,
 }: {
   x: number;
   y: number;
   color: string;
   label: string;
+  scale?: number;
 }) {
+  const circleRadius = 8 * scale;
+  const strokeWidth = 1.4 * scale;
+  const triangleStrokeWidth = 1.2 * scale;
+  const triangleHalfWidth = 4 * scale;
+  const triangleTopY = y + 4 * scale;
+  const triangleBottomY = y + 12 * scale;
+  const labelFontSize = 9 * scale;
+
   return (
     <g>
-      <circle cx={x} cy={y - 2} r={8} fill={color} stroke="#0F172A" strokeWidth={1.4} />
-      <path
-        d={`M ${x - 4} ${y + 4} L ${x} ${y + 12} L ${x + 4} ${y + 4} Z`}
+      <circle
+        cx={x}
+        cy={y - 2 * scale}
+        r={circleRadius}
         fill={color}
         stroke="#0F172A"
-        strokeWidth={1.2}
+        strokeWidth={strokeWidth}
+      />
+      <path
+        d={`M ${x - triangleHalfWidth} ${triangleTopY} L ${x} ${triangleBottomY} L ${x + triangleHalfWidth} ${triangleTopY} Z`}
+        fill={color}
+        stroke="#0F172A"
+        strokeWidth={triangleStrokeWidth}
       />
       <text
         x={x}
-        y={y + 1.2}
+        y={y + 1.2 * scale}
         textAnchor="middle"
-        fontSize="9"
+        fontSize={labelFontSize}
         fontWeight="700"
         fill="#FFFFFF"
       >
@@ -322,58 +543,6 @@ function StartPin({
   );
 }
 
-function RegionUnderlay({
-  cx,
-  cy,
-  rx,
-  ry,
-  color,
-  rotate = 0,
-  isSelected = false,
-  onClick,
-}: {
-  cx: number;
-  cy: number;
-  rx: number;
-  ry: number;
-  color: string;
-  rotate?: number;
-  isSelected?: boolean;
-  onClick?: () => void;
-}) {
-  return (
-    <>
-      {isSelected && (
-        <ellipse
-          cx={cx}
-          cy={cy}
-          rx={rx + 6}
-          ry={ry + 6}
-          fill="none"
-          stroke={color}
-          strokeWidth={2.2}
-          opacity={0.35}
-          transform={rotate ? `rotate(${rotate} ${cx} ${cy})` : undefined}
-          style={{ cursor: onClick ? "pointer" : "default" }}
-          onClick={onClick}
-        />
-      )}
-      <ellipse
-        cx={cx}
-        cy={cy}
-        rx={rx}
-        ry={ry}
-        fill={color}
-        opacity={isSelected ? 0.16 : 0.08}
-        transform={rotate ? `rotate(${rotate} ${cx} ${cy})` : undefined}
-        style={{ cursor: onClick ? "pointer" : "default" }}
-        onClick={onClick}
-      />
-    </>
-  );
-}
-
-
 export default function MapView() {
   const bundle = useMemo(() => loadMapDataBundle(), []);
   const graph = useMemo(() => buildMapGraphData(bundle), [bundle]);
@@ -381,28 +550,15 @@ export default function MapView() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const mapSvgRef = useRef<SVGSVGElement | null>(null);
   const placesListRef = useRef<HTMLDivElement | null>(null);
-  const zoomFrameRef = useRef<{
-    clientX: number;
-    clientY: number;
-    previousZoom: number;
-    nextZoom: number;
-  } | null>(null);
   const panStateRef = useRef<{
-    active: boolean;
     startX: number;
     startY: number;
-    startScrollLeft: number;
-    startScrollTop: number;
-    moved: boolean;
-  }>({
-    active: false,
-    startX: 0,
-    startY: 0,
-    startScrollLeft: 0,
-    startScrollTop: 0,
-    moved: false,
-  });
+    panX: number;
+    panY: number;
+    pointerId: number;
+  } | null>(null);
   const suppressMapClickRef = useRef(false);
 
   const [enabledGospels, setEnabledGospels] = useState<GospelId[]>([]);
@@ -410,14 +566,14 @@ export default function MapView() {
   const [selectedEpisodeId, setSelectedEpisodeId] = useState<string | null>(
     null
   );
-  const [hoverTooltip, setHoverTooltip] = useState<HoverTooltipData | null>(null);
-  const [placesOverflow, setPlacesOverflow] = useState(false);
+  const [placesExpanded, setPlacesExpanded] = useState(true);
   const [zoom, setZoom] = useState(1);
+  const [panX, setPanX] = useState(0);
+  const [panY, setPanY] = useState(0);
   const [isPanning, setIsPanning] = useState(false);
-  const [mapViewportSize, setMapViewportSize] = useState({
-    width: VIEWBOX_WIDTH,
-    height: 820,
-  });
+  const [designerCoordinateMode, setDesignerCoordinateMode] = useState(false);
+  const [designerMouseCoordinate, setDesignerMouseCoordinate] =
+    useState<MapCoordinate | null>(null);
 
   const nodes = useMemo<PositionedNode[]>(() => {
     return buildRelationalLayout(graph.nodes);
@@ -433,6 +589,9 @@ export default function MapView() {
     ? nodesById.get(selectedPlaceId) ?? null
     : null;
 
+  const selectedDesignerNode =
+    selectedPlace && selectedPlace.type !== "region" ? selectedPlace : null;
+
     const selectedRegionId =
   selectedPlace && selectedPlace.type === "region" ? selectedPlace.id : null;
 
@@ -440,6 +599,48 @@ export default function MapView() {
     if (!selectedPlaceId) return [];
     return getEpisodesForPlace(selectedPlaceId, bundle);
   }, [selectedPlaceId, bundle]);
+
+  const placeStoryEpisodes = useMemo(() => {
+    const storyTargets = placeEpisodes.flatMap((episode): EpisodeStoryTarget[] => {
+      if (episode.storyTargets?.length) {
+        return episode.storyTargets.map((target) => ({
+          episodeId: episode.id,
+          pericopeId: target.pericopeId,
+          title: target.title,
+          gospels: episode.gospels,
+        }));
+      }
+
+      if (episode.pericopeId) {
+        return [
+          {
+            episodeId: episode.id,
+            pericopeId: episode.pericopeId,
+            title: episode.title,
+            gospels: episode.gospels,
+          },
+        ];
+      }
+
+      return [];
+    });
+
+    const seen = new Set<string>();
+    return storyTargets.filter((target) => {
+      const key = `${target.pericopeId}:${target.title}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, [placeEpisodes]);
+
+  const placeThemes = useMemo(() => {
+    return Array.from(
+      new Set(
+        placeEpisodes.flatMap((episode) => resolveEpisodeThemesToHarmonyTags(episode))
+      )
+    ).sort((a, b) => a.localeCompare(b));
+  }, [placeEpisodes]);
 
   const selectedEpisode: Episode | null = useMemo(() => {
     if (!selectedEpisodeId) return null;
@@ -493,31 +694,10 @@ export default function MapView() {
   }, [searchParams, bundle.episodes]);
 
   useEffect(() => {
-    const checkOverflow = () => {
-      const el = placesListRef.current;
-      if (!el) return;
-      setPlacesOverflow(el.scrollHeight > el.clientHeight + 4);
-    };
-
-    checkOverflow();
-    window.addEventListener("resize", checkOverflow);
-    return () => window.removeEventListener("resize", checkOverflow);
-  }, [nodes]);
-
-  useEffect(() => {
-    const updateViewportSize = () => {
-      const el = mapContainerRef.current;
-      if (!el) return;
-      setMapViewportSize({
-        width: el.clientWidth,
-        height: el.clientHeight,
-      });
-    };
-
-    updateViewportSize();
-    window.addEventListener("resize", updateViewportSize);
-    return () => window.removeEventListener("resize", updateViewportSize);
-  }, []);
+    if (selectedPlaceId) {
+      setPlacesExpanded(false);
+    }
+  }, [selectedPlaceId]);
 
   const travelStopsByPlace = useMemo(() => {
     const map = new Map<string, TravelStopBadge[]>();
@@ -627,20 +807,29 @@ export default function MapView() {
         const to = nodesById.get(gospelPoints[i + 1].placeId);
         if (!from || !to) continue;
 
+        const segmentPathPoints = getTravelSegmentPathPoints(gospel, from, to);
+
         const t =
           activeCount <= 1
             ? 0.5
             : progressValues[Math.min(activeIndex, progressValues.length - 1)];
 
-        const baseX = from.x + (to.x - from.x) * t;
-        const baseY = from.y + (to.y - from.y) * t;
+        const basePoint = getPointAlongPolyline(segmentPathPoints, t);
+        const baseX = basePoint.x;
+        const baseY = basePoint.y;
 
         let x = baseX;
         let y = baseY;
 
         if (activeCount > 1) {
-          const dx = to.x - from.x;
-          const dy = to.y - from.y;
+          const segmentMidIndex = Math.max(
+            0,
+            Math.floor((segmentPathPoints.length - 1) / 2) - 1
+          );
+          const normalFrom = segmentPathPoints[segmentMidIndex];
+          const normalTo = segmentPathPoints[segmentMidIndex + 1] ?? normalFrom;
+          const dx = normalTo.x - normalFrom.x;
+          const dy = normalTo.y - normalFrom.y;
           const len = Math.max(Math.sqrt(dx * dx + dy * dy), 1);
           const nx = -dy / len;
           const ny = dx / len;
@@ -695,27 +884,64 @@ export default function MapView() {
   }
 
   function toggleEpisode(episodeId: string) {
+    const episode = bundle.episodes.find((ep) => ep.id === episodeId);
+    if (!episode) return;
+
+    const returnTo = `/map?place=${selectedPlaceId ?? episode.placeIds[0] ?? ""}&episode=${episode.id}`;
+
+    if (episode.storyTargets?.length) {
+      const params = new URLSearchParams({
+        version: "KJV",
+        returnTo,
+      });
+      navigate(`/story/${episode.storyTargets[0].pericopeId}?${params.toString()}`);
+      return;
+    }
+
+    if (episode.pericopeId) {
+      const params = new URLSearchParams({
+        version: "KJV",
+        returnTo,
+      });
+      navigate(`/story/${episode.pericopeId}?${params.toString()}`);
+      return;
+    }
+
+    const resolvedThemes = resolveEpisodeThemesToHarmonyTags(episode);
+
+    if (resolvedThemes.length) {
+      const params = new URLSearchParams({
+        theme: resolvedThemes[0],
+        returnTo,
+      });
+      navigate(`/types?${params.toString()}`);
+      return;
+    }
+
     setSelectedEpisodeId((current) => {
       if (current === episodeId) return null;
       return episodeId;
     });
 
-    if (selectedEpisodeId === episodeId) {
-      return;
-    }
-
-    const episode = bundle.episodes.find((ep) => ep.id === episodeId);
-    if (episode?.placeIds?.length) {
+    if (episode.placeIds?.length) {
       setSelectedPlaceId(episode.placeIds[0]);
     }
   }
 
-  function openEpisodeStory(
-    event: React.MouseEvent | React.KeyboardEvent,
-    pericopeId: string
-  ) {
-    event.stopPropagation();
-    navigate(`/story/${pericopeId}?version=KJV`);
+  function openTheme(theme: string) {
+    const params = new URLSearchParams({
+      theme,
+      returnTo: `/map?place=${selectedPlaceId ?? ""}`,
+    });
+    navigate(`/types?${params.toString()}`);
+  }
+
+  function openStoryTarget(target: EpisodeStoryTarget) {
+    const params = new URLSearchParams({
+      version: "KJV",
+      returnTo: `/map?place=${selectedPlaceId ?? ""}&episode=${target.episodeId}`,
+    });
+    navigate(`/story/${target.pericopeId}?${params.toString()}`);
   }
 
   function clampZoom(value: number) {
@@ -727,91 +953,112 @@ export default function MapView() {
     clientX?: number,
     clientY?: number
   ) {
-    const container = mapContainerRef.current;
+    const svg = mapSvgRef.current;
     const normalized = clampZoom(nextZoom);
 
-    if (!container || (normalized === zoom && clientX === undefined)) {
+    if (!svg || normalized === zoom) {
+      return;
+    }
+
+    const rect = svg.getBoundingClientRect();
+    if (!rect.width || !rect.height) {
       setZoom(normalized);
       return;
     }
 
-    if (clientX !== undefined && clientY !== undefined) {
-      zoomFrameRef.current = {
-        clientX,
-        clientY,
-        previousZoom: actualScale,
-        nextZoom: fitScale * normalized,
-      };
-    } else {
-      const rect = container.getBoundingClientRect();
-      zoomFrameRef.current = {
-        clientX: rect.left + rect.width / 2,
-        clientY: rect.top + rect.height / 2,
-        previousZoom: actualScale,
-        nextZoom: fitScale * normalized,
-      };
-    }
+    const pointerX =
+      clientX !== undefined ? clientX - rect.left : rect.width / 2;
+    const pointerY =
+      clientY !== undefined ? clientY - rect.top : rect.height / 2;
+
+    const svgX = VIEWBOX_X + (pointerX / rect.width) * VIEWBOX_WIDTH;
+    const svgY = VIEWBOX_Y + (pointerY / rect.height) * VIEWBOX_HEIGHT;
+
+    const mapXBefore = (svgX - panX) / zoom;
+    const mapYBefore = (svgY - panY) / zoom;
+
+    const nextPan = clampPan(
+      {
+        x: svgX - mapXBefore * normalized,
+        y: svgY - mapYBefore * normalized,
+      },
+      normalized
+    );
 
     setZoom(normalized);
+    setPanX(nextPan.x);
+    setPanY(nextPan.y);
   }
 
   function handleMapWheel(event: React.WheelEvent<HTMLDivElement>) {
     event.preventDefault();
-    const direction = event.deltaY > 0 ? -1 : 1;
-    const nextZoom = zoom + direction * ZOOM_STEP;
+    const deltaMultiplier =
+      event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 160 : 1;
+    const rawIntensity = Math.min(Math.abs(event.deltaY * deltaMultiplier), 120);
+    const zoomDelta = rawIntensity * WHEEL_ZOOM_SENSITIVITY;
+    const zoomFactor = event.deltaY < 0 ? 1 + zoomDelta : 1 / (1 + zoomDelta);
+    const nextZoom = zoom * zoomFactor;
     setZoomAnchored(nextZoom, event.clientX, event.clientY);
   }
 
-  function beginPan(event: React.MouseEvent<HTMLDivElement>) {
-    if (zoom <= 1 || event.button !== 0 || !mapContainerRef.current) return;
+  function beginPan(event: React.PointerEvent<SVGSVGElement>) {
+    if (zoom <= 1 || event.button !== 0) return;
+    const target = event.target as Element | null;
+    if (target?.closest?.("[data-map-selectable='true']")) return;
 
     panStateRef.current = {
-      active: true,
       startX: event.clientX,
       startY: event.clientY,
-      startScrollLeft: mapContainerRef.current.scrollLeft,
-      startScrollTop: mapContainerRef.current.scrollTop,
-      moved: false,
+      panX,
+      panY,
+      pointerId: event.pointerId,
     };
     suppressMapClickRef.current = false;
 
+    event.currentTarget.setPointerCapture(event.pointerId);
     setIsPanning(true);
   }
 
-  useEffect(() => {
-    function handleWindowMouseMove(event: MouseEvent) {
-      const container = mapContainerRef.current;
-      const panState = panStateRef.current;
-      if (!container || !panState.active) return;
+  function handlePanMove(event: React.PointerEvent<SVGSVGElement>) {
+    const panState = panStateRef.current;
+    const svg = mapSvgRef.current;
+    if (!panState || !svg) return;
 
-      const deltaX = event.clientX - panState.startX;
-      const deltaY = event.clientY - panState.startY;
+    const rect = svg.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
 
-      if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
-        panState.moved = true;
-      }
+    const deltaX = event.clientX - panState.startX;
+    const deltaY = event.clientY - panState.startY;
+    const svgDeltaX = (deltaX / rect.width) * VIEWBOX_WIDTH;
+    const svgDeltaY = (deltaY / rect.height) * VIEWBOX_HEIGHT;
 
-      container.scrollLeft = panState.startScrollLeft - deltaX;
-      container.scrollTop = panState.startScrollTop - deltaY;
+    if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+      suppressMapClickRef.current = true;
     }
 
-    function endPan() {
-      if (!panStateRef.current.active) return;
-      if (panStateRef.current.moved) {
-        suppressMapClickRef.current = true;
-      }
-      panStateRef.current.active = false;
-      setIsPanning(false);
+    const nextPan = clampPan(
+      {
+        x: panState.panX + svgDeltaX,
+        y: panState.panY + svgDeltaY,
+      },
+      zoom
+    );
+
+    setPanX(nextPan.x);
+    setPanY(nextPan.y);
+  }
+
+  function endPan(event?: React.PointerEvent<SVGSVGElement>) {
+    const panState = panStateRef.current;
+    if (!panState) return;
+
+    if (event && event.currentTarget.hasPointerCapture(panState.pointerId)) {
+      event.currentTarget.releasePointerCapture(panState.pointerId);
     }
 
-    window.addEventListener("mousemove", handleWindowMouseMove);
-    window.addEventListener("mouseup", endPan);
-
-    return () => {
-      window.removeEventListener("mousemove", handleWindowMouseMove);
-      window.removeEventListener("mouseup", endPan);
-    };
-  }, []);
+    panStateRef.current = null;
+    setIsPanning(false);
+  }
 
   function suppressClickAfterPan(event: React.MouseEvent<SVGSVGElement>) {
     if (!suppressMapClickRef.current) return;
@@ -820,47 +1067,71 @@ export default function MapView() {
     suppressMapClickRef.current = false;
   }
 
-  useEffect(() => {
-    const frame = zoomFrameRef.current;
-    const container = mapContainerRef.current;
-    if (!frame || !container) return;
+  function handleMapBackgroundClick(event: React.MouseEvent<SVGSVGElement>) {
+    if (suppressMapClickRef.current) {
+      suppressMapClickRef.current = false;
+      return;
+    }
 
-    const rect = container.getBoundingClientRect();
-    const pointerX = frame.clientX - rect.left;
-    const pointerY = frame.clientY - rect.top;
+    const target = event.target as Element | null;
+    if (target?.closest?.("[data-map-selectable='true']")) return;
 
-    const worldX = (container.scrollLeft + pointerX) / frame.previousZoom;
-    const worldY = (container.scrollTop + pointerY) / frame.previousZoom;
-
-    container.scrollLeft = worldX * frame.nextZoom - pointerX;
-    container.scrollTop = worldY * frame.nextZoom - pointerY;
-
-    zoomFrameRef.current = null;
-  }, [zoom]);
-
-  const fitScale = Math.min(
-    mapViewportSize.width / VIEWBOX_WIDTH,
-    mapViewportSize.height / VIEWBOX_HEIGHT
-  );
-  const actualScale = fitScale * zoom;
-  const zoomPercent = Math.round(zoom * 100);
-  const zoomedWidth = Math.round(VIEWBOX_WIDTH * actualScale);
-  const zoomedHeight = Math.round(VIEWBOX_HEIGHT * actualScale);
-
-  function updateTooltipPosition(
-    event: React.MouseEvent,
-    node: PositionedNode
-  ) {
-    if (!mapContainerRef.current) return;
-
-    const rect = mapContainerRef.current.getBoundingClientRect();
-
-    setHoverTooltip({
-      node,
-      x: event.clientX - rect.left + 14,
-      y: event.clientY - rect.top + 14,
-    });
+    setSelectedPlaceId(null);
+    setSelectedEpisodeId(null);
   }
+
+  const zoomPercent = Math.round(zoom * 100);
+
+  function getMapCoordinateFromClientPosition(
+    clientX: number,
+    clientY: number
+  ): MapCoordinate | null {
+    const svg = mapSvgRef.current;
+    if (!svg) return null;
+
+    const rect = svg.getBoundingClientRect();
+    if (!rect.width || !rect.height) return null;
+
+    const pointerX = clientX - rect.left;
+    const pointerY = clientY - rect.top;
+
+    const svgX = VIEWBOX_X + (pointerX / rect.width) * VIEWBOX_WIDTH;
+    const svgY = VIEWBOX_Y + (pointerY / rect.height) * VIEWBOX_HEIGHT;
+
+    return {
+      x: Math.round((svgX - panX) / zoom),
+      y: Math.round((svgY - panY) / zoom),
+    };
+  }
+
+  function updateDesignerMouseCoordinate(event: React.MouseEvent<SVGSVGElement>) {
+    if (!designerCoordinateMode) return;
+    setDesignerMouseCoordinate(
+      getMapCoordinateFromClientPosition(event.clientX, event.clientY)
+    );
+  }
+
+  function clearDesignerMouseCoordinate() {
+    setDesignerMouseCoordinate(null);
+  }
+
+  const denseZoom = zoom >= 2.2;
+  const veryDenseZoom = zoom >= 3.2;
+  const placeLabelFontSize = veryDenseZoom ? 9 : denseZoom ? 10 : 11;
+  const placeLabelStrokeWidth = veryDenseZoom ? 2.2 : denseZoom ? 2.6 : 3;
+  const sequenceMarkerScale = veryDenseZoom ? 0.76 : denseZoom ? 0.88 : 1;
+  const sequenceMarkerRadius = 8.2 * sequenceMarkerScale;
+  const sequenceMarkerRectSize = 14.4 * sequenceMarkerScale;
+  const sequenceMarkerRectInset = sequenceMarkerRectSize / 2;
+  const sequenceMarkerRectRadius = 2 * sequenceMarkerScale;
+  const sequenceMarkerStrokeWidth = 1.2 * sequenceMarkerScale;
+  const sequenceMarkerFontSize = 9.2 * sequenceMarkerScale;
+  const sequenceMarkerTextYOffset = 3.6 * sequenceMarkerScale;
+  const regionLabelScale = veryDenseZoom ? 0.72 : denseZoom ? 0.84 : 1;
+  const geographyLabelScale = veryDenseZoom ? 0.78 : denseZoom ? 0.88 : 1;
+  const regionBaseOpacity = veryDenseZoom ? 0.62 : denseZoom ? 0.8 : 0.99;
+  const geographyBaseOpacity = veryDenseZoom ? 0.62 : denseZoom ? 0.78 : 0.92;
+  const startPinScale = veryDenseZoom ? 0.8 : denseZoom ? 0.9 : 1;
 
   function getNodeMarkerSlots(node: PositionedNode, radius: number) {
     const x = node.x;
@@ -994,20 +1265,54 @@ export default function MapView() {
           </section>
 
           <section style={panelStyle}>
-            <h3 style={panelTitleStyle}>Places</h3>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 8,
+                marginBottom: 10,
+              }}
+            >
+              <h3 style={{ ...panelTitleStyle, margin: 0 }}>Places</h3>
+              {!placesExpanded ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPlacesExpanded(true);
+                    setSelectedPlaceId(null);
+                    setSelectedEpisodeId(null);
+                  }}
+                  style={{
+                    borderRadius: 999,
+                    padding: "6px 12px",
+                    border: "1px solid #CBD5E1",
+                    background: "#FFFFFF",
+                    color: "#334155",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    lineHeight: 1,
+                    cursor: "pointer",
+                  }}
+                  aria-label="Expand places list"
+                  title="Expand places list"
+                >
+                  Expand
+                </button>
+              ) : null}
+            </div>
             <div style={{ position: "relative" }}>
               <div
                 ref={placesListRef}
                 style={{
-                  maxHeight: 340,
-                  overflowY: "auto",
                   display: "flex",
                   flexWrap: "wrap",
                   gap: 8,
-                  paddingBottom: 8,
                 }}
               >
-                {nodes
+                {(placesExpanded || !selectedPlace
+                  ? nodes
+                  : nodes.filter((node) => node.id === selectedPlace.id))
                   .slice()
                   .sort((a, b) => a.name.localeCompare(b.name))
                   .map((node) => (
@@ -1037,33 +1342,6 @@ export default function MapView() {
                     </button>
                   ))}
               </div>
-
-              {placesOverflow && (
-                <>
-                  <div
-                    style={{
-                      position: "absolute",
-                      left: 0,
-                      right: 0,
-                      bottom: 22,
-                      height: 28,
-                      background:
-                        "linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.92))",
-                      pointerEvents: "none",
-                    }}
-                  />
-                  <div
-                    style={{
-                      textAlign: "center",
-                      fontSize: 11,
-                      color: "#64748B",
-                      marginTop: 4,
-                    }}
-                  >
-                    Scroll for more places
-                  </div>
-                </>
-              )}
             </div>
           </section>
 
@@ -1112,8 +1390,8 @@ export default function MapView() {
           </section>
 
           <section style={panelStyle}>
-            <h3 style={panelTitleStyle}>Events at selected place</h3>
-            {placeEpisodes.length === 0 ? (
+            <h3 style={panelTitleStyle}>Stories at selected place</h3>
+            {placeStoryEpisodes.length === 0 ? (
               <p
                 style={{
                   margin: 0,
@@ -1121,20 +1399,20 @@ export default function MapView() {
                   color: "#64748B",
                 }}
               >
-                No mapped episodes for this place yet.
+                No direct story links for this place yet.
               </p>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {placeEpisodes.map((episode) => (
+                {placeStoryEpisodes.map((storyTarget) => (
                   <div
-                    key={episode.id}
-                    onClick={() => toggleEpisode(episode.id)}
+                    key={`${storyTarget.episodeId}-${storyTarget.pericopeId}`}
+                    onClick={() => openStoryTarget(storyTarget)}
                     role="button"
                     tabIndex={0}
                     onKeyDown={(event) => {
                       if (event.key === "Enter" || event.key === " ") {
                         event.preventDefault();
-                        toggleEpisode(episode.id);
+                        openStoryTarget(storyTarget);
                       }
                     }}
                     style={{
@@ -1142,16 +1420,9 @@ export default function MapView() {
                       width: "100%",
                       textAlign: "left",
                       borderRadius: 12,
-                      border:
-                        selectedEpisodeId === episode.id
-                          ? "1px solid #0EA5E9"
-                          : "1px solid #E2E8F0",
-                      background:
-                        selectedEpisodeId === episode.id ? "#F0F9FF" : "#F8FAFC",
-                      color:
-                        selectedEpisodeId === episode.id
-                          ? "#0C4A6E"
-                          : "#334155",
+                      border: "1px solid #E2E8F0",
+                      background: "#F8FAFC",
+                      color: "#334155",
                       padding: "10px 12px",
                       cursor: "pointer",
                     }}
@@ -1165,7 +1436,7 @@ export default function MapView() {
                       }}
                     >
                       <div style={{ minWidth: 0, flex: 1 }}>
-                        <div style={{ fontWeight: 600 }}>{episode.title}</div>
+                        <div style={{ fontWeight: 600 }}>{storyTarget.title}</div>
                         <div
                           style={{
                             marginTop: 4,
@@ -1174,46 +1445,49 @@ export default function MapView() {
                             textTransform: "capitalize",
                           }}
                         >
-                          {episode.gospels.join(", ")}
+                          {storyTarget.gospels.join(", ")}
                         </div>
                       </div>
-
-                      {episode.pericopeId ? (
-                        <button
-                          type="button"
-                          aria-label={`Open ${episode.title} in harmonized Gospel view`}
-                          title="Open harmonized Gospel view"
-                          onClick={(event) =>
-                            openEpisodeStory(event, episode.pericopeId!)
-                          }
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            width: 30,
-                            height: 30,
-                            borderRadius: 999,
-                            border: "1px solid #CBD5E1",
-                            background: "#FFFFFF",
-                            color: "#475569",
-                            flex: "0 0 auto",
-                            cursor: "pointer",
-                          }}
-                        >
-                          <span
-                            aria-hidden="true"
-                            style={{
-                              display: "block",
-                              fontSize: 16,
-                              lineHeight: 1,
-                            }}
-                          >
-                            📖
-                          </span>
-                        </button>
-                      ) : null}
                     </div>
                   </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section style={panelStyle}>
+            <h3 style={panelTitleStyle}>Themes at selected place</h3>
+            {placeThemes.length === 0 ? (
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: 14,
+                  color: "#64748B",
+                }}
+              >
+                No mapped themes for this place yet.
+              </p>
+            ) : (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {placeThemes.map((theme) => (
+                  <button
+                    key={theme}
+                    type="button"
+                    onClick={() => openTheme(theme)}
+                    style={{
+                      borderRadius: 999,
+                      padding: "7px 12px",
+                      fontSize: 13,
+                      cursor: "pointer",
+                      background: "#F8FAFC",
+                      color: "#334155",
+                      fontWeight: 600,
+                      border: "1px solid #E2E8F0",
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    {theme}
+                  </button>
                 ))}
               </div>
             )}
@@ -1275,7 +1549,7 @@ export default function MapView() {
                   gap: 10,
                   flex: "0 0 auto",
                 }}
-              >
+                >
                 <div
                   style={{
                     display: "flex",
@@ -1317,52 +1591,158 @@ export default function MapView() {
                 <div
                   style={{
                     display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    padding: 8,
-                    background: "#FFFFFF",
-                    border: "1px solid #E2E8F0",
-                    borderRadius: 999,
-                    boxShadow: "0 8px 20px rgba(15, 23, 42, 0.06)",
+                    alignItems: "stretch",
+                    gap: 10,
+                    flexWrap: "wrap",
+                    justifyContent: "flex-end",
                   }}
                 >
-                  <button
-                    type="button"
-                    onClick={() => setZoomAnchored(zoom - ZOOM_STEP)}
-                    disabled={zoom <= MIN_ZOOM}
-                    aria-label="Zoom out"
-                    style={{ borderRadius: 999, padding: "6px 10px" }}
-                  >
-                    -
-                  </button>
+                  {DESIGNER_COORDINATE_ASSIST_ENABLED ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                        padding: "8px 12px",
+                        background: designerCoordinateMode ? "#EFF6FF" : "#FFFFFF",
+                        border: designerCoordinateMode
+                          ? "1px solid #93C5FD"
+                          : "1px solid #E2E8F0",
+                        borderRadius: 16,
+                        boxShadow: "0 8px 20px rgba(15, 23, 42, 0.06)",
+                        maxWidth: "100%",
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDesignerCoordinateMode((current) => {
+                            const next = !current;
+                            if (!next) {
+                              setDesignerMouseCoordinate(null);
+                            }
+                            return next;
+                          });
+                        }}
+                        style={{
+                          borderRadius: 999,
+                          padding: "6px 12px",
+                          border: designerCoordinateMode
+                            ? "1px solid #60A5FA"
+                            : "1px solid #CBD5E1",
+                          background: designerCoordinateMode ? "#DBEAFE" : "#FFFFFF",
+                          color: designerCoordinateMode ? "#1D4ED8" : "#334155",
+                          fontWeight: 700,
+                          fontSize: 12,
+                          cursor: "pointer",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {designerCoordinateMode ? "Designer coords on" : "Designer coords"}
+                      </button>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 2,
+                          minWidth: 0,
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 700,
+                            color: "#334155",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {selectedDesignerNode
+                            ? selectedDesignerNode.name
+                            : "Select a node"}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 11,
+                            color: "#64748B",
+                            fontFamily:
+                              'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          current:{" "}
+                          {selectedDesignerNode
+                            ? `x ${selectedDesignerNode.x}, y ${selectedDesignerNode.y}`
+                            : "x -, y -"}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 11,
+                            color: designerCoordinateMode ? "#1D4ED8" : "#94A3B8",
+                            fontFamily:
+                              'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          mouse:{" "}
+                          {designerCoordinateMode && designerMouseCoordinate
+                            ? `x ${designerMouseCoordinate.x}, y ${designerMouseCoordinate.y}`
+                            : "x -, y -"}
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
+
                   <div
                     style={{
-                      minWidth: 58,
-                      textAlign: "center",
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: "#334155",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
+                      padding: 8,
+                      background: "#FFFFFF",
+                      border: "1px solid #E2E8F0",
+                      borderRadius: 999,
+                      boxShadow: "0 8px 20px rgba(15, 23, 42, 0.06)",
                     }}
                   >
-                    {zoomPercent}%
+                    <button
+                      type="button"
+                      onClick={() => setZoomAnchored(zoom - ZOOM_STEP)}
+                      disabled={zoom <= MIN_ZOOM}
+                      aria-label="Zoom out"
+                      style={{ borderRadius: 999, padding: "6px 10px" }}
+                    >
+                      -
+                    </button>
+                    <div
+                      style={{
+                        minWidth: 58,
+                        textAlign: "center",
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: "#334155",
+                      }}
+                    >
+                      {zoomPercent}%
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setZoomAnchored(zoom + ZOOM_STEP)}
+                      disabled={zoom >= MAX_ZOOM}
+                      aria-label="Zoom in"
+                      style={{ borderRadius: 999, padding: "6px 10px" }}
+                    >
+                      +
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setZoomAnchored(1)}
+                      disabled={Math.abs(zoom - 1) < 0.01}
+                      style={{ borderRadius: 999, padding: "6px 12px" }}
+                    >
+                      Reset
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setZoomAnchored(zoom + ZOOM_STEP)}
-                    disabled={zoom >= MAX_ZOOM}
-                    aria-label="Zoom in"
-                    style={{ borderRadius: 999, padding: "6px 10px" }}
-                  >
-                    +
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setZoomAnchored(1)}
-                    disabled={Math.abs(zoom - 1) < 0.01}
-                    style={{ borderRadius: 999, padding: "6px 12px" }}
-                  >
-                    Reset
-                  </button>
                 </div>
               </div>
             </div>
@@ -1510,91 +1890,76 @@ export default function MapView() {
               style={{
                 position: "relative",
                 height: 820,
-                overflow: "auto",
+                overflow: "hidden",
                 background: "#F8FAFC",
                 borderTop: "1px solid #E2E8F0",
                 cursor: zoom > 1 ? (isPanning ? "grabbing" : "grab") : "default",
               }}
-              onMouseLeave={() => setHoverTooltip(null)}
               onWheel={handleMapWheel}
-              onMouseDown={beginPan}
             >
-              <div
+              <svg
+                ref={mapSvgRef}
+                viewBox={`${VIEWBOX_X} ${VIEWBOX_Y} ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
                 style={{
-                  position: "relative",
-                  width: `max(100%, ${zoomedWidth}px)`,
-                  height: zoomedHeight,
-                  minWidth: 900,
-                  minHeight: zoomedHeight,
+                  width: "100%",
+                  height: "100%",
+                  display: "block",
+                  userSelect: "none",
                 }}
-              >
-                <svg
-                  viewBox={`${VIEWBOX_X} ${VIEWBOX_Y} ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
-                  style={{
-                    width: zoomedWidth,
-                    height: zoomedHeight,
-                    display: "block",
-                    margin: "0 auto",
-                    userSelect: "none",
-                  }}
-                  role="img"
-                  aria-label="Gospel map visualization"
-                  onClickCapture={suppressClickAfterPan}
+                role="img"
+                aria-label="Gospel map visualization"
+                onClickCapture={suppressClickAfterPan}
+                onClick={handleMapBackgroundClick}
+                onMouseMove={updateDesignerMouseCoordinate}
+                onMouseLeave={clearDesignerMouseCoordinate}
+                onPointerDown={beginPan}
+                onPointerMove={handlePanMove}
+                onPointerUp={endPan}
+                onPointerLeave={endPan}
                 >
-
-
-
-
-
-
-<RegionUnderlay
-  cx={1205}
-  cy={620}
-  rx={25}
-  ry={10}
-  color={REGION_TEXT_COLORS.perea}
-  rotate={-10}
-   isSelected={selectedRegionId === "perea"}
-   onClick={() => togglePlace("perea")}
-/>
-
-
-
-<RegionUnderlay
-  cx={180}
-  cy={1060}
-  rx={25}
-  ry={20}
-  color={REGION_TEXT_COLORS.egypt}
-  rotate={-8}
-  isSelected={selectedRegionId === "egypt"}
-  onClick={() => togglePlace("egypt")}
-/>
-
-
+                <g transform={`translate(${panX} ${panY}) scale(${zoom})`}>
+                  <image
+                    href={MAP_FULL_UNDERLAY_SRC}
+                    x={VIEWBOX_X}
+                    y={VIEWBOX_Y}
+                    width={VIEWBOX_WIDTH}
+                    height={VIEWBOX_HEIGHT}
+                    preserveAspectRatio="none"
+                    style={{ pointerEvents: "none" }}
+                  />
 
 <text
-  x={880}
-  y={590}
+  x={934}
+  y={352}
   textAnchor="middle"
-  fontSize={selectedRegionId === "samaria" ? "22" : "20"}
+  fontSize={
+    selectedRegionId === "samaria"
+      ? REGION_LABEL_SELECTED_FONT_SIZE * regionLabelScale
+      : REGION_LABEL_FONT_SIZE * regionLabelScale
+  }
   fontWeight={selectedRegionId === "samaria" ? 700 : 400}
-  fill={REGION_TEXT_COLORS.samaria}
-  opacity={selectedRegionId === "samaria" ? .55 : 1.0}
+  fill={REGION_LABEL_COLOR}
+  opacity={selectedRegionId === "samaria" ? 0.55 : regionBaseOpacity}
   style={{ cursor: "pointer" }}
+data-map-selectable="true"
 onClick={() => togglePlace("samaria")}
 >
   Samaria
 </text>
 
 <text
-  x={1000}
+  x={965}
   y={750}
-  fontSize={selectedRegionId === "judea" ? "22" : "20"}
+  fontSize={
+    selectedRegionId === "judea"
+      ? REGION_LABEL_SELECTED_FONT_SIZE * regionLabelScale
+      : REGION_LABEL_FONT_SIZE * regionLabelScale
+  }
   fontWeight={selectedRegionId === "judea" ? 700 : 400}
-  fill={REGION_TEXT_COLORS.judea}
-  opacity={selectedRegionId === "judea" ? 0.85 : 0.55}
+  fill={REGION_LABEL_COLOR}
+  opacity={selectedRegionId === "judea" ? 0.85 : regionBaseOpacity}
   style={{ cursor: "pointer" }}
+data-map-selectable="true"
 onClick={() => togglePlace("judea")}
 >
   Judea
@@ -1602,117 +1967,39 @@ onClick={() => togglePlace("judea")}
 
 
 <text
-  x={180}
-  y={1035}
+  x={280}
+  y={1153}
   textAnchor="middle"
-  fontSize={selectedRegionId === "egypt" ? "22" : "20"}
+  fontSize={
+    selectedRegionId === "egypt"
+      ? REGION_LABEL_SELECTED_FONT_SIZE * regionLabelScale
+      : REGION_LABEL_FONT_SIZE * regionLabelScale
+  }
   fontWeight={selectedRegionId === "egypt" ? 700 : 400}
-  fill={REGION_TEXT_COLORS.egypt}
-  opacity={selectedRegionId === "egypt" ? 0.85 : 0.99}
+  fill={REGION_LABEL_COLOR}
+  opacity={selectedRegionId === "egypt" ? 0.85 : regionBaseOpacity}
   style={{ cursor: "pointer" }}
-onClick={() => togglePlace("<egypt")}
+data-map-selectable="true"
+onClick={() => togglePlace("egypt")}
 >
   Egypt
 </text>
 
-
-{/* Full map parchment background underlay */}
-<image
-  href="/assets/map/map-parchment-underlay.png"
-  x={-240}
-  y={0}
-  width={1800}
-  height={1200}
-  opacity={0.5}
-  preserveAspectRatio="none"
-  style={{ pointerEvents: "none" }}
-/>
-
-
-{/* Decorative wilderness underlay for Samaria */}
-<image
-  href="/assets/map/judea-wilderness-underlay.png"
-  x={560}
-  y={395}
-  width={620}
-  height={330}
-  opacity={0.80}
-  preserveAspectRatio="xMidYMid meet"
-  style={{ pointerEvents: "none" }}
-/>
-
-
-{/* Decorative Egypt underlay */}
-<image
-  href="/assets/map/egypt-underlay.png"
-  x={-130}
-  y={840}
-  width={500}
-  height={300}
-  opacity={0.7}
-  preserveAspectRatio="xMidYMid meet"
-  style={{ pointerEvents: "none" }}
-/>
-
-{/* Decorative Jordan River underlay */}
-<image
-  href="/assets/map/jordan-river-underlay.png"
-  x={1115}
-  y={400}
-  width={195}
-  height={305}
-  opacity={0.45}
-  preserveAspectRatio="xMidYMid meet"
-  style={{ pointerEvents: "none" }}
-/>
-
-{/* Decorative vintage map-style underlay for Judea */}
-<image
-  href="/assets/map/judea-vintage-underlay.png"
-  x={240}
-  y={520}
-  width={1370}
-  height={764}
-  opacity={0.45}
-  preserveAspectRatio="xMidYMid meet"
-  style={{ pointerEvents: "none" }}
-/>
-
-{/* Decorative vintage map-style underlay for Decapolis */}
-<image
-  href="/assets/map/decapolis-vintage-underlay.png"
-  x={1065}
-  y={245}
-  width={500}
-  height={300}
-  opacity={0.6}
-  preserveAspectRatio="xMidYMid meet"
-  style={{ pointerEvents: "none" }}
-/>
-
-{/* Decorative vintage map-style underlay for Galilee */}
-<image
-  href="/assets/map/galilee-vintage-underlay.png"
-  x={-80}
-  y={120}
-  width={988}
-  height={559}
-  opacity={0.45}
-  preserveAspectRatio="xMidYMid meet"
-  style={{ pointerEvents: "none" }}
-/>
-
-{/* Decorative vintage map-style underlay for Tyre & Sidon */}
-<image
-  href="/assets/map/tyre-sidon-vintage-underlay.png"
-  x={-220}
-  y={-30}
-  width={560}
-  height={300}
-  opacity={0.45}
-  preserveAspectRatio="xMidYMid meet"
-  style={{ pointerEvents: "none" }}
-/>
+                {MAP_GEOGRAPHY_LABELS.map((label) => (
+                  <text
+                    key={label.id}
+                    x={label.x}
+                    y={label.y}
+                    textAnchor={label.anchor ?? "middle"}
+                    fontSize={(label.fontSize ?? 22) * geographyLabelScale}
+                    fontWeight={400}
+                    fill={REGION_LABEL_COLOR}
+                    opacity={(label.opacity ?? geographyBaseOpacity) * (denseZoom ? 0.92 : 1)}
+                    style={{ pointerEvents: "none" }}
+                  >
+                    {label.text}
+                  </text>
+                ))}
 
                 {enabledGospels.map((gospel) => {
                   const gospelPoints = travelPoints
@@ -1725,14 +2012,26 @@ onClick={() => togglePlace("<egypt")}
 
                   if (pathNodes.length < 2) return null;
 
-                  const points = pathNodes
-                    .map((node) => `${node.x},${node.y}`)
-                    .join(" ");
+                  const polylinePoints: string[] = [];
+                  for (let i = 0; i < pathNodes.length - 1; i += 1) {
+                    const from = pathNodes[i];
+                    const to = pathNodes[i + 1];
+                    const segmentPoints = getTravelSegmentPathPoints(
+                      gospel,
+                      from,
+                      to
+                    );
+
+                    segmentPoints.forEach((point, index) => {
+                      if (i > 0 && index === 0) return;
+                      polylinePoints.push(`${point.x},${point.y}`);
+                    });
+                  }
 
                   return (
                     <polyline
                       key={gospel}
-                      points={points}
+                      points={polylinePoints.join(" ")}
                       fill="none"
                       stroke={travelColorByGospel[gospel]}
                       strokeWidth={3.1}
@@ -1749,32 +2048,32 @@ onClick={() => togglePlace("<egypt")}
   <g key={`${marker.gospel}-${marker.label}-${index}`}>
     {marker.isRegionTransition ? (
       <rect
-        x={marker.x - 7.2}
-        y={marker.y - 7.2}
-        width={14.4}
-        height={14.4}
-        rx={2}
+        x={marker.x - sequenceMarkerRectInset}
+        y={marker.y - sequenceMarkerRectInset}
+        width={sequenceMarkerRectSize}
+        height={sequenceMarkerRectSize}
+        rx={sequenceMarkerRectRadius}
         transform={`rotate(45 ${marker.x} ${marker.y})`}
         fill={travelColorByGospel[marker.gospel]}
         stroke="#FFFFFF"
-        strokeWidth={1.2}
+        strokeWidth={sequenceMarkerStrokeWidth}
       />
     ) : (
       <circle
         cx={marker.x}
         cy={marker.y}
-        r={8.2}
+        r={sequenceMarkerRadius}
         fill={travelColorByGospel[marker.gospel]}
         stroke="#FFFFFF"
-        strokeWidth={1.2}
+        strokeWidth={sequenceMarkerStrokeWidth}
       />
     )}
 
     <text
       x={marker.x}
-      y={marker.y + 3.6}
+      y={marker.y + sequenceMarkerTextYOffset}
       textAnchor="middle"
-      fontSize="9.2"
+      fontSize={sequenceMarkerFontSize}
       fontWeight="700"
       fill="#FFFFFF"
     >
@@ -1799,11 +2098,10 @@ onClick={() => togglePlace("<egypt")}
                   return (
                     <g
                       key={node.id}
+                      data-map-selectable="true"
                       onClick={() => {
                         togglePlace(node.id);
                       }}
-                      onMouseEnter={(event) => updateTooltipPosition(event, node)}
-                      onMouseMove={(event) => updateTooltipPosition(event, node)}
                       style={{ cursor: "pointer" }}
                     >
                       {selectedPlaceId === node.id && (
@@ -1826,22 +2124,31 @@ onClick={() => togglePlace("<egypt")}
                         stroke={stroke}
                         strokeWidth={2}
                       />
-
+                      {(() => {
+                        const labelOffset = LABEL_OFFSETS[node.id] ?? {};
+                        const labelDx = labelOffset.dx ?? 0;
+                        const labelDy =
+                          labelOffset.dy ??
+                          (node.id === "jordan-river" ? 20 : 18);
+                        const labelAnchor = labelOffset.anchor ?? "middle";
+                        return (
                       <text
-                        x={node.x}
-                        y={node.y + radius + (node.id === "jordan-river" ? 18 : 12)}
-                        textAnchor="middle"
-                        fontSize="11"
+                        x={node.x + labelDx}
+                        y={node.y + labelDy}
+                        textAnchor={labelAnchor}
+                        fontSize={placeLabelFontSize}
                         fontWeight="600"
                         fill="#334155"
                         style={{
                           paintOrder: "stroke",
                           stroke: "#F8FAFC",
-                          strokeWidth: 3,
+                          strokeWidth: placeLabelStrokeWidth,
                         }}
                       >
                         {node.name}
                       </text>
+                        );
+                      })()}
 
                       {nodeMarkers
                         .filter((marker) => marker.isStart)
@@ -1857,6 +2164,7 @@ onClick={() => togglePlace("<egypt")}
                                 y={slot.y}
                                 color={color}
                                 label="1"
+                                scale={startPinScale}
                               />
                             </g>
                           );
@@ -1864,63 +2172,9 @@ onClick={() => togglePlace("<egypt")}
                     </g>
                   );
                 })}
-                </svg>
-              </div>
+                </g>
+              </svg>
 
-              {hoverTooltip && (
-                <div
-                  style={{
-                    position: "absolute",
-                    left: hoverTooltip.x,
-                    top: hoverTooltip.y,
-                    pointerEvents: "none",
-                    zIndex: 20,
-                    maxWidth: 260,
-                    background: "#FFFFFF",
-                    border: "1px solid #E2E8F0",
-                    borderRadius: 12,
-                    padding: "10px 12px",
-                    boxShadow: "0 10px 24px rgba(15, 23, 42, 0.10)",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: "#0F172A",
-                      marginBottom: 6,
-                    }}
-                  >
-                    {hoverTooltip.node.name}
-                  </div>
-                  <div style={{ fontSize: 12, color: "#475569", lineHeight: 1.5 }}>
-                    <div>
-                      <strong>Type:</strong> {hoverTooltip.node.type}
-                    </div>
-                    <div>
-                      <strong>Region:</strong> {hoverTooltip.node.region ?? "—"}
-                    </div>
-                    <div>
-                      <strong>Certainty:</strong> {hoverTooltip.node.certainty}
-                    </div>
-                    {hoverTooltip.node.modernOverlay && (
-                      <div>
-                        <strong>Modern:</strong>{" "}
-                        {hoverTooltip.node.modernOverlay.modernName}
-                      </div>
-                    )}
-                    {travelStopsByPlace.get(hoverTooltip.node.id)?.length ? (
-                      <div style={{ marginTop: 4 }}>
-                        <strong>Travel stops:</strong>{" "}
-                        {travelStopsByPlace
-                          .get(hoverTooltip.node.id)!
-                          .map((stop) => `${stop.gospel} ${stop.label}`)
-                          .join(", ")}
-                      </div>
-                    ) : null}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </main>

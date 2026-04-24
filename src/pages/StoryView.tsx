@@ -58,6 +58,7 @@ export default function StoryView() {
   const { esvAvailable, esvStatusChecked } = useEsvAvailability();
 
   const initialVersion = (searchParams.get("version") === "ESV" ? "ESV" : "KJV") as Version;
+  const returnTo = searchParams.get("returnTo");
   const [version, setVersion] = React.useState<Version>(initialVersion);
 
   const [error, setError] = React.useState<string | null>(null);
@@ -187,7 +188,11 @@ export default function StoryView() {
     currentIndex >= 0 && currentIndex < allPericopes.length - 1 ? allPericopes[currentIndex + 1] : null;
 
   const goToPericope = (targetId: string) => {
-    navigate(`/story/${targetId}?version=${version}`);
+    const params = new URLSearchParams({ version });
+    if (returnTo) {
+      params.set("returnTo", returnTo);
+    }
+    navigate(`/story/${targetId}?${params.toString()}`);
   };
 
   const otherBooks = GOSPELS.filter((g) => g !== primaryBook);
@@ -209,7 +214,7 @@ export default function StoryView() {
         <div className="row" style={{ alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
           <div style={{ flex: 1 }}>
             <div className="muted">
-              <Link to="/stories">← Back to events</Link>
+              <Link to={returnTo || "/stories"}>{returnTo ? "← Back to map" : "← Back to events"}</Link>
             </div>
             <h2 style={{ margin: "6px 0" }}>{title}</h2>
             <div className="muted">{summary}</div>

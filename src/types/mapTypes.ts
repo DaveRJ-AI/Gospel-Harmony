@@ -56,6 +56,10 @@ export interface Episode {
   themes: string[];
   gospels: GospelId[];
   pericopeId?: string;
+  storyTargets?: Array<{
+    pericopeId: string;
+    title: string;
+  }>;
   confidence: ConfidenceLevel;
 }
 

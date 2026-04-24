@@ -8,6 +8,11 @@
       "placeIds": ["bethlehem", "judea"],
       "themes": ["birth", "nativity"],
       "gospels": ["matthew", "luke"],
+      "storyTargets": [
+        { "pericopeId": "birth-jesus", "title": "Birth of Jesus" },
+        { "pericopeId": "shepherds", "title": "The Shepherds" },
+        { "pericopeId": "magi", "title": "Visit of the Magi" }
+      ],
       "confidence": "high"
     },
     {
@@ -18,12 +23,17 @@
       "gospels": ["matthew", "luke"],
       "confidence": "high"
     },
-    {
+{
   "id": "ep-flight-egypt",
   "title": "Flight to Egypt and Return",
   "placeIds": ["egypt", "nazareth"],
   "themes": ["infancy", "protection", "fulfillment"],
   "gospels": ["matthew"],
+  "pericopeId": "flight-egypt",
+  "storyTargets": [
+    { "pericopeId": "flight-egypt", "title": "Flight into Egypt" },
+    { "pericopeId": "return-nazareth", "title": "Return to Nazareth" }
+  ],
   "confidence": "high"
 },
     {
@@ -111,6 +121,10 @@
       "placeIds": ["jericho", "judea"],
       "themes": ["zacchaeus", "blind-bartimaeus", "journey-to-jerusalem"],
       "gospels": ["matthew", "mark", "luke"],
+      "storyTargets": [
+        { "pericopeId": "zacchaeus", "title": "Zacchaeus" },
+        { "pericopeId": "blind-jericho", "title": "Healing the Blind at Jericho" }
+      ],
       "confidence": "high"
     },
     {
@@ -146,6 +160,10 @@
       "placeIds": ["empty-tomb", "jerusalem", "judea"],
       "themes": ["burial", "resurrection"],
       "gospels": ["matthew", "mark", "luke", "john"],
+      "storyTargets": [
+        { "pericopeId": "burial", "title": "Burial of Jesus" },
+        { "pericopeId": "resurrection", "title": "Resurrection of Jesus" }
+      ],
       "confidence": "high"
     }
   ]

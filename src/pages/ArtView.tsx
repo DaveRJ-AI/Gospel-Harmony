@@ -215,7 +215,15 @@ export default function ArtView() {
                   />
                 </button>
 
-                <div style={{ padding: 14, display: "grid", gap: 8 }}>
+                <div
+                  style={{
+                    padding: 14,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 8,
+                    flex: 1,
+                  }}
+                >
                   <div style={{ fontWeight: 800 }}>{card.storyTitle}</div>
 
                   {card.artwork.title && card.artwork.title !== card.storyTitle ? (
@@ -237,7 +245,15 @@ export default function ArtView() {
                     {card.summary}
                   </div>
 
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 4 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 8,
+                      flexWrap: "wrap",
+                      marginTop: "auto",
+                      paddingTop: 4,
+                    }}
+                  >
                     <button
                       type="button"
                       onClick={() => {
