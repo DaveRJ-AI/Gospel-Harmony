@@ -60,6 +60,7 @@ export default function StoryView() {
 
   const initialVersion = (searchParams.get("version") === "ESV" ? "ESV" : "KJV") as Version;
   const returnTo = searchParams.get("returnTo");
+  const backLabel = returnTo?.startsWith("/?plan=") ? "Back to reading plan" : returnTo ? "Back to map" : "Back to events";
   const [version, setVersion] = React.useState<Version>(initialVersion);
 
   const [error, setError] = React.useState<string | null>(null);
@@ -208,7 +209,7 @@ export default function StoryView() {
       <div className="card">
         <p className="error">{error}</p>
         <p>
-          <Link to="/stories">Back to events</Link>
+          <Link to={returnTo || "/stories"}>{backLabel}</Link>
         </p>
       </div>
     );
@@ -220,7 +221,7 @@ export default function StoryView() {
         <div className="row" style={{ alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
           <div style={{ flex: 1 }}>
             <div className="muted">
-              <Link to={returnTo || "/stories"}>{returnTo ? "← Back to map" : "← Back to events"}</Link>
+              <Link to={returnTo || "/stories"}>← {backLabel}</Link>
             </div>
             {currentEvent ? (
               <>

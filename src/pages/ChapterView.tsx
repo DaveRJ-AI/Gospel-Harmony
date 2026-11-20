@@ -1,12 +1,14 @@
 import React from "react";
 import ColumnGrid, { type ColumnBlock } from "../components/ColumnGrid";
 import ArtworkModal from "../components/ArtworkModal";
+import ReadingPlans from "../components/ReadingPlans";
 import { useEsvAvailability } from "../hooks/useEsvAvailability";
 import { getChapter, getPassage, type PassageRef } from "../lib/bible";
 import { setEsvDisplayActive } from "../lib/esvDisplayState";
 import { artworkForPericope, loadArtworkMap, type ArtworkItem, type ArtworkMap } from "../lib/artwork";
 import { loadHarmony, passagesForPericope, pericopesForChapter } from "../lib/harmony";
 import { GOSPELS, otherGospels, type Gospel, type Version } from "../lib/refs";
+import { overlapsReading, readingLabel, type ChapterReading } from "../lib/readingPlans";
 
 type ChapterVerse = { book: Gospel; chapter: number; verse: number; text: string };
 
@@ -218,6 +220,8 @@ export default function ChapterView() {
   const [version, setVersion] = React.useState<Version>("KJV");
   const [book, setBook] = React.useState<Gospel>("Matthew");
   const [chapter, setChapter] = React.useState<number>(1);
+  const [assignedReading, setAssignedReading] = React.useState<ChapterReading | null>(null);
+  const readerRef = React.useRef<HTMLDivElement>(null);
 
   const [enableSync, setEnableSync] = React.useState(true);
   const [showDifferences, setShowDifferences] = React.useState(false);
@@ -275,7 +279,13 @@ export default function ChapterView() {
 
   React.useEffect(() => {
     setScrollPrimaryToTopSignal((n) => n + 1);
-  }, [book, chapter, version]);
+  }, [book, chapter, version, assignedReading]);
+
+  React.useEffect(() => {
+    if (!assignedReading) return;
+    readerRef.current?.focus({ preventScroll: true });
+    readerRef.current?.scrollIntoView({ block: "start" });
+  }, [assignedReading]);
 
   React.useEffect(() => {
     let alive = true;
@@ -287,7 +297,13 @@ export default function ChapterView() {
       try {
         const harmony = await loadHarmony();
         const chapterVerses = (await getChapter(version, book, chapter)) as ChapterVerse[];
-        const pericopes = pericopesForChapter(harmony, book, chapter);
+        const firstVerse = assignedReading?.startVerse ?? 1;
+        const chapterEnd = chapterVerses[chapterVerses.length - 1]?.verse ?? 0;
+        const lastVerse = Math.min(chapterEnd, assignedReading?.endVerse ?? chapterEnd);
+        const chapterEvents = pericopesForChapter(harmony, book, chapter);
+        const pericopes = assignedReading ? chapterEvents.filter((event) =>
+          passagesForPericope(harmony, event.pericopeId, book).some((ref) => overlapsReading(ref, assignedReading)),
+        ) : chapterEvents;
 
         const ranges: Array<{ blockId: string; sectionIndex: number; title: string; start: number; end: number }> = [];
 
@@ -296,6 +312,11 @@ export default function ChapterView() {
           for (const [sectionIndex, ref] of passages.entries()) {
             const clipped = overlapWithinChapter(ref, chapter);
             if (!clipped) continue;
+            if (assignedReading) {
+              clipped.startVerse = Math.max(clipped.startVerse, firstVerse);
+              clipped.endVerse = Math.min(clipped.endVerse, lastVerse);
+              if (clipped.startVerse > clipped.endVerse) continue;
+            }
 
             ranges.push({
               blockId: p.pericopeId,
@@ -316,7 +337,7 @@ export default function ChapterView() {
           });
 
         const primary: ColumnBlock[] = [];
-        let cursor = pos(chapter, 1);
+        let cursor = pos(chapter, firstVerse);
 
         for (const r of ranges) {
           if (cursor < r.start) {
@@ -329,7 +350,7 @@ export default function ChapterView() {
             }
           }
 
-          const storyVerses = takeVerses(r.start, r.end);
+          const storyVerses = takeVerses(assignedReading ? Math.max(cursor, r.start) : r.start, r.end);
           if (storyVerses.length > 0) {
             const artItems = artworkForPericope(artworkMap, r.blockId);
 
@@ -354,8 +375,7 @@ export default function ChapterView() {
           cursor = Math.max(cursor, r.end + 1);
         }
 
-        const lastVerseNum = chapterVerses.length ? chapterVerses[chapterVerses.length - 1].verse : 0;
-        const endPos = pos(chapter, lastVerseNum || 999);
+        const endPos = pos(chapter, lastVerse);
 
         if (cursor <= endPos) {
           const tailVerses = takeVerses(cursor, endPos);
@@ -423,7 +443,7 @@ export default function ChapterView() {
     return () => {
       alive = false;
     };
-  }, [version, book, chapter, artworkMap]);
+  }, [version, book, chapter, artworkMap, assignedReading]);
 
   const others = otherGospels(book);
   const chapterButtons = Array.from({ length: CHAPTER_COUNTS[book] }, (_, i) => i + 1);
@@ -431,96 +451,125 @@ export default function ChapterView() {
   return (
     <div>
       <div className="card">
-        <div style={{ display: "grid", gap: 16 }}>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: 18,
-              alignItems: "flex-end",
+        <div className="chapterPanel">
+          <ReadingPlans
+            version={version}
+            assignedReading={assignedReading}
+            onPlanChange={() => setAssignedReading(null)}
+            onRead={(reading) => {
+              setLoading(true);
+              setError(null);
+              setBook(reading.book);
+              setChapter(reading.chapter);
+              setAssignedReading({ ...reading });
             }}
           >
-            <div style={{ minWidth: 140 }}>
-              <label>Version</label>
-              <select value={version} onChange={(e) => setVersion(e.target.value as Version)}>
-                <option value="KJV">KJV</option>
-                <option value="ESV" disabled={esvStatusChecked && !esvAvailable}>ESV</option>
-              </select>
-              {esvStatusChecked && !esvAvailable ? (
-                <div className="muted" style={{ marginTop: 8, fontSize: 12 }}>
-                  ESV unavailable
+            {(picker) => (
+              <>
+                <div className="chapterSettings">
+                  <div className="chapterVersionPicker">
+                    <label>Version</label>
+                    <select value={version} onChange={(e) => setVersion(e.target.value as Version)}>
+                      <option value="KJV">KJV</option>
+                      <option value="ESV" disabled={esvStatusChecked && !esvAvailable}>ESV</option>
+                    </select>
+                    {esvStatusChecked && !esvAvailable ? (
+                      <div className="muted" style={{ marginTop: 8, fontSize: 12 }}>
+                        ESV unavailable
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <div className="primaryGospelPicker">
+                    <label>Primary Gospel</label>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                      {GOSPELS.map((g) => (
+                        <SelectionPill
+                          key={g}
+                          active={book === g}
+                          onClick={() => {
+                            setAssignedReading(null);
+                            setBook(g);
+                            setChapter(1);
+                          }}
+                        >
+                          {g}
+                        </SelectionPill>
+                      ))}
+                    </div>
+                  </div>
+
+                  {picker}
+
+                  <div className="chapterReadingOptions">
+                    <div>
+                      <label>
+                        Sync
+                        <InfoTooltip
+                          label="Sync"
+                          description="Keeps the same story aligned across the parallel columns as you move through the primary column."
+                        />
+                      </label>
+                      <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 10 }}>
+                        <Switch checked={enableSync} onChange={setEnableSync} label="Sync" />
+                        <span style={{ fontSize: 14, color: "#64748B", fontWeight: 700 }}>
+                          {enableSync ? "On" : "Off"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label>
+                        Differences
+                        <InfoTooltip
+                          label="Differences"
+                          description="Highlights words in an active parallel passage that do not appear in the active primary passage."
+                        />
+                      </label>
+                      <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 10 }}>
+                        <Switch checked={showDifferences} onChange={setShowDifferences} label="Differences" />
+                        <span style={{ fontSize: 14, color: "#64748B", fontWeight: 700 }}>
+                          {showDifferences ? "On" : "Off"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              ) : null}
-            </div>
 
-            <div style={{ flex: 1, minWidth: 280 }}>
-              <label>Primary Gospel</label>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {GOSPELS.map((g) => (
-                  <SelectionPill
-                    key={g}
-                    active={book === g}
-                    onClick={() => {
-                      setBook(g);
-                      setChapter(1);
-                    }}
-                  >
-                    {g}
-                  </SelectionPill>
-                ))}
-              </div>
-            </div>
-
-            <div style={{ minWidth: 110 }}>
-              <label>
-                Sync
-                <InfoTooltip
-                  label="Sync"
-                  description="Keeps the same story aligned across the parallel columns as you move through the primary column."
-                />
-              </label>
-              <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 10 }}>
-                <Switch checked={enableSync} onChange={setEnableSync} label="Sync" />
-                <span style={{ fontSize: 14, color: "#64748B", fontWeight: 700 }}>
-                  {enableSync ? "On" : "Off"}
-                </span>
-              </div>
-            </div>
-
-            <div style={{ minWidth: 130 }}>
-              <label>
-                Differences
-                <InfoTooltip
-                  label="Differences"
-                  description="Highlights words in an active parallel passage that do not appear in the active primary passage."
-                />
-              </label>
-              <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 10 }}>
-                <Switch checked={showDifferences} onChange={setShowDifferences} label="Differences" />
-                <span style={{ fontSize: 14, color: "#64748B", fontWeight: 700 }}>
-                  {showDifferences ? "On" : "Off"}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <label>Select chapter</label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {chapterButtons.map((ch) => (
-                <SelectionPill key={ch} active={chapter === ch} onClick={() => setChapter(ch)}>
-                  {ch}
-                </SelectionPill>
-              ))}
-            </div>
-          </div>
+                <div>
+                  <label>Select chapter</label>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                    {chapterButtons.map((ch) => (
+                      <SelectionPill key={ch} active={chapter === ch} onClick={() => {
+                        setAssignedReading(null);
+                        setChapter(ch);
+                      }}>
+                        {ch}
+                      </SelectionPill>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+          </ReadingPlans>
         </div>
       </div>
 
+      {assignedReading && (
+        <div className="assignedReading" ref={readerRef} tabIndex={-1} aria-label="Assigned reading">
+          <h2>{readingLabel(assignedReading)}</h2>
+          <div className="readingPlanActions">
+            <a href="#reading-plan-card">Back to reading plan</a>
+            <button type="button" onClick={() => setAssignedReading(null)}>
+              {assignedReading.startVerse === undefined ? "Return to chapter view" : "Show full chapter"}
+            </button>
+          </div>
+        </div>
+      )}
       {error ? <p className="error" style={{ marginTop: 10 }}>{error}</p> : null}
       {loading ? <p className="muted">Loading…</p> : null}
 
-      <ColumnGrid
+      {(!assignedReading || (!loading && !error)) && <ColumnGrid
         version={version}
         enableSync={enableSync}
         activeBlockId={activeBlockId}
@@ -529,7 +578,7 @@ export default function ChapterView() {
         scrollPrimaryToTopSignal={scrollPrimaryToTopSignal}
         primary={{
           colKey: `${book}-primary`,
-          header: `Primary: ${book} ${chapter}`,
+          header: assignedReading ? `Assigned reading · ${readingLabel(assignedReading)}` : `Primary: ${book} ${chapter}`,
           blocks: primaryBlocks,
         }}
         others={others.map((og) => ({
@@ -538,7 +587,7 @@ export default function ChapterView() {
           header: `${og} parallels`,
           blocks: otherBlocks[og] || [],
         }))}
-      />
+      />}
 
       {modalIndex !== null ? (
         <ArtworkModal

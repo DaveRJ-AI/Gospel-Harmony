@@ -6,10 +6,19 @@ export default function EventShare({ eventId, title, version }: {
   title: string;
   version: Version;
 }) {
+  const path = `/story/${encodeURIComponent(eventId)}${version === "ESV" ? "?version=ESV" : ""}`;
+  return <ShareLink path={path} title={title} linkLabel="Event link" />;
+}
+
+export function ShareLink({ path, title, label = "Share", linkLabel }: {
+  path: string;
+  title: string;
+  label?: string;
+  linkLabel: string;
+}) {
   const [feedback, setFeedback] = React.useState<"copied" | "manual" | null>(null);
   const [sharing, setSharing] = React.useState(false);
-  const url = new URL(`/story/${encodeURIComponent(eventId)}`, window.location.origin);
-  if (version === "ESV") url.searchParams.set("version", version);
+  const url = new URL(path, window.location.origin);
 
   async function share() {
     setFeedback(null);
@@ -38,14 +47,14 @@ export default function EventShare({ eventId, title, version }: {
 
   return (
     <div className="eventShare">
-      <button type="button" onClick={share} disabled={sharing}>Share</button>
+      <button type="button" onClick={share} disabled={sharing}>{label}</button>
       <span className="muted" role="status">
         {feedback === "copied" ? "Link copied" : null}
-        {feedback === "manual" ? "Copy the event link below." : null}
+        {feedback === "manual" ? "Copy the link below." : null}
       </span>
       {feedback === "manual" ? (
         <input
-          aria-label="Event link"
+          aria-label={linkLabel}
           value={url.href}
           readOnly
           autoFocus

@@ -376,6 +376,84 @@ small {
   margin: 6px 0;
 }
 
+.mapLayout {
+  display: grid;
+  grid-template-areas: "routes map" "places map";
+  grid-template-columns: 320px minmax(0, 1fr);
+  grid-template-rows: max-content 1fr;
+  align-items: start;
+  gap: 12px 16px;
+}
+
+.mapGospelRoutes {
+  grid-area: routes;
+}
+
+.mapRouteButtons,
+.mapSidebar {
+  display: grid;
+}
+
+.mapRouteButtons {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mapRouteButton {
+  gap: 8px;
+  padding: 8px 12px;
+}
+
+.mapRouteDot {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border-radius: 50%;
+}
+
+.mapMain {
+  grid-area: map;
+  min-width: 0;
+}
+
+.mapSidebar {
+  grid-area: places;
+  gap: 12px;
+}
+
+.mapTools {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  max-width: 100%;
+}
+
+.mapViewport {
+  width: 100%;
+  height: 820px;
+}
+
+.mapPlacesHeader,
+.mapPlacesList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mapPlacesHeader {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mapPlacesList {
+  margin-top: 10px;
+}
+
+.mapPlacesToggle {
+  display: none;
+}
+
 @media (max-width: 1400px) {
   .grid4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -424,4 +502,171 @@ small {
   .row {
     flex-direction: column;
   }
+
+  .mapLayout {
+    grid-template-areas: "routes" "map" "places";
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+  }
+
+  .mapCard {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mapLegend {
+    order: 1;
+  }
+
+  .mapViewport {
+    height: auto;
+  }
+
+  .mapViewport > svg {
+    position: absolute;
+    inset: 0;
+  }
+
+  .mapPlacesToggle {
+    display: block;
+    margin-left: auto;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .mapPlacesList[data-expanded="false"] {
+    display: none;
+  }
+}
+
+@media (min-width: 380px) and (max-width: 760px) {
+  .mapRouteButtons {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .mapRouteButtons .mapRouteButton {
+    justify-content: center;
+    gap: 4px;
+    padding-inline: 4px;
+  }
+
+  .mapRouteDot {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+.chapterPanel {
+  display: grid;
+  gap: 22px;
+}
+
+.chapterSettings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px clamp(18px, 2.5vw, 36px);
+}
+
+.chapterVersionPicker {
+  min-width: 7rem;
+}
+
+.primaryGospelPicker {
+  max-width: 100%;
+}
+
+.readingPlanPicker {
+  width: min(13rem, 100%);
+}
+
+.chapterReadingOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px clamp(24px, 3vw, 40px);
+}
+
+@media (max-width: 760px) {
+  .chapterPanel,
+  .chapterSettings {
+    row-gap: 16px;
+  }
+}
+
+.readingPlanCard {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #CBD5E1;
+  border-radius: 16px;
+  background: #F5F8FC;
+  scroll-margin-top: 16px;
+}
+
+.readingPlanHeader,
+.readingPlanMeta,
+.readingPlanActions,
+.assignedReading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.readingPlanWeekNav {
+  display: flex;
+  gap: 6px;
+}
+
+.readingPlanCard .readingPlanWeekNav button {
+  padding: 4px 9px;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.readingPlanHeader,
+.assignedReading {
+  justify-content: space-between;
+}
+
+.readingPlanCard p,
+.readingPlanCard ul {
+  margin: 4px 0 0;
+}
+
+.readingPlanCard summary {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.readingPlanCard button,
+.readingPlanPrimary,
+.assignedReading button {
+  padding: 7px 12px;
+}
+
+.readingPlanCard .readingPlanPrimary,
+.readingPlanCard button[aria-pressed="true"] {
+  background: var(--nav-active-bg);
+  border: 1px solid var(--nav-active-border);
+  border-radius: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.readingPlanCard button[aria-pressed="true"] {
+  box-shadow: inset 0 -2px 0 var(--nav-active-accent);
+}
+
+.readingPlanCard button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.assignedReading {
+  margin-top: 16px;
+  scroll-margin-top: 16px;
 }

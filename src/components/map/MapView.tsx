@@ -59,8 +59,8 @@ const MIN_ZOOM = 0.7;
 const MAX_ZOOM = 4;
 const ZOOM_STEP = 0.1;
 const WHEEL_ZOOM_SENSITIVITY = 0.0008;
-const DESIGNER_COORDINATE_ASSIST_ENABLED = true;
 const MAP_FULL_UNDERLAY_SRC = "/assets/map/Israel_underlay.png";
+const PLACE_SELECTION_PROMPT = "Select a place on the map or from the list.";
 
 const REGION_TEXT_COLORS: Record<string, string> = {
   galilee: "#3B82F6",
@@ -283,6 +283,12 @@ const panelTitleStyle: React.CSSProperties = {
   textTransform: "uppercase",
   letterSpacing: "0.08em",
   margin: "0 0 10px 0",
+  color: "#64748B",
+};
+
+const panelMessageStyle: React.CSSProperties = {
+  margin: 0,
+  fontSize: 14,
   color: "#64748B",
 };
 
@@ -548,10 +554,14 @@ export default function MapView() {
   const graph = useMemo(() => buildMapGraphData(bundle), [bundle]);
 
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const placeParam = searchParams.get("place");
+  const episodeParam = searchParams.get("episode");
+  const gospelParam = searchParams.get("gospels");
+  const showDesignerCoordinates = searchParams.get("designer") === "1";
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
-  const placesListRef = useRef<HTMLDivElement | null>(null);
+  const placesHeadingRef = useRef<HTMLHeadingElement | null>(null);
   const panStateRef = useRef<{
     startX: number;
     startY: number;
@@ -566,7 +576,7 @@ export default function MapView() {
   const [selectedEpisodeId, setSelectedEpisodeId] = useState<string | null>(
     null
   );
-  const [placesExpanded, setPlacesExpanded] = useState(true);
+  const [showPlacesOnMobile, setShowPlacesOnMobile] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [panX, setPanX] = useState(0);
   const [panY, setPanY] = useState(0);
@@ -663,23 +673,21 @@ export default function MapView() {
   };
 
   useEffect(() => {
-    const place = searchParams.get("place");
-    const episode = searchParams.get("episode");
-    const gospelParam = searchParams.get("gospels");
-
-    if (place) {
-      setSelectedPlaceId(place);
+    if (placeParam) {
+      setSelectedPlaceId(placeParam);
       setSelectedEpisodeId(null);
     }
 
-    if (episode) {
-      setSelectedEpisodeId(episode);
-      const found = bundle.episodes.find((ep) => ep.id === episode);
+    if (episodeParam) {
+      setSelectedEpisodeId(episodeParam);
+      const found = bundle.episodes.find((ep) => ep.id === episodeParam);
       if (found?.placeIds?.length) {
         setSelectedPlaceId(found.placeIds[0]);
       }
     }
+  }, [placeParam, episodeParam, bundle.episodes]);
 
+  useEffect(() => {
     if (gospelParam) {
       const parsed = gospelParam
         .split(",")
@@ -691,13 +699,7 @@ export default function MapView() {
 
       setEnabledGospels(parsed);
     }
-  }, [searchParams, bundle.episodes]);
-
-  useEffect(() => {
-    if (selectedPlaceId) {
-      setPlacesExpanded(false);
-    }
-  }, [selectedPlaceId]);
+  }, [gospelParam]);
 
   const travelStopsByPlace = useMemo(() => {
     const map = new Map<string, TravelStopBadge[]>();
@@ -870,17 +872,23 @@ export default function MapView() {
   }
 
   function togglePlace(placeId: string) {
-    setSelectedPlaceId((current) => {
-      if (current === placeId) return null;
-      return placeId;
-    });
+    if (selectedPlaceId === placeId) {
+      clearPlaceSelection();
+      return;
+    }
+    setSelectedPlaceId(placeId);
+    setSelectedEpisodeId(null);
+  }
 
-    setSelectedEpisodeId((currentEpisodeId) => {
-      if (selectedPlaceId === placeId) {
-        return null;
-      }
-      return currentEpisodeId;
-    });
+  function clearPlaceSelection() {
+    setSelectedPlaceId(null);
+    setSelectedEpisodeId(null);
+    if (searchParams.has("place") || searchParams.has("episode")) {
+      const params = new URLSearchParams(searchParams);
+      params.delete("place");
+      params.delete("episode");
+      setSearchParams(params, { replace: true });
+    }
   }
 
   function toggleEpisode(episodeId: string) {
@@ -1076,8 +1084,7 @@ export default function MapView() {
     const target = event.target as Element | null;
     if (target?.closest?.("[data-map-selectable='true']")) return;
 
-    setSelectedPlaceId(null);
-    setSelectedEpisodeId(null);
+    clearPlaceSelection();
   }
 
   const zoomPercent = Math.round(zoom * 100);
@@ -1191,316 +1198,55 @@ export default function MapView() {
             color: "#64748B",
           }}
         >
-          Relational geography with Gospel travel paths.
+          Select a place to see its events, or choose a Gospel to trace its route.
         </p>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          gap: 16,
-          alignItems: "flex-start",
-          width: "100%",
-          flexWrap: "nowrap",
-        }}
-      >
-        <aside
-          style={{
-            width: 320,
-            minWidth: 320,
-            display: "flex",
-            flexDirection: "column",
-            gap: 12,
-            alignSelf: "flex-start",
-          }}
-        >
-          <section style={panelStyle}>
-            <h3 style={panelTitleStyle}>Gospel travel sequences</h3>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 8,
-              }}
-            >
-              {GOSPELS.map((gospel) => {
-                const active = enabledGospels.includes(gospel);
-                const color = travelColorByGospel[gospel];
+      <div className="mapLayout">
+        <section className="mapGospelRoutes" style={panelStyle}>
+          <h3 style={panelTitleStyle}>Gospel travel sequences</h3>
+          <div className="mapRouteButtons">
+            {GOSPELS.map((gospel) => {
+              const active = enabledGospels.includes(gospel);
+              const color = travelColorByGospel[gospel];
 
-                return (
-                  <button
-                    key={gospel}
-                    type="button"
-                    onClick={() => toggleGospel(gospel)}
-                    style={{
-                      border: active
-                        ? `1px solid ${color}`
-                        : "1px solid #E2E8F0",
-                      background: active ? `${color}14` : "#FFFFFF",
-                      color: active ? color : "#334155",
-                      borderRadius: 999,
-                      padding: "8px 12px",
-                      fontSize: 14,
-                      fontWeight: active ? 700 : 600,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      cursor: "pointer",
-                    }}
-                  >
-                    <span
-                      style={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: 999,
-                        background: color,
-                        display: "inline-block",
-                      }}
-                    />
-                    <span style={{ textTransform: "capitalize" }}>{gospel}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </section>
-
-          <section style={panelStyle}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 8,
-                marginBottom: 10,
-              }}
-            >
-              <h3 style={{ ...panelTitleStyle, margin: 0 }}>Places</h3>
-              {!placesExpanded ? (
+              return (
                 <button
+                  className="mapRouteButton"
+                  key={gospel}
                   type="button"
-                  onClick={() => {
-                    setPlacesExpanded(true);
-                    setSelectedPlaceId(null);
-                    setSelectedEpisodeId(null);
-                  }}
+                  aria-pressed={active}
+                  onClick={() => toggleGospel(gospel)}
                   style={{
+                    border: active
+                      ? `1px solid ${color}`
+                      : "1px solid #E2E8F0",
+                    background: active ? `${color}14` : "#FFFFFF",
+                    color: active ? color : "#334155",
                     borderRadius: 999,
-                    padding: "6px 12px",
-                    border: "1px solid #CBD5E1",
-                    background: "#FFFFFF",
-                    color: "#334155",
-                    fontSize: 12,
-                    fontWeight: 700,
-                    lineHeight: 1,
+                    fontSize: 14,
+                    fontWeight: active ? 700 : 600,
+                    display: "flex",
+                    alignItems: "center",
                     cursor: "pointer",
                   }}
-                  aria-label="Expand places list"
-                  title="Expand places list"
                 >
-                  Expand
+                  <span
+                    className="mapRouteDot"
+                    style={{
+                      background: color,
+                    }}
+                  />
+                  <span style={{ textTransform: "capitalize" }}>{gospel}</span>
                 </button>
-              ) : null}
-            </div>
-            <div style={{ position: "relative" }}>
-              <div
-                ref={placesListRef}
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 8,
-                }}
-              >
-                {(placesExpanded || !selectedPlace
-                  ? nodes
-                  : nodes.filter((node) => node.id === selectedPlace.id))
-                  .slice()
-                  .sort((a, b) => a.name.localeCompare(b.name))
-                  .map((node) => (
-                    <button
-                      key={node.id}
-                      type="button"
-                      onClick={() => {
-                        togglePlace(node.id);
-                      }}
-                      style={{
-                        borderRadius: 999,
-                        padding: "7px 12px",
-                        fontSize: 14,
-                        cursor: "pointer",
-                        background:
-                          selectedPlaceId === node.id ? "#DBEAFE" : "#F1F5F9",
-                        color:
-                          selectedPlaceId === node.id ? "#1D4ED8" : "#0F172A",
-                        fontWeight: selectedPlaceId === node.id ? 700 : 500,
-                        border:
-                          selectedPlaceId === node.id
-                            ? "1px solid #93C5FD"
-                            : "1px solid transparent",
-                      }}
-                    >
-                      {node.name}
-                    </button>
-                  ))}
-              </div>
-            </div>
-          </section>
+              );
+            })}
+          </div>
+        </section>
 
-          <section style={panelStyle}>
-            <h3 style={panelTitleStyle}>Selected place</h3>
-            {!selectedPlace ? (
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: 14,
-                  color: "#64748B",
-                }}
-              >
-                Select a place on the map or from the list.
-              </p>
-            ) : (
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 6,
-                  fontSize: 14,
-                  color: "#334155",
-                }}
-              >
-                <div>
-                  <strong>Name:</strong> {selectedPlace.name}
-                </div>
-                <div>
-                  <strong>Type:</strong> {selectedPlace.type}
-                </div>
-                <div>
-                  <strong>Region:</strong> {selectedPlace.region ?? "—"}
-                </div>
-                <div>
-                  <strong>Certainty:</strong> {selectedPlace.certainty}
-                </div>
-                {selectedPlace.modernOverlay && (
-                  <div>
-                    <strong>Modern:</strong>{" "}
-                    {selectedPlace.modernOverlay.modernName}
-                  </div>
-                )}
-              </div>
-            )}
-          </section>
-
-          <section style={panelStyle}>
-            <h3 style={panelTitleStyle}>Stories at selected place</h3>
-            {placeStoryEpisodes.length === 0 ? (
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: 14,
-                  color: "#64748B",
-                }}
-              >
-                No direct story links for this place yet.
-              </p>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {placeStoryEpisodes.map((storyTarget) => (
-                  <div
-                    key={`${storyTarget.episodeId}-${storyTarget.pericopeId}`}
-                    onClick={() => openStoryTarget(storyTarget)}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        openStoryTarget(storyTarget);
-                      }
-                    }}
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      textAlign: "left",
-                      borderRadius: 12,
-                      border: "1px solid #E2E8F0",
-                      background: "#F8FAFC",
-                      color: "#334155",
-                      padding: "10px 12px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        justifyContent: "space-between",
-                        gap: 12,
-                      }}
-                    >
-                      <div style={{ minWidth: 0, flex: 1 }}>
-                        <div style={{ fontWeight: 600 }}>{storyTarget.title}</div>
-                        <div
-                          style={{
-                            marginTop: 4,
-                            fontSize: 12,
-                            color: "#64748B",
-                            textTransform: "capitalize",
-                          }}
-                        >
-                          {storyTarget.gospels.join(", ")}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-
-          <section style={panelStyle}>
-            <h3 style={panelTitleStyle}>Themes at selected place</h3>
-            {placeThemes.length === 0 ? (
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: 14,
-                  color: "#64748B",
-                }}
-              >
-                No mapped themes for this place yet.
-              </p>
-            ) : (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {placeThemes.map((theme) => (
-                  <button
-                    key={theme}
-                    type="button"
-                    onClick={() => openTheme(theme)}
-                    style={{
-                      borderRadius: 999,
-                      padding: "7px 12px",
-                      fontSize: 13,
-                      cursor: "pointer",
-                      background: "#F8FAFC",
-                      color: "#334155",
-                      fontWeight: 600,
-                      border: "1px solid #E2E8F0",
-                      textTransform: "capitalize",
-                    }}
-                  >
-                    {theme}
-                  </button>
-                ))}
-              </div>
-            )}
-          </section>
-        </aside>
-
-        <main
-          style={{
-            flex: 1,
-            minWidth: 0,
-          }}
-        >
+        <main className="mapMain">
           <div
+            className="mapCard"
             style={{
               background: "#FFFFFF",
               border: "1px solid #E2E8F0",
@@ -1542,13 +1288,7 @@ export default function MapView() {
               </div>
 
               <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-end",
-                  gap: 10,
-                  flex: "0 0 auto",
-                }}
+                className="mapTools"
                 >
                 <div
                   style={{
@@ -1597,7 +1337,7 @@ export default function MapView() {
                     justifyContent: "flex-end",
                   }}
                 >
-                  {DESIGNER_COORDINATE_ASSIST_ENABLED ? (
+                  {showDesignerCoordinates ? (
                     <div
                       style={{
                         display: "flex",
@@ -1748,6 +1488,7 @@ export default function MapView() {
             </div>
 
             <div
+              className="mapLegend"
               style={{
                 padding: "10px 16px",
                 borderBottom: "1px solid #E2E8F0",
@@ -1886,10 +1627,11 @@ export default function MapView() {
             </div>
 
             <div
+              className="mapViewport"
               ref={mapContainerRef}
               style={{
                 position: "relative",
-                height: 820,
+                aspectRatio: VIEWBOX_WIDTH / VIEWBOX_HEIGHT,
                 overflow: "hidden",
                 background: "#F8FAFC",
                 borderTop: "1px solid #E2E8F0",
@@ -1905,16 +1647,22 @@ export default function MapView() {
                   height: "100%",
                   display: "block",
                   userSelect: "none",
+                  touchAction: zoom > 1 ? "none" : "auto",
                 }}
                 role="img"
                 aria-label="Gospel map visualization"
                 onClickCapture={suppressClickAfterPan}
                 onClick={handleMapBackgroundClick}
-                onMouseMove={updateDesignerMouseCoordinate}
-                onMouseLeave={clearDesignerMouseCoordinate}
+                onMouseMove={
+                  showDesignerCoordinates ? updateDesignerMouseCoordinate : undefined
+                }
+                onMouseLeave={
+                  showDesignerCoordinates ? clearDesignerMouseCoordinate : undefined
+                }
                 onPointerDown={beginPan}
                 onPointerMove={handlePanMove}
                 onPointerUp={endPan}
+                onPointerCancel={endPan}
                 onPointerLeave={endPan}
                 >
                 <g transform={`translate(${panX} ${panY}) scale(${zoom})`}>
@@ -2178,6 +1926,221 @@ onClick={() => togglePlace("egypt")}
             </div>
           </div>
         </main>
+
+        <aside className="mapSidebar">
+          <section style={panelStyle} aria-labelledby="map-places-heading">
+            <div className="mapPlacesHeader">
+              <h3
+                id="map-places-heading"
+                ref={placesHeadingRef}
+                tabIndex={-1}
+                style={{ ...panelTitleStyle, margin: 0 }}
+              >
+                Places
+              </h3>
+              <button
+                className="mapPlacesToggle"
+                type="button"
+                aria-expanded={showPlacesOnMobile}
+                aria-controls="map-places-list"
+                onClick={() => setShowPlacesOnMobile((current) => !current)}
+              >
+                {showPlacesOnMobile ? "Hide places" : "Show places"}
+              </button>
+              {selectedPlace ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    clearPlaceSelection();
+                    setShowPlacesOnMobile(true);
+                    placesHeadingRef.current?.focus({ preventScroll: true });
+                  }}
+                  style={{
+                    borderRadius: 999,
+                    padding: "6px 12px",
+                    border: "1px solid #93C5FD",
+                    background: "#EFF6FF",
+                    color: "#1E40AF",
+                    fontSize: 13,
+                    fontWeight: 700,
+                    lineHeight: 1,
+                    cursor: "pointer",
+                  }}
+                >
+                  Show all places
+                </button>
+              ) : null}
+            </div>
+            <div
+              className="mapPlacesList"
+              id="map-places-list"
+              data-expanded={showPlacesOnMobile}
+            >
+              {(selectedPlace ? [selectedPlace] : nodes)
+                .slice()
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((node) => (
+                  <button
+                    key={node.id}
+                    type="button"
+                    aria-pressed={selectedPlaceId === node.id}
+                    onClick={() => {
+                      togglePlace(node.id);
+                    }}
+                    style={{
+                      borderRadius: 999,
+                      padding: "7px 12px",
+                      fontSize: 14,
+                      cursor: "pointer",
+                      background:
+                        selectedPlaceId === node.id ? "#DBEAFE" : "#F1F5F9",
+                      color:
+                        selectedPlaceId === node.id ? "#1D4ED8" : "#0F172A",
+                      fontWeight: selectedPlaceId === node.id ? 700 : 500,
+                      border:
+                        selectedPlaceId === node.id
+                          ? "1px solid #93C5FD"
+                          : "1px solid transparent",
+                    }}
+                  >
+                    {node.name}
+                  </button>
+                ))}
+            </div>
+          </section>
+
+          <section style={panelStyle}>
+            <h3 style={panelTitleStyle}>Selected place</h3>
+            {!selectedPlace ? (
+              <p style={panelMessageStyle}>{PLACE_SELECTION_PROMPT}</p>
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 6,
+                  fontSize: 14,
+                  color: "#334155",
+                }}
+              >
+                <div>
+                  <strong>Name:</strong> {selectedPlace.name}
+                </div>
+                <div>
+                  <strong>Type:</strong> {selectedPlace.type}
+                </div>
+                <div>
+                  <strong>Region:</strong> {selectedPlace.region ?? "—"}
+                </div>
+                <div>
+                  <strong>Certainty:</strong> {selectedPlace.certainty}
+                </div>
+                {selectedPlace.modernOverlay && (
+                  <div>
+                    <strong>Modern:</strong>{" "}
+                    {selectedPlace.modernOverlay.modernName}
+                  </div>
+                )}
+              </div>
+            )}
+          </section>
+
+          <section style={panelStyle}>
+            <h3 style={panelTitleStyle}>Stories at selected place</h3>
+            {placeStoryEpisodes.length === 0 ? (
+              <p style={panelMessageStyle}>
+                {selectedPlace
+                  ? "No direct story links for this place yet."
+                  : PLACE_SELECTION_PROMPT}
+              </p>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {placeStoryEpisodes.map((storyTarget) => (
+                  <div
+                    key={`${storyTarget.episodeId}-${storyTarget.pericopeId}`}
+                    onClick={() => openStoryTarget(storyTarget)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        openStoryTarget(storyTarget);
+                      }
+                    }}
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      textAlign: "left",
+                      borderRadius: 12,
+                      border: "1px solid #E2E8F0",
+                      background: "#F8FAFC",
+                      color: "#334155",
+                      padding: "10px 12px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        justifyContent: "space-between",
+                        gap: 12,
+                      }}
+                    >
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <div style={{ fontWeight: 600 }}>{storyTarget.title}</div>
+                        <div
+                          style={{
+                            marginTop: 4,
+                            fontSize: 12,
+                            color: "#64748B",
+                            textTransform: "capitalize",
+                          }}
+                        >
+                          {storyTarget.gospels.join(", ")}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section style={panelStyle}>
+            <h3 style={panelTitleStyle}>Themes at selected place</h3>
+            {placeThemes.length === 0 ? (
+              <p style={panelMessageStyle}>
+                {selectedPlace
+                  ? "No mapped themes for this place yet."
+                  : PLACE_SELECTION_PROMPT}
+              </p>
+            ) : (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {placeThemes.map((theme) => (
+                  <button
+                    key={theme}
+                    type="button"
+                    onClick={() => openTheme(theme)}
+                    style={{
+                      borderRadius: 999,
+                      padding: "7px 12px",
+                      fontSize: 13,
+                      cursor: "pointer",
+                      background: "#F8FAFC",
+                      color: "#334155",
+                      fontWeight: 600,
+                      border: "1px solid #E2E8F0",
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    {theme}
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
+        </aside>
       </div>
     </div>
   );
