@@ -43,10 +43,11 @@ export function pericopesForChapter(h: HarmonyData, book: Gospel, chapter: numbe
   return list.sort((a, b) => (a.sortOrder ?? 9999) - (b.sortOrder ?? 9999) || a.title.localeCompare(b.title));
 }
 
-export function passagesForPericope(h: HarmonyData, pericopeId: string) {
-  return h.passages.filter((p) => p.pericopeId === pericopeId);
-}
-
-export function passageForBook(h: HarmonyData, pericopeId: string, book: Gospel) {
-  return h.passages.find((p) => p.pericopeId === pericopeId && p.book === book) || null;
+export function passagesForPericope(h: HarmonyData, pericopeId: string, book: Gospel) {
+  return h.passages
+    .filter((p) => p.pericopeId === pericopeId && p.book === book)
+    .sort((a, b) =>
+      a.startChapter - b.startChapter || a.startVerse - b.startVerse ||
+      a.endChapter - b.endChapter || a.endVerse - b.endVerse
+    );
 }

@@ -1,22 +1,65 @@
 {
+  "annunciation-mary": [
+    {
+      "image": "/art/annunciation-mary.webp",
+      "thumbnail": "/art/annunciation-mary-thumb.webp",
+      "gallery": {"image": "/art/gallery/annunciation-mary.webp"},
+      "title": "Annunciation to Mary"
+    }
+  ],
+  "arrest": [
+    {
+      "image": "/art/arrest.webp",
+      "thumbnail": "/art/arrest-thumb.webp",
+      "gallery": {"image": "/art/gallery/arrest.webp"},
+      "title": "Arrest of Jesus"
+    }
+  ],
   "baptism": [
     {
       "image": "/art/baptism.webp",
       "thumbnail": "/art/baptism-thumb.webp",
+      "gallery": {"image": "/art/gallery/baptism.webp", "position": "50% 26%"},
       "title": "Baptism of Jesus"
+    }
+  ],
+  "barren-fig-tree": [
+    {
+      "image": "/art/barren-fig-tree.webp",
+      "thumbnail": "/art/barren-fig-tree-thumb.webp",
+      "gallery": {"image": "/art/gallery/barren-fig-tree.webp"},
+      "title": "Parable of the Barren Fig Tree"
+    }
+  ],
+  "bethesda": [
+    {
+      "image": "/art/bethesda.webp",
+      "thumbnail": "/art/bethesda-thumb.webp",
+      "gallery": {"image": "/art/gallery/bethesda.webp"},
+      "title": "Healing at Bethesda"
     }
   ],
   "birth-jesus": [
     {
       "image": "/art/birth-jesus.webp",
       "thumbnail": "/art/birth-jesus-thumb.webp",
+      "gallery": {"image": "/art/gallery/birth-jesus.webp", "position": "52% 50%"},
       "title": "Birth of Jesus"
+    }
+  ],
+  "bless-children": [
+    {
+      "image": "/art/bless-children.webp",
+      "thumbnail": "/art/bless-children-thumb.webp",
+      "gallery": {"image": "/art/gallery/bless-children.webp"},
+      "title": "Blessing the Children"
     }
   ],
   "born-blind": [
     {
       "image": "/art/born-blind.webp",
       "thumbnail": "/art/born-blind-thumb.webp",
+      "gallery": {"image": "/art/gallery/born-blind.webp", "position": "50% 24%"},
       "title": "Man Born Blind"
     }
   ],
@@ -27,31 +70,75 @@
       "title": "Boy Jesus in the Temple"
     }
   ],
+  "burial": [
+    {
+      "image": "/art/burial.webp",
+      "thumbnail": "/art/burial-thumb.webp",
+      "gallery": {"image": "/art/gallery/burial.webp"},
+      "title": "Burial of Jesus"
+    }
+  ],
   "call-fishermen": [
     {
       "image": "/art/call-fishermen.webp",
       "thumbnail": "/art/call-fishermen-thumb.webp",
+      "gallery": {"image": "/art/gallery/call-fishermen.webp", "position": "54% 50%"},
       "title": "Calling of the Fishermen"
+    }
+  ],
+  "call-levi": [
+    {
+      "image": "/art/call-levi.webp",
+      "thumbnail": "/art/call-levi-thumb.webp",
+      "gallery": {"image": "/art/gallery/call-levi.webp"},
+      "title": "Call of Matthew/Levi"
     }
   ],
   "calming-storm": [
     {
       "image": "/art/calming-storm.webp",
       "thumbnail": "/art/calming-storm-thumb.webp",
+      "gallery": {"image": "/art/gallery/calming-storm.webp", "position": "50% 25%"},
       "title": "Jesus Calms the Storm"
+    }
+  ],
+  "centurion-servant": [
+    {
+      "image": "/art/centurion-servant.webp",
+      "thumbnail": "/art/centurion-servant-thumb.webp",
+      "gallery": {"image": "/art/gallery/centurion-servant.webp"},
+      "title": "Centurion’s Servant"
+    }
+  ],
+  "cleansing-temple-final": [
+    {
+      "image": "/art/cleansing-temple-final.webp",
+      "thumbnail": "/art/cleansing-temple-final-thumb.webp",
+      "gallery": {"image": "/art/gallery/cleansing-temple-final.webp"},
+      "title": "Cleansing of the Temple"
     }
   ],
   "crucifixion": [
     {
       "image": "/art/crucifixion.webp",
       "thumbnail": "/art/crucifixion-thumb.webp",
+      "gallery": {"image": "/art/gallery/crucifixion.webp", "position": "50% 2%"},
       "title": "Crucifixion"
+    }
+  ],
+  "dragnet": [
+    {
+      "image": "/art/dragnet.webp",
+      "thumbnail": "/art/dragnet-thumb.webp",
+      "gallery": {"image": "/art/gallery/dragnet.webp"},
+      "title": "Parable of the Dragnet"
     }
   ],
   "emmaus": [
     {
       "image": "/art/emmaus.webp",
       "thumbnail": "/art/emmaus-thumb.webp",
+      "gallery": {"image": "/art/gallery/emmaus.webp", "position": "50% 35%"},
       "title": "Road to Emmaus"
     }
   ],
@@ -59,34 +146,95 @@
     {
       "image": "/art/feeding-5000.webp",
       "thumbnail": "/art/feeding-5000-thumb.webp",
+      "gallery": {"image": "/art/gallery/feeding-5000.webp"},
       "title": "Feeding of the Five Thousand"
+    }
+  ],
+  "galilee-breakfast": [
+    {
+      "image": "/art/galilee-breakfast.webp",
+      "thumbnail": "/art/galilee-breakfast-thumb.webp",
+      "gallery": {"image": "/art/gallery/galilee-breakfast.webp"},
+      "title": "Breakfast by the Sea"
     }
   ],
   "gethsemane": [
     {
       "image": "/art/gethsemane.webp",
       "thumbnail": "/art/gethsemane-thumb.webp",
+      "gallery": {"image": "/art/gallery/gethsemane.webp", "position": "50% 27%"},
       "title": "Prayer in Gethsemane"
+    }
+  ],
+  "good-samaritan": [
+    {
+      "image": "/art/good-samaritan.webp",
+      "thumbnail": "/art/good-samaritan-thumb.webp",
+      "gallery": {"image": "/art/gallery/good-samaritan.webp"},
+      "title": "Good Samaritan"
     }
   ],
   "good-shepherd": [
     {
       "image": "/art/good-shepherd.webp",
       "thumbnail": "/art/good-shepherd-thumb.webp",
+      "gallery": {"image": "/art/gallery/good-shepherd.webp", "position": "50% 15%"},
       "title": "Good Shepherd"
+    }
+  ],
+  "great-banquet": [
+    {
+      "image": "/art/great-banquet.webp",
+      "thumbnail": "/art/great-banquet-thumb.webp",
+      "gallery": {"image": "/art/gallery/great-banquet.webp"},
+      "title": "Parable of the Great Banquet"
     }
   ],
   "great-commission": [
     {
       "image": "/art/great-commission.webp",
       "thumbnail": "/art/great-commission-thumb.webp",
+      "gallery": {"image": "/art/gallery/great-commission.webp", "position": "50% 17%"},
       "title": "Great Commission"
+    }
+  ],
+  "hidden-treasure": [
+    {
+      "image": "/art/hidden-treasure.webp",
+      "thumbnail": "/art/hidden-treasure-thumb.webp",
+      "gallery": {"image": "/art/gallery/hidden-treasure.webp"},
+      "title": "Hidden Treasure"
+    }
+  ],
+  "householder": [
+    {
+      "image": "/art/householder.webp",
+      "thumbnail": "/art/householder-thumb.webp",
+      "gallery": {"image": "/art/gallery/householder.webp"},
+      "title": "Parable of the Householder"
+    }
+  ],
+  "laborers-vineyard": [
+    {
+      "image": "/art/laborers-vineyard.webp",
+      "thumbnail": "/art/laborers-vineyard-thumb.webp",
+      "gallery": {"image": "/art/gallery/laborers-vineyard.webp"},
+      "title": "Parable of the Laborers in the Vineyard"
+    }
+  ],
+  "lamp-under-basket": [
+    {
+      "image": "/art/lamp-under-basket.webp",
+      "thumbnail": "/art/lamp-under-basket-thumb.webp",
+      "gallery": {"image": "/art/gallery/lamp-under-basket.webp", "position": "75% 50%"},
+      "title": "Lamp Under a Basket"
     }
   ],
   "last-supper": [
     {
       "image": "/art/last-supper.webp",
       "thumbnail": "/art/last-supper-thumb.webp",
+      "gallery": {"image": "/art/gallery/last-supper.webp"},
       "title": "Last Supper"
     }
   ],
@@ -94,13 +242,31 @@
     {
       "image": "/art/lazarus.webp",
       "thumbnail": "/art/lazarus-thumb.webp",
+      "gallery": {"image": "/art/gallery/lazarus.webp", "position": "50% 23%"},
       "title": "Raising of Lazarus"
+    }
+  ],
+  "leaven": [
+    {
+      "image": "/art/leaven.webp",
+      "thumbnail": "/art/leaven-thumb.webp",
+      "gallery": {"image": "/art/gallery/leaven.webp"},
+      "title": "Parable of the Leaven"
+    }
+  ],
+  "lost-coin": [
+    {
+      "image": "/art/lost-coin.webp",
+      "thumbnail": "/art/lost-coin-thumb.webp",
+      "gallery": {"image": "/art/gallery/lost-coin.webp"},
+      "title": "Parable of the Lost Coin"
     }
   ],
   "lost-sheep": [
     {
       "image": "/art/lost-sheep.webp",
       "thumbnail": "/art/lost-sheep-thumb.webp",
+      "gallery": {"image": "/art/gallery/lost-sheep.webp", "position": "50% 10%"},
       "title": "Parable of the Lost Sheep"
     }
   ],
@@ -111,10 +277,35 @@
       "title": "Visit of the Magi"
     }
   ],
+  "mary-martha": [
+    {
+      "image": "/art/mary-martha.webp",
+      "thumbnail": "/art/mary-martha-thumb.webp",
+      "gallery": {"image": "/art/gallery/mary-martha.webp"},
+      "title": "Mary and Martha"
+    }
+  ],
+  "minas": [
+    {
+      "image": "/art/minas.webp",
+      "thumbnail": "/art/minas-thumb.webp",
+      "gallery": {"image": "/art/gallery/minas.webp"},
+      "title": "Parable of the Minas"
+    }
+  ],
+  "mustard-seed": [
+    {
+      "image": "/art/mustard-seed.webp",
+      "thumbnail": "/art/mustard-seed-thumb.webp",
+      "gallery": {"image": "/art/gallery/mustard-seed.webp"},
+      "title": "Parable of the Mustard Seed"
+    }
+  ],
   "nicodemus": [
     {
       "image": "/art/nicodemus.webp",
       "thumbnail": "/art/nicodemus-thumb.webp",
+      "gallery": {"image": "/art/gallery/nicodemus.webp"},
       "title": "Jesus and Nicodemus"
     }
   ],
@@ -122,41 +313,175 @@
     {
       "image": "/art/paralytic.webp",
       "thumbnail": "/art/paralytic-thumb.webp",
+      "gallery": {"image": "/art/gallery/paralytic.webp"},
       "title": "Healing the Paralytic"
+    }
+  ],
+  "pearl": [
+    {
+      "image": "/art/pearl.webp",
+      "thumbnail": "/art/pearl-thumb.webp",
+      "gallery": {"image": "/art/gallery/pearl.webp"},
+      "title": "Pearl of Great Price"
+    }
+  ],
+  "persistent-widow": [
+    {
+      "image": "/art/persistent-widow.webp",
+      "thumbnail": "/art/persistent-widow-thumb.webp",
+      "gallery": {"image": "/art/gallery/persistent-widow.webp"},
+      "title": "Parable of the Persistent Widow"
+    }
+  ],
+  "peters-confession": [
+    {
+      "image": "/art/peters-confession.webp",
+      "thumbnail": "/art/peters-confession-thumb.webp",
+      "gallery": {"image": "/art/gallery/peters-confession.webp"},
+      "title": "Peter’s Confession"
+    }
+  ],
+  "pharisee-tax": [
+    {
+      "image": "/art/pharisee-tax.webp",
+      "thumbnail": "/art/pharisee-tax-thumb.webp",
+      "gallery": {"image": "/art/gallery/pharisee-tax.webp"},
+      "title": "Parable of the Pharisee and Tax Collector"
     }
   ],
   "pilate-herod": [
     {
       "image": "/art/pilate-herod.webp",
       "thumbnail": "/art/pilate-herod-thumb.webp",
+      "gallery": {"image": "/art/gallery/pilate-herod.webp", "position": "50% 28%"},
       "title": "Before Pilate and Herod"
+    }
+  ],
+  "presentation-temple": [
+    {
+      "image": "/art/presentation-temple.webp",
+      "thumbnail": "/art/presentation-temple-thumb.webp",
+      "gallery": {"image": "/art/gallery/presentation-temple.webp"},
+      "title": "Jesus Presented at the Temple"
+    }
+  ],
+  "prodigal-son": [
+    {
+      "image": "/art/prodigal-son.webp",
+      "thumbnail": "/art/prodigal-son-thumb.webp",
+      "gallery": {"image": "/art/gallery/prodigal-son.webp"},
+      "title": "Parable of the Prodigal Son"
     }
   ],
   "resurrection": [
     {
       "image": "/art/resurrection.webp",
       "thumbnail": "/art/resurrection-thumb.webp",
+      "gallery": {"image": "/art/gallery/resurrection.webp", "position": "50% 28%"},
       "title": "Resurrection Morning"
+    }
+  ],
+  "rich-fool": [
+    {
+      "image": "/art/rich-fool.webp",
+      "thumbnail": "/art/rich-fool-thumb.webp",
+      "gallery": {"image": "/art/gallery/rich-fool.webp"},
+      "title": "Parable of the Rich Fool"
+    }
+  ],
+  "rich-man-lazarus": [
+    {
+      "image": "/art/rich-man-lazarus.webp",
+      "thumbnail": "/art/rich-man-lazarus-thumb.webp",
+      "gallery": {"image": "/art/gallery/rich-man-lazarus.webp"},
+      "title": "Parable of the Rich Man and Lazarus"
     }
   ],
   "samaritan-woman": [
     {
       "image": "/art/samaritan-woman.webp",
       "thumbnail": "/art/samaritan-woman-thumb.webp",
+      "gallery": {"image": "/art/gallery/samaritan-woman.webp"},
       "title": "Woman at the Well"
+    }
+  ],
+  "seed-growing": [
+    {
+      "image": "/art/seed-growing.webp",
+      "thumbnail": "/art/seed-growing-thumb.webp",
+      "gallery": {"image": "/art/gallery/seed-growing.webp"},
+      "title": "Parable of the Growing Seed"
     }
   ],
   "sermon-mount": [
     {
       "image": "/art/sermon-mount.webp",
       "thumbnail": "/art/sermon-mount-thumb.webp",
+      "gallery": {"image": "/art/gallery/sermon-mount.webp", "position": "35% 50%"},
       "title": "Sermon on the Mount / Plain"
+    }
+  ],
+  "sheep-goats": [
+    {
+      "image": "/art/sheep-goats.webp",
+      "thumbnail": "/art/sheep-goats-thumb.webp",
+      "gallery": {"image": "/art/gallery/sheep-goats.webp"},
+      "title": "Sheep and Goats"
+    }
+  ],
+  "sinful-woman": [
+    {
+      "image": "/art/sinful-woman.webp",
+      "thumbnail": "/art/sinful-woman-thumb.webp",
+      "gallery": {"image": "/art/gallery/sinful-woman.webp"},
+      "title": "Sinful Woman Anoints Jesus"
+    }
+  ],
+  "sower": [
+    {
+      "image": "/art/sower.webp",
+      "thumbnail": "/art/sower-thumb.webp",
+      "gallery": {"image": "/art/gallery/sower.webp"},
+      "title": "Parable of the Sower"
+    }
+  ],
+  "talents": [
+    {
+      "image": "/art/talents.webp",
+      "thumbnail": "/art/talents-thumb.webp",
+      "gallery": {"image": "/art/gallery/talents.webp"},
+      "title": "Parable of the Talents"
+    }
+  ],
+  "temptation": [
+    {
+      "image": "/art/temptation.webp",
+      "thumbnail": "/art/temptation-thumb.webp",
+      "gallery": {"image": "/art/gallery/temptation.webp"},
+      "title": "Temptation in the Wilderness"
+    }
+  ],
+  "ten-lepers": [
+    {
+      "image": "/art/ten-lepers.webp",
+      "thumbnail": "/art/ten-lepers-thumb.webp",
+      "gallery": {"image": "/art/gallery/ten-lepers.webp"},
+      "title": "Healing of the Ten Lepers"
+    }
+  ],
+  "ten-virgins": [
+    {
+      "image": "/art/ten-virgins.webp",
+      "thumbnail": "/art/ten-virgins-thumb.webp",
+      "gallery": {"image": "/art/gallery/ten-virgins.webp"},
+      "title": "Parable of the Ten Virgins"
     }
   ],
   "thomas": [
     {
       "image": "/art/thomas.webp",
       "thumbnail": "/art/thomas-thumb.webp",
+      "gallery": {"image": "/art/gallery/thomas.webp", "position": "50% 22%"},
       "title": "Jesus and Thomas"
     }
   ],
@@ -164,6 +489,7 @@
     {
       "image": "/art/transfiguration.webp",
       "thumbnail": "/art/transfiguration-thumb.webp",
+      "gallery": {"image": "/art/gallery/transfiguration.webp", "position": "50% 20%"},
       "title": "Transfiguration"
     }
   ],
@@ -171,28 +497,112 @@
     {
       "image": "/art/triumphal-entry.webp",
       "thumbnail": "/art/triumphal-entry-thumb.webp",
+      "gallery": {"image": "/art/gallery/triumphal-entry.webp", "position": "43% 50%"},
       "title": "Triumphal Entry"
+    }
+  ],
+  "two-sons": [
+    {
+      "image": "/art/two-sons.webp",
+      "thumbnail": "/art/two-sons-thumb.webp",
+      "gallery": {"image": "/art/gallery/two-sons.webp"},
+      "title": "Parable of the Two Sons"
+    }
+  ],
+  "unforgiving-servant": [
+    {
+      "image": "/art/unforgiving-servant.webp",
+      "thumbnail": "/art/unforgiving-servant-thumb.webp",
+      "gallery": {"image": "/art/gallery/unforgiving-servant.webp"},
+      "title": "Parable of the Unforgiving Servant"
+    }
+  ],
+  "unjust-steward": [
+    {
+      "image": "/art/unjust-steward.webp",
+      "thumbnail": "/art/unjust-steward-thumb.webp",
+      "gallery": {"image": "/art/gallery/unjust-steward.webp"},
+      "title": "Parable of the Unjust Steward"
     }
   ],
   "walk-water": [
     {
       "image": "/art/walk-water.webp",
       "thumbnail": "/art/walk-water-thumb.webp",
+      "gallery": {"image": "/art/gallery/walk-water.webp", "position": "50% 23%"},
       "title": "Walking on Water"
+    }
+  ],
+  "watchful-servants": [
+    {
+      "image": "/art/watchful-servants.webp",
+      "thumbnail": "/art/watchful-servants-thumb.webp",
+      "gallery": {"image": "/art/gallery/watchful-servants.webp"},
+      "title": "Watchful Servants"
     }
   ],
   "wedding-cana": [
     {
       "image": "/art/wedding-cana.webp",
       "thumbnail": "/art/wedding-cana-thumb.webp",
+      "gallery": {"image": "/art/gallery/wedding-cana.webp", "position": "35% 50%"},
       "title": "Wedding at Cana"
+    }
+  ],
+  "wedding-feast": [
+    {
+      "image": "/art/wedding-feast.webp",
+      "thumbnail": "/art/wedding-feast-thumb.webp",
+      "gallery": {"image": "/art/gallery/wedding-feast.webp"},
+      "title": "Parable of the Wedding Feast"
+    }
+  ],
+  "weeds": [
+    {
+      "image": "/art/weeds.webp",
+      "thumbnail": "/art/weeds-thumb.webp",
+      "gallery": {"image": "/art/gallery/weeds.webp"},
+      "title": "Parable of the Weeds"
+    }
+  ],
+  "wicked-tenants": [
+    {
+      "image": "/art/wicked-tenants.webp",
+      "thumbnail": "/art/wicked-tenants-thumb.webp",
+      "gallery": {"image": "/art/gallery/wicked-tenants.webp"},
+      "title": "Parable of the Wicked Tenants"
+    }
+  ],
+  "widows-offering": [
+    {
+      "image": "/art/widows-offering.webp",
+      "thumbnail": "/art/widows-offering-thumb.webp",
+      "gallery": {"image": "/art/gallery/widows-offering.webp"},
+      "title": "Widow’s Offering"
+    }
+  ],
+  "widows-son-naim": [
+    {
+      "image": "/art/widows-son-naim.webp",
+      "thumbnail": "/art/widows-son-naim-thumb.webp",
+      "gallery": {"image": "/art/gallery/widows-son-naim.webp"},
+      "title": "Widow’s Son at Nain"
     }
   ],
   "woman-caught": [
     {
       "image": "/art/woman-caught.webp",
       "thumbnail": "/art/woman-caught-thumb.webp",
+      "gallery": {"image": "/art/gallery/woman-caught.webp"},
       "title": "Woman Caught in Adultery"
+    }
+  ],
+  "zacchaeus": [
+    {
+      "image": "/art/zacchaeus.webp",
+      "thumbnail": "/art/zacchaeus-thumb.webp",
+      "gallery": {"image": "/art/gallery/zacchaeus.webp"},
+      "title": "Zacchaeus"
     }
   ]
 }

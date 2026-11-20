@@ -204,12 +204,15 @@ export default function ArtView() {
                   title="Open artwork"
                 >
                   <img
-                    src={card.artwork.thumbnail || card.artwork.image}
+                    src={card.artwork.gallery?.image || card.artwork.thumbnail || card.artwork.image}
                     alt={card.artwork.title}
+                    loading="lazy"
+                    decoding="async"
                     style={{
                       width: "100%",
-                      height: 180,
+                      aspectRatio: "5 / 4",
                       objectFit: "cover",
+                      objectPosition: card.artwork.gallery?.position,
                       display: "block",
                     }}
                   />

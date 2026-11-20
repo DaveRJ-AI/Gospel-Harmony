@@ -112,8 +112,8 @@ small {
 
 .header {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: stretch;
   gap: 20px;
   margin-bottom: 22px;
 }
@@ -124,11 +124,93 @@ small {
   gap: 14px;
 }
 
-.nav {
+.brandLogo {
+  object-fit: contain;
+  /* Lighten the near-white matte so it disappears against the light header. */
+  filter: brightness(1.025);
+  mix-blend-mode: darken;
+}
+
+.eventTitle,
+.eventShare {
   display: flex;
   align-items: center;
-  gap: 8px;
   flex-wrap: wrap;
+  gap: 8px;
+}
+
+.eventTitle {
+  margin: 6px 0;
+  column-gap: 12px;
+}
+
+.eventShare {
+  font-size: 0.875rem;
+  max-width: 100%;
+}
+
+.eventShare button {
+  padding: 6px 12px;
+  background: var(--nav-active-bg);
+  border-color: var(--nav-active-border);
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.eventShare button:hover:not(:disabled) {
+  background: #BFDBFE;
+  border-color: var(--nav-active-accent);
+}
+
+.eventShare button:focus-visible {
+  outline: 2px solid var(--nav-active-accent);
+  outline-offset: 2px;
+}
+
+.eventShare [role="status"]:empty {
+  position: absolute;
+}
+
+.nav {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  padding: 6px;
+  background: #EEF4FA;
+  border: 1px solid #CBD5E1;
+  border-radius: 18px;
+}
+
+.nav a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 140ms ease, border-color 140ms ease;
+}
+
+.nav a:hover {
+  background: #E2EAF4;
+  border-color: #CBD5E1;
+}
+
+.nav a.active,
+.nav a.sectionActive {
+  background: var(--nav-active-bg);
+  border-color: var(--nav-active-border);
+  box-shadow: inset 0 -3px 0 #2563EB;
+  font-weight: 800;
+}
+
+.nav a:focus-visible {
+  outline: 2px solid #2563EB;
+  outline-offset: 2px;
 }
 
 .card {
@@ -315,7 +397,19 @@ small {
   }
 
   .nav {
-    margin-top: 0 !important;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 4px;
+    padding: 5px;
+  }
+
+  .nav a {
+    grid-column: span 3;
+    padding: 9px 4px;
+    font-size: 0.875rem;
+  }
+
+  .nav a:nth-child(n + 5) {
+    grid-column: span 4;
   }
 
   .grid4 {

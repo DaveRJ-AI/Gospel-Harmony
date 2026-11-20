@@ -62,13 +62,6 @@ export default function AboutView() {
           See <a href="https://www.esv.org/" target="_blank" rel="noreferrer">www.esv.org</a>.
         </p>
       </div>
-
-      <div className="card">
-        <h3 style={{ marginBottom: 10 }}>Notes</h3>
-        <p style={{ marginTop: 0 }}>
-          Original artwork on this site was all created with the assistance of an AI image generator. 
-        </p>
-      </div>
     </div>
   );
 }

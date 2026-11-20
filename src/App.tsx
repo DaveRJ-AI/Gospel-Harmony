@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink, Route, Routes, useLocation, useSearchParams } from "react-router-dom";
+import { Link, NavLink, Route, Routes, useLocation, useSearchParams } from "react-router-dom";
 import ChapterView from "./pages/ChapterView";
 import StoriesIndex from "./pages/StoriesIndex";
 import StoryView from "./pages/StoryView";
@@ -15,19 +15,6 @@ import {
   setEsvDisplayActive,
 } from "./lib/esvDisplayState";
 
-function navLinkStyle({ isActive }: { isActive: boolean }) {
-  return {
-    padding: "10px 16px",
-    borderRadius: 999,
-    textDecoration: "none",
-    border: isActive ? "1px solid #94A3B8" : "1px solid transparent",
-    background: isActive ? "#EEF4FF" : "transparent",
-    fontWeight: isActive ? 800 : 600,
-    color: "#0F172A",
-    transition: "all 140ms ease",
-  } as React.CSSProperties;
-}
-
 export default function App() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -35,6 +22,7 @@ export default function App() {
     getEsvDisplayActive()
   );
   const isStoryRoute = location.pathname.startsWith("/story/");
+  const isEventsSection = isStoryRoute || location.pathname.replace(/\/$/, "") === "/stories";
   const isChapterRoute = location.pathname === "/";
   const versionParam = searchParams.get("version");
   const showEsvAttribution =
@@ -74,9 +62,11 @@ export default function App() {
           style={{ display: "flex", alignItems: "center", gap: "18px" }}
         >
           <img
+            className="brandLogo"
             src="/logo.png"
             alt="Gospel Harmonics logo"
-            style={{ width: "80px", height: "80px", objectFit: "contain" }}
+            width={80}
+            height={80}
           />
           <div>
             <h1 style={{ margin: 0, fontSize: "2.15rem", lineHeight: 1.05 }}>
@@ -88,32 +78,21 @@ export default function App() {
           </div>
         </div>
 
-        <div
-          className="nav"
-          style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}
-        >
-          <NavLink to="/" end style={navLinkStyle}>
-            Chapter View
-          </NavLink>
-          <NavLink to="/stories" style={navLinkStyle}>
+        <nav className="nav" aria-label="Main navigation">
+          <NavLink to="/" end>Chapters</NavLink>
+          <Link
+            to="/stories"
+            className={isEventsSection ? "sectionActive" : undefined}
+            aria-current={isEventsSection ? (isStoryRoute ? "location" : "page") : undefined}
+          >
             Events
-          </NavLink>
-          <NavLink to="/timeline" style={navLinkStyle}>
-            Timeline
-          </NavLink>
-          <NavLink to="/types" style={navLinkStyle}>
-            Themes
-          </NavLink>
-          <NavLink to="/map" style={navLinkStyle}>
-            Map
-          </NavLink>
-          <NavLink to="/art" style={navLinkStyle}>
-            Art
-          </NavLink>
-          <NavLink to="/about" style={navLinkStyle}>
-            About
-          </NavLink>
-        </div>
+          </Link>
+          <NavLink to="/timeline">Timeline</NavLink>
+          <NavLink to="/types">Themes</NavLink>
+          <NavLink to="/map">Map</NavLink>
+          <NavLink to="/art">Artwork</NavLink>
+          <NavLink to="/about">About</NavLink>
+        </nav>
       </div>
 
       <Routes>
@@ -130,6 +109,9 @@ export default function App() {
       {showEsvAttribution ? <EsvAttribution /> : null}
 
       <footer className="siteFooter">
+        <div>
+          All artwork on Gospel Harmonics was created with the assistance of AI image generation tools.
+        </div>
         <div>© 2026 Nascentic, LLC. All rights reserved.</div>
         <div>
           Original site design, code structure, and original artwork may not be

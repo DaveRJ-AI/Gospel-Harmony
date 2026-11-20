@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import ColumnGrid, { type ColumnBlock } from "../components/ColumnGrid";
 import ArtworkModal from "../components/ArtworkModal";
+import EventShare from "../components/EventShare";
 import { useEsvAvailability } from "../hooks/useEsvAvailability";
 import { getPassage, type PassageRef } from "../lib/bible";
 import { setEsvDisplayActive } from "../lib/esvDisplayState";
@@ -62,8 +63,6 @@ export default function StoryView() {
   const [version, setVersion] = React.useState<Version>(initialVersion);
 
   const [error, setError] = React.useState<string | null>(null);
-  const [title, setTitle] = React.useState<string>("");
-  const [summary, setSummary] = React.useState<string>("");
   const [allPericopes, setAllPericopes] = React.useState<Pericope[]>([]);
   const [referenceMap, setReferenceMap] = React.useState<Partial<Record<Gospel, string>>>({});
   const [primaryBook, setPrimaryBook] = React.useState<Gospel>("Matthew");
@@ -106,8 +105,9 @@ export default function StoryView() {
           return a.title.localeCompare(b.title);
         });
 
-        const p = sorted.find((x) => x.pericopeId === pericopeId);
-        if (!p) throw new Error("Event not found");
+        if (!sorted.some((event) => event.pericopeId === pericopeId)) {
+          throw new Error("Event not found");
+        }
 
         const blocksByBook: Record<Gospel, ColumnBlock[]> = {
           Matthew: [],
@@ -117,14 +117,13 @@ export default function StoryView() {
         };
 
         const refs: Partial<Record<Gospel, string>> = {};
-        const passages = passagesForPericope(h, pericopeId);
-        const firstAvailable = GOSPELS.find((g) => passages.some((x) => x.book === g)) || "Matthew";
+        let firstAvailable: Gospel | undefined;
         const storyArtItems = artworkForPericope(artworkMap, pericopeId);
 
         for (const g of GOSPELS) {
-          const ref = passages.find((x) => x.book === g) || null;
+          const passages = passagesForPericope(h, pericopeId, g);
 
-          if (!ref) {
+          if (passages.length === 0) {
             refs[g] = "—";
             blocksByBook[g] = [
               {
@@ -134,38 +133,38 @@ export default function StoryView() {
                 emptyLabel: "— (not in this Gospel)",
               },
             ];
-          } else {
+            continue;
+          }
+
+          firstAvailable ??= g;
+          refs[g] = passages.map(formatPassageRef).join(", ");
+          for (const [sectionIndex, ref] of passages.entries()) {
             const label = formatPassageRef(ref);
             const verses = await getPassage(version, ref);
-            refs[g] = label;
-
-            blocksByBook[g] = [
-              {
-                blockId: pericopeId,
-                title: label,
-                verses,
-                titleAction:
-                  g === firstAvailable && storyArtItems.length > 0 ? (
-                    <ArtPill
-                      count={storyArtItems.length}
-                      onClick={() => {
-                        setArtItems(storyArtItems);
-                        setArtOpenIndex(0);
-                      }}
-                    />
-                  ) : undefined,
-              },
-            ];
+            blocksByBook[g].push({
+              blockId: pericopeId,
+              sectionIndex,
+              title: label,
+              verses,
+              titleAction:
+                sectionIndex === 0 && g === firstAvailable && storyArtItems.length > 0 ? (
+                  <ArtPill
+                    count={storyArtItems.length}
+                    onClick={() => {
+                      setArtItems(storyArtItems);
+                      setArtOpenIndex(0);
+                    }}
+                  />
+                ) : undefined,
+            });
           }
         }
 
         if (!alive) return;
 
-        setTitle(p.title);
-        setSummary(p.summary);
         setAllPericopes(sorted);
         setReferenceMap(refs);
-        setPrimaryBook(firstAvailable);
+        setPrimaryBook(firstAvailable ?? "Matthew");
         setCols(blocksByBook);
         setArtItems(storyArtItems);
       } catch (e: any) {
@@ -182,6 +181,13 @@ export default function StoryView() {
   const currentIndex = React.useMemo(() => {
     return allPericopes.findIndex((p) => p.pericopeId === pericopeId);
   }, [allPericopes, pericopeId]);
+  const currentEvent = allPericopes[currentIndex];
+
+  React.useEffect(() => {
+    if (!currentEvent) return;
+    document.title = `${currentEvent.title} | Gospel Harmonics`;
+    return () => { document.title = "Gospel Harmonics"; };
+  }, [currentEvent]);
 
   const prevPericope = currentIndex > 0 ? allPericopes[currentIndex - 1] : null;
   const nextPericope =
@@ -216,8 +222,20 @@ export default function StoryView() {
             <div className="muted">
               <Link to={returnTo || "/stories"}>{returnTo ? "← Back to map" : "← Back to events"}</Link>
             </div>
-            <h2 style={{ margin: "6px 0" }}>{title}</h2>
-            <div className="muted">{summary}</div>
+            {currentEvent ? (
+              <>
+                <div className="eventTitle">
+                  <h2>{currentEvent.title}</h2>
+                  <EventShare
+                    key={`${currentEvent.pericopeId}-${version}`}
+                    eventId={currentEvent.pericopeId}
+                    title={currentEvent.title}
+                    version={version}
+                  />
+                </div>
+                <div className="muted">{currentEvent.summary}</div>
+              </>
+            ) : null}
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
               {GOSPELS.map((g) => (

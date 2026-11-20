@@ -4,6 +4,7 @@ import type { Verse } from "../lib/bible";
 
 export type ColumnBlock = {
   blockId: string;
+  sectionIndex?: number;
   title?: string;
   verses: Verse[];
   emptyLabel?: string;
@@ -46,10 +47,10 @@ export default function ColumnGrid(props: {
     if (!showDifferences) return null;
     if (!activeBlockId) return null;
 
-    const b = primary.blocks.find((x) => x.blockId === activeBlockId);
-    if (!b) return null;
+    const blocks = primary.blocks.filter((block) => block.blockId === activeBlockId);
+    if (blocks.length === 0) return null;
 
-    const text = b.verses.map((v) => v.text).join(" ");
+    const text = blocks.flatMap((block) => block.verses.map((v) => v.text)).join(" ");
     return makeWordSet(text);
   }, [showDifferences, activeBlockId, primary.blocks]);
 
@@ -216,6 +217,7 @@ function Column(props: {
         {blocks.length === 0 ? <p className="muted">No content</p> : null}
 
         {blocks.map((b, index) => {
+          const id = b.sectionIndex ? `${b.blockId}:${b.sectionIndex}` : b.blockId;
           const isActive = enableSync && activeBlockId && b.blockId === activeBlockId;
           const isStory = !!b.title;
 
@@ -233,8 +235,8 @@ function Column(props: {
 
           return (
             <div
-              key={b.blockId}
-              id={blockDomId(colKey, b.blockId)}
+              key={id}
+              id={blockDomId(colKey, id)}
               data-blockid={b.blockId}
               className={className}
               style={storyStyle}

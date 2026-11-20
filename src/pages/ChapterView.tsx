@@ -5,7 +5,7 @@ import { useEsvAvailability } from "../hooks/useEsvAvailability";
 import { getChapter, getPassage, type PassageRef } from "../lib/bible";
 import { setEsvDisplayActive } from "../lib/esvDisplayState";
 import { artworkForPericope, loadArtworkMap, type ArtworkItem, type ArtworkMap } from "../lib/artwork";
-import { loadHarmony, pericopesForChapter, passageForBook } from "../lib/harmony";
+import { loadHarmony, passagesForPericope, pericopesForChapter } from "../lib/harmony";
 import { GOSPELS, otherGospels, type Gospel, type Version } from "../lib/refs";
 
 type ChapterVerse = { book: Gospel; chapter: number; verse: number; text: string };
@@ -289,21 +289,22 @@ export default function ChapterView() {
         const chapterVerses = (await getChapter(version, book, chapter)) as ChapterVerse[];
         const pericopes = pericopesForChapter(harmony, book, chapter);
 
-        const ranges: Array<{ blockId: string; title?: string; start: number; end: number }> = [];
+        const ranges: Array<{ blockId: string; sectionIndex: number; title: string; start: number; end: number }> = [];
 
         for (const p of pericopes) {
-          const ref = passageForBook(harmony, p.pericopeId, book);
-          if (!ref) continue;
+          const passages = passagesForPericope(harmony, p.pericopeId, book);
+          for (const [sectionIndex, ref] of passages.entries()) {
+            const clipped = overlapWithinChapter(ref, chapter);
+            if (!clipped) continue;
 
-          const clipped = overlapWithinChapter(ref, chapter);
-          if (!clipped) continue;
-
-          ranges.push({
-            blockId: p.pericopeId,
-            title: `${p.title} — ${formatPassageRef(clipped)}`,
-            start: pos(chapter, clipped.startVerse),
-            end: pos(chapter, clipped.endVerse),
-          });
+            ranges.push({
+              blockId: p.pericopeId,
+              sectionIndex,
+              title: `${p.title} — ${formatPassageRef(clipped)}`,
+              start: pos(chapter, clipped.startVerse),
+              end: pos(chapter, clipped.endVerse),
+            });
+          }
         }
 
         ranges.sort((a, b) => a.start - b.start || a.end - b.end);
@@ -334,6 +335,7 @@ export default function ChapterView() {
 
             primary.push({
               blockId: r.blockId,
+              sectionIndex: r.sectionIndex,
               title: r.title,
               verses: storyVerses,
               titleAction:
@@ -377,19 +379,22 @@ export default function ChapterView() {
           const blocks: ColumnBlock[] = [];
 
           for (const pericope of pericopes) {
-            const ref = passageForBook(harmony, pericope.pericopeId, og);
+            const passages = passagesForPericope(harmony, pericope.pericopeId, og);
 
-            if (!ref) {
+            if (passages.length === 0) {
               blocks.push({
                 blockId: pericope.pericopeId,
                 title: pericope.title,
                 verses: [],
                 emptyLabel: "— (no parallel)",
               });
-            } else {
+            }
+
+            for (const [sectionIndex, ref] of passages.entries()) {
               const verses = await getPassage(version, ref);
               blocks.push({
                 blockId: pericope.pericopeId,
+                sectionIndex,
                 title: `${pericope.title} — ${formatPassageRef(ref)}`,
                 verses,
               });

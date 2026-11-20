@@ -1,6 +1,7 @@
 export type ArtworkItem = {
   image: string;
   thumbnail?: string;
+  gallery?: { image: string; position?: string };
   title: string;
   caption?: string;
   artist?: string;

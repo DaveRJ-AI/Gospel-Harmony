@@ -37,3 +37,4 @@ npm run dev
 ## Notes
 - Harmony data is in public/data/harmony.json
 - Expand pericopes/passages to add more stories.
+- The production build generates link preview metadata for each event. To give an illustrated event its own preview, add a 1200 × 630 JPEG at `public/art/share/<pericopeId>.jpg`. Events without a preview image use the Gospel Harmonics brand image.
