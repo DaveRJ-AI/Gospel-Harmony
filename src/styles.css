@@ -353,6 +353,23 @@ small {
   box-shadow: 0 10px 20px rgba(59, 130, 246, 0.16);
 }
 
+.artworkDialog {
+  width: min(1100px, calc(100% - 40px));
+  max-width: none;
+  max-height: 92vh;
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #FFFFFF;
+  color: var(--text-primary);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+.artworkDialog::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
 .siteFooter {
   margin-top: 26px;
   padding: 18px 4px 8px;
@@ -562,6 +579,83 @@ small {
 .chapterPanel {
   display: grid;
   gap: 22px;
+}
+
+.chapterIntro,
+.chapterIntroActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+
+.chapterIntro {
+  justify-content: space-between;
+  padding: 12px 14px;
+  border: 1px solid #9FD394;
+  border-radius: 14px;
+  background: #DDF0D7;
+}
+
+.chapterIntro h2 {
+  font-size: 1rem;
+}
+
+.chapterIntro p {
+  margin: 3px 0 0;
+  color: #365334;
+  font-size: 0.875rem;
+}
+
+.chapterIntroActions {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.chapterIntroAction {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border: 1px solid var(--intro-action-border);
+  border-radius: 14px;
+  background: var(--intro-action-bg);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: filter 140ms ease, transform 140ms ease;
+}
+
+.chapterIntroAction:hover {
+  border-color: var(--intro-action-border);
+  background: var(--intro-action-bg);
+  filter: brightness(0.96);
+}
+
+.chapterIntroAction:active {
+  transform: translateY(1px);
+}
+
+.chapterIntroAction:focus-visible {
+  outline: 2px solid #2563EB;
+  outline-offset: 2px;
+}
+
+.chapterIntroDemo {
+  --intro-action-bg: var(--nav-active-bg);
+  --intro-action-border: var(--nav-active-border);
+}
+
+.chapterIntroEvents {
+  --intro-action-bg: #FEF9C3;
+  --intro-action-border: #FDE68A;
+}
+
+.chapterIntroDismiss {
+  --intro-action-bg: #FFE4E6;
+  --intro-action-border: #FECDD3;
+}
+
+.chapterReader {
+  scroll-margin-top: 16px;
 }
 
 .chapterSettings {

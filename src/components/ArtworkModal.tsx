@@ -8,57 +8,76 @@ export default function ArtworkModal(props: {
 }) {
   const { items, initialIndex = 0, onClose } = props;
   const [index, setIndex] = React.useState(initialIndex);
+  const dialogRef = React.useRef<HTMLDialogElement>(null);
+  const closeButtonRef = React.useRef<HTMLButtonElement>(null);
+  const titleId = React.useId();
 
   const item = items[index];
+  const hasItem = Boolean(item);
 
-  React.useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowRight" && items.length > 1) {
-        setIndex((i) => (i + 1) % items.length);
-      }
-      if (e.key === "ArrowLeft" && items.length > 1) {
-        setIndex((i) => (i - 1 + items.length) % items.length);
-      }
-    };
+  React.useLayoutEffect(() => {
+    const dialog = dialogRef.current;
+    if (!hasItem || !dialog) return;
 
+    const opener = document.activeElement;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKey);
+    dialog.showModal();
+    closeButtonRef.current?.focus();
 
     return () => {
+      dialog.close();
       document.body.style.overflow = prevOverflow;
-      window.removeEventListener("keydown", onKey);
+      if (opener instanceof HTMLElement && opener.isConnected) {
+        opener.focus({ preventScroll: true });
+      }
     };
-  }, [items.length, onClose]);
+  }, [hasItem]);
+
+  function changeImage(offset: number) {
+    setIndex((current) => (current + offset + items.length) % items.length);
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDialogElement>) {
+    if (event.key === "Tab") {
+      const buttons = event.currentTarget.querySelectorAll<HTMLButtonElement>("button:not(:disabled)");
+      const first = buttons[0];
+      const last = buttons[buttons.length - 1];
+      if (event.target === (event.shiftKey ? first : last)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first)?.focus();
+      }
+      return;
+    }
+
+    if (items.length < 2 || event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+      event.preventDefault();
+      changeImage(event.key === "ArrowLeft" ? -1 : 1);
+    }
+  }
 
   if (!item) return null;
 
   return (
-    <div
-      onClick={onClose}
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.7)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 20,
-        zIndex: 9999,
+    <dialog
+      ref={dialogRef}
+      className="artworkDialog"
+      aria-labelledby={titleId}
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
       }}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+      onKeyDown={handleKeyDown}
     >
       <div
-        onClick={(e) => e.stopPropagation()}
         style={{
-          width: "min(1100px, 96vw)",
           maxHeight: "92vh",
-          background: "#fff",
-          borderRadius: 16,
-          overflow: "hidden",
-          boxShadow: "0 18px 50px rgba(0,0,0,0.35)",
           display: "grid",
-          gridTemplateRows: "auto 1fr auto",
+          gridTemplateRows: "auto minmax(0, 1fr) auto",
         }}
       >
         <div
@@ -72,13 +91,13 @@ export default function ArtworkModal(props: {
           }}
         >
           <div>
-            <div style={{ fontWeight: 700 }}>{item.title}</div>
+            <div id={titleId} style={{ fontWeight: 700 }}>{item.title}</div>
             {item.caption ? (
               <div style={{ color: "#6b7280", fontSize: 14 }}>{item.caption}</div>
             ) : null}
           </div>
 
-          <button onClick={onClose} type="button">
+          <button ref={closeButtonRef} onClick={onClose} type="button">
             Close
           </button>
         </div>
@@ -121,16 +140,16 @@ export default function ArtworkModal(props: {
 
           {items.length > 1 ? (
             <div style={{ display: "flex", gap: 8 }}>
-              <button type="button" onClick={() => setIndex((i) => (i - 1 + items.length) % items.length)}>
+              <button type="button" onClick={() => changeImage(-1)}>
                 Previous
               </button>
-              <button type="button" onClick={() => setIndex((i) => (i + 1) % items.length)}>
+              <button type="button" onClick={() => changeImage(1)}>
                 Next
               </button>
             </div>
           ) : <div />}
         </div>
       </div>
-    </div>
+    </dialog>
   );
 }

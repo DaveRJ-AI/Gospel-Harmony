@@ -1,10 +1,9 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import ArtworkModal from "../components/ArtworkModal";
-import { useEsvAvailability } from "../hooks/useEsvAvailability";
+import { useEventBrowse } from "../hooks/useEventBrowse";
 import { artworkForPericope, loadArtworkMap, type ArtworkItem, type ArtworkMap } from "../lib/artwork";
 import { loadHarmony, type Pericope } from "../lib/harmony";
-import type { Version } from "../lib/refs";
+import { getEventSearch, type EventSearch } from "../lib/eventSearch";
 
 type TimelineSection = {
   id: string;
@@ -58,25 +57,16 @@ function ArtThumbnail({
 }
 
 export default function TimelineView() {
-  const navigate = useNavigate();
-  const { esvAvailable, esvStatusChecked } = useEsvAvailability();
-
-  const [version, setVersion] = React.useState<Version>("KJV");
-  const [query, setQuery] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(true);
+  const browse = useEventBrowse(!loading && !error);
+  const { version, query, esvUnavailable, setVersion, setQuery, openEvent } = browse;
   const [pericopes, setPericopes] = React.useState<Pericope[]>([]);
+  const [eventSearch, setEventSearch] = React.useState<EventSearch>();
   const [artworkMap, setArtworkMap] = React.useState<ArtworkMap>({});
-  const [openSections, setOpenSections] = React.useState<Record<string, boolean>>({});
 
   const [modalItems, setModalItems] = React.useState<ArtworkItem[]>([]);
   const [modalIndex, setModalIndex] = React.useState<number | null>(null);
-
-  React.useEffect(() => {
-    if (version === "ESV" && esvStatusChecked && !esvAvailable) {
-      setVersion("KJV");
-    }
-  }, [version, esvAvailable, esvStatusChecked]);
 
   React.useEffect(() => {
     let alive = true;
@@ -97,6 +87,7 @@ export default function TimelineView() {
         });
 
         setPericopes(sorted);
+        setEventSearch(getEventSearch(harmony));
         setArtworkMap(artMap);
       } catch (e: any) {
         if (!alive) return;
@@ -113,14 +104,10 @@ export default function TimelineView() {
   }, []);
 
   const filtered = React.useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return pericopes;
-
-    return pericopes.filter((p) => {
-      const hay = [p.title, p.summary, ...(p.tags || [])].join(" ").toLowerCase();
-      return hay.includes(q);
-    });
-  }, [pericopes, query]);
+    if (!query.trim() || !eventSearch) return pericopes;
+    const matches = new Set(eventSearch.find(query));
+    return pericopes.filter((event) => matches.has(event.pericopeId));
+  }, [pericopes, query, eventSearch]);
 
   const grouped = React.useMemo<TimelineSection[]>(() => {
     const sections: TimelineSection[] = [
@@ -157,31 +144,12 @@ export default function TimelineView() {
     return sections.filter((s) => s.items.length > 0);
   }, [filtered]);
 
-  React.useEffect(() => {
-    setOpenSections((prev) => {
-      const next: Record<string, boolean> = {};
-      for (const section of grouped) next[section.id] = prev[section.id] ?? false;
-      return next;
-    });
-  }, [grouped]);
+  const openSections = browse.openSections ?? (query.trim() ? grouped.map((section) => section.id) : []);
 
   const toggleSection = (id: string) => {
-    setOpenSections((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
-
-  const expandAll = () => {
-    const next: Record<string, boolean> = {};
-    for (const section of grouped) next[section.id] = true;
-    setOpenSections(next);
-  };
-
-  const collapseAll = () => {
-    const next: Record<string, boolean> = {};
-    for (const section of grouped) next[section.id] = false;
-    setOpenSections(next);
+    browse.setOpenSections(openSections.includes(id)
+      ? openSections.filter((openId) => openId !== id)
+      : [...openSections, id]);
   };
 
   return (
@@ -193,21 +161,21 @@ export default function TimelineView() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search title, summary, or type..."
+              placeholder="Search events or scripture references..."
               style={{ width: "100%" }}
             />
           </div>
 
           <div>
             <label>Version</label>
-            <select value={version} onChange={(e) => setVersion(e.target.value as Version)}>
+            <select value={version} onChange={(e) => setVersion(e.target.value)}>
               <option value="KJV">KJV</option>
-              <option value="ESV" disabled={esvStatusChecked && !esvAvailable}>ESV</option>
+              <option value="ESV" disabled={esvUnavailable}>ESV</option>
             </select>
           </div>
         </div>
 
-        {esvStatusChecked && !esvAvailable ? (
+        {esvUnavailable ? (
           <p className="muted" style={{ marginTop: 8 }}>
             ESV is unavailable until <code>ESV_API_KEY</code> is configured.
           </p>
@@ -219,8 +187,8 @@ export default function TimelineView() {
           </p>
 
           <div className="row" style={{ gap: 8 }}>
-            <button onClick={expandAll}>Expand all</button>
-            <button onClick={collapseAll}>Collapse all</button>
+            <button onClick={() => browse.setOpenSections(grouped.map((section) => section.id))}>Expand all</button>
+            <button onClick={() => browse.setOpenSections([])}>Collapse all</button>
           </div>
         </div>
       </div>
@@ -231,7 +199,7 @@ export default function TimelineView() {
       {!loading && !error ? (
         <div style={{ marginTop: 12 }}>
           {grouped.map((section) => {
-            const isOpen = !!openSections[section.id];
+            const isOpen = openSections.includes(section.id);
 
             return (
               <div key={section.id} className="card" style={{ marginBottom: 12 }}>
@@ -261,12 +229,14 @@ export default function TimelineView() {
                     {section.items.map((p) => {
                       const artItems = artworkForPericope(artworkMap, p.pericopeId);
                       const firstArt = artItems[0];
+                      const anchor = `event-${p.pericopeId}`;
 
                       return (
                         <button
                           key={p.pericopeId}
+                          id={anchor}
                           className="interactiveCard"
-                          onClick={() => navigate(`/story/${p.pericopeId}?version=${version}`)}
+                          onClick={() => openEvent(p.pericopeId, anchor)}
                           style={{
                             display: "block",
                             width: "100%",

@@ -8,6 +8,7 @@ import { getPassage, type PassageRef } from "../lib/bible";
 import { setEsvDisplayActive } from "../lib/esvDisplayState";
 import { artworkForPericope, loadArtworkMap, type ArtworkItem } from "../lib/artwork";
 import { loadHarmony, passagesForPericope, type Pericope } from "../lib/harmony";
+import { eventOrigin, eventPath } from "../lib/eventNavigation";
 import { GOSPELS, type Gospel, type Version } from "../lib/refs";
 
 function formatPassageRef(ref: PassageRef) {
@@ -59,8 +60,9 @@ export default function StoryView() {
   const { esvAvailable, esvStatusChecked } = useEsvAvailability();
 
   const initialVersion = (searchParams.get("version") === "ESV" ? "ESV" : "KJV") as Version;
-  const returnTo = searchParams.get("returnTo");
-  const backLabel = returnTo?.startsWith("/?plan=") ? "Back to reading plan" : returnTo ? "Back to map" : "Back to events";
+  const origin = eventOrigin(searchParams.get("returnTo"));
+  const backPath = origin?.path ?? "/stories";
+  const backLabel = origin?.label ?? "Back to events";
   const [version, setVersion] = React.useState<Version>(initialVersion);
 
   const [error, setError] = React.useState<string | null>(null);
@@ -76,6 +78,10 @@ export default function StoryView() {
     Luke: [],
     John: [],
   });
+
+  React.useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pericopeId]);
 
   React.useEffect(() => {
     if (version === "ESV" && esvStatusChecked && !esvAvailable) {
@@ -195,11 +201,7 @@ export default function StoryView() {
     currentIndex >= 0 && currentIndex < allPericopes.length - 1 ? allPericopes[currentIndex + 1] : null;
 
   const goToPericope = (targetId: string) => {
-    const params = new URLSearchParams({ version });
-    if (returnTo) {
-      params.set("returnTo", returnTo);
-    }
-    navigate(`/story/${targetId}?${params.toString()}`);
+    navigate(eventPath(targetId, version, origin?.path));
   };
 
   const otherBooks = GOSPELS.filter((g) => g !== primaryBook);
@@ -209,7 +211,7 @@ export default function StoryView() {
       <div className="card">
         <p className="error">{error}</p>
         <p>
-          <Link to={returnTo || "/stories"}>{backLabel}</Link>
+          <Link to={backPath}>{backLabel}</Link>
         </p>
       </div>
     );
@@ -221,7 +223,7 @@ export default function StoryView() {
         <div className="row" style={{ alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
           <div style={{ flex: 1 }}>
             <div className="muted">
-              <Link to={returnTo || "/stories"}>← {backLabel}</Link>
+              <Link to={backPath}>← {backLabel}</Link>
             </div>
             {currentEvent ? (
               <>

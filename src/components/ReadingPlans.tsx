@@ -1,7 +1,9 @@
 import React from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ShareLink } from "./EventShare";
+import { eventPath } from "../lib/eventNavigation";
 import { loadHarmony, type HarmonyData } from "../lib/harmony";
+import { readPreference, writePreference } from "../lib/preferences";
 import {
   CFM_WEEK_COUNT, GOSPEL_YEAR_LENGTH, PLAN_NAMES, cfmWeek, currentCfmWeek,
   gospelYearDay, localCalendarDay, overlapsReading, parsePlanId, planDate, planPath, readingLabel,
@@ -15,16 +17,12 @@ const HOLIDAY_EVENTS: Record<string, string[]> = {
   Christmas: ["annunciation-mary", "birth-jesus", "shepherds", "magi"],
 };
 
-function readPreference(key: string) {
-  try { return localStorage.getItem(key); } catch { return null; }
-}
-
-function writePreference(key: string, value: string) {
-  try { localStorage.setItem(key, value); } catch { /* Preferences remain usable for this visit. */ }
-}
-
 function startKey(plan: ReadingPlanId) {
   return `${PREFERENCE_KEY}.${plan}.start`;
+}
+
+function weeklyReadingKey(week: number) {
+  return `${PREFERENCE_KEY}.come-follow-me-2027.week.${week}`;
 }
 
 function readStart(plan: ReadingPlanId) {
@@ -33,17 +31,11 @@ function readStart(plan: ReadingPlanId) {
   return stored && Number.isInteger(day) && day > 0 ? day : undefined;
 }
 
-function eventPath(id: string, version: Version, back: string) {
-  const query = new URLSearchParams({ version, returnTo: back });
-  return `/story/${encodeURIComponent(id)}?${query}`;
-}
-
-export default function ReadingPlans({ children, version, assignedReading, onRead, onPlanChange }: {
-  children: (picker: React.ReactNode) => React.ReactNode;
+export default function ReadingPlans({ children, version, assignedReading, onRead }: {
+  children: (picker: React.ReactNode, activePlan: ReadingPlanId | null) => React.ReactNode;
   version: Version;
   assignedReading: ChapterReading | null;
-  onRead: (reading: ChapterReading) => void;
-  onPlanChange: () => void;
+  onRead: (reading: ChapterReading | null, reveal?: boolean) => void;
 }) {
   const [params, setParams] = useSearchParams();
   const [followed, setFollowed] = React.useState(() => parsePlanId(readPreference(PREFERENCE_KEY)));
@@ -60,6 +52,7 @@ export default function ReadingPlans({ children, version, assignedReading, onRea
   const cardRef = React.useRef<HTMLElement>(null);
   const shouldReveal = React.useRef(false);
   const revealedSharedPlan = React.useRef<ReadingPlanId | null>(null);
+  const weeklyChoices = React.useRef(new Map<number, string>());
 
   React.useEffect(() => {
     if (!plan) return;
@@ -119,7 +112,7 @@ export default function ReadingPlans({ children, version, assignedReading, onRea
       nextParams.delete("unit");
       setParams(nextParams, { replace: true });
     }
-    if (!keepUnit) onPlanChange();
+    if (!keepUnit) onRead(null);
   }
 
   function goToUnit(next: number | undefined) {
@@ -132,7 +125,30 @@ export default function ReadingPlans({ children, version, assignedReading, onRea
     setBrowsedUnit(next);
   }
 
-  const week = weekly ? cfmWeek(unit) : undefined;
+  const weeklyUnit = weekly ? unit : null;
+  const week = React.useMemo(
+    () => weeklyUnit === null ? undefined : cfmWeek(weeklyUnit),
+    [weeklyUnit],
+  );
+
+  React.useEffect(() => {
+    if (weeklyUnit === null || !week) {
+      onRead(null);
+      return;
+    }
+
+    const saved = weeklyChoices.current.get(weeklyUnit) ?? readPreference(weeklyReadingKey(weeklyUnit));
+    const reading = week.chapters.find((chapter) => readingLabel(chapter) === saved) ?? week.chapters[0];
+    onRead(reading ?? null, false);
+  }, [weeklyUnit, week, onRead]);
+
+  function openWeeklyReading(reading: ChapterReading) {
+    const label = readingLabel(reading);
+    weeklyChoices.current.set(unit, label);
+    writePreference(weeklyReadingKey(unit), label);
+    onRead(reading);
+  }
+
   const day = plan === "four-gospels-in-a-year" ? gospelYearDay(unit) : undefined;
   const story = storyPlan ? stories[unit - 1] : undefined;
   const date = week?.dates ?? (start === undefined ? undefined : planDate(start + unit - 1));
@@ -154,6 +170,7 @@ export default function ReadingPlans({ children, version, assignedReading, onRea
             {Object.entries(PLAN_NAMES).map(([id, name]) => <option key={id} value={id}>{name}</option>)}
           </select>
         </div>,
+        plan,
       )}
 
       {plan && storyPlan && !count && (
@@ -183,8 +200,8 @@ export default function ReadingPlans({ children, version, assignedReading, onRea
           </div>
 
           <div className="readingPlanActions">
-            {readings[0] && (
-              <button type="button" className="readingPlanPrimary" onClick={() => onRead(readings[0])}>Start reading</button>
+            {day && (
+              <button type="button" className="readingPlanPrimary" onClick={() => onRead(day)}>Start reading</button>
             )}
             {story && <Link className="readingPlanPrimary" to={eventPath(story.pericopeId, version, path)}>Read story</Link>}
             {week && (
@@ -204,7 +221,7 @@ export default function ReadingPlans({ children, version, assignedReading, onRea
                   key={readingLabel(reading)}
                   type="button"
                   aria-pressed={assignedReading?.book === reading.book && assignedReading.chapter === reading.chapter}
-                  onClick={() => onRead(reading)}
+                  onClick={() => openWeeklyReading(reading)}
                 >
                   {readingLabel(reading)}
                 </button>

@@ -55,6 +55,7 @@ const VIEWBOX_X = -240;
 const VIEWBOX_Y = -30;
 const VIEWBOX_WIDTH = 1800;
 const VIEWBOX_HEIGHT = 1280;
+const INITIAL_ZOOM = 2;
 const MIN_ZOOM = 0.7;
 const MAX_ZOOM = 4;
 const ZOOM_STEP = 0.1;
@@ -377,6 +378,15 @@ function clampPan(
   };
 }
 
+const initialCenter = RELATIONAL_NODE_POSITIONS["jordan-river"];
+const initialPan = clampPan(
+  {
+    x: VIEWBOX_X + VIEWBOX_WIDTH / 2 - initialCenter.x * INITIAL_ZOOM,
+    y: VIEWBOX_Y + VIEWBOX_HEIGHT / 2 - initialCenter.y * INITIAL_ZOOM,
+  },
+  INITIAL_ZOOM
+);
+
 function getRegionColor(region: string | null): string {
   if (!region) return REGION_TEXT_COLORS.default;
   return REGION_TEXT_COLORS[region] ?? REGION_TEXT_COLORS.default;
@@ -577,9 +587,9 @@ export default function MapView() {
     null
   );
   const [showPlacesOnMobile, setShowPlacesOnMobile] = useState(false);
-  const [zoom, setZoom] = useState(1);
-  const [panX, setPanX] = useState(0);
-  const [panY, setPanY] = useState(0);
+  const [zoom, setZoom] = useState(INITIAL_ZOOM);
+  const [panX, setPanX] = useState(initialPan.x);
+  const [panY, setPanY] = useState(initialPan.y);
   const [isPanning, setIsPanning] = useState(false);
   const [designerCoordinateMode, setDesignerCoordinateMode] = useState(false);
   const [designerMouseCoordinate, setDesignerMouseCoordinate] =
@@ -1476,8 +1486,12 @@ export default function MapView() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setZoomAnchored(1)}
-                      disabled={Math.abs(zoom - 1) < 0.01}
+                      onClick={() => {
+                        setZoom(INITIAL_ZOOM);
+                        setPanX(initialPan.x);
+                        setPanY(initialPan.y);
+                      }}
+                      disabled={zoom === INITIAL_ZOOM && panX === initialPan.x && panY === initialPan.y}
                       style={{ borderRadius: 999, padding: "6px 12px" }}
                     >
                       Reset

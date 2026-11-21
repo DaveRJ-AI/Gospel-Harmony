@@ -1,10 +1,11 @@
 import React from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ArtworkModal from "../components/ArtworkModal";
-import { useEsvAvailability } from "../hooks/useEsvAvailability";
+import { useEventBrowse } from "../hooks/useEventBrowse";
 import { artworkForPericope, loadArtworkMap, type ArtworkItem, type ArtworkMap } from "../lib/artwork";
+import { eventOrigin } from "../lib/eventNavigation";
 import { loadHarmony, type Pericope } from "../lib/harmony";
-import type { Version } from "../lib/refs";
+import { getEventSearch, type EventSearch } from "../lib/eventSearch";
 
 type TagGroup = {
   tag: string;
@@ -57,28 +58,18 @@ function ArtThumbnail({
 }
 
 export default function TypeView() {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const { esvAvailable, esvStatusChecked } = useEsvAvailability();
-  const themeParam = searchParams.get("theme")?.trim().toLowerCase() ?? "";
-  const returnTo = searchParams.get("returnTo");
-
-  const [version, setVersion] = React.useState<Version>("KJV");
-  const [query, setQuery] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(true);
+  const browse = useEventBrowse(!loading && !error);
+  const { params, version, query, esvUnavailable, setVersion, setQuery, openEvent } = browse;
+  const themeParam = params.get("theme")?.trim().toLowerCase() ?? "";
+  const origin = eventOrigin(params.get("returnTo"));
   const [groups, setGroups] = React.useState<TagGroup[]>([]);
+  const [eventSearch, setEventSearch] = React.useState<EventSearch>();
   const [artworkMap, setArtworkMap] = React.useState<ArtworkMap>({});
-  const [openGroups, setOpenGroups] = React.useState<Record<string, boolean>>({});
 
   const [modalItems, setModalItems] = React.useState<ArtworkItem[]>([]);
   const [modalIndex, setModalIndex] = React.useState<number | null>(null);
-
-  React.useEffect(() => {
-    if (version === "ESV" && esvStatusChecked && !esvAvailable) {
-      setVersion("KJV");
-    }
-  }, [version, esvAvailable, esvStatusChecked]);
 
   React.useEffect(() => {
     let alive = true;
@@ -114,6 +105,7 @@ export default function TypeView() {
           .sort((a, b) => a.tag.localeCompare(b.tag));
 
         setGroups(grouped);
+        setEventSearch(getEventSearch(harmony));
         setArtworkMap(artMap);
       } catch (e: any) {
         if (!alive) return;
@@ -134,57 +126,31 @@ export default function TypeView() {
       return groups.filter((g) => g.tag.toLowerCase() === themeParam);
     }
 
-    const q = query.trim().toLowerCase();
-    if (!q) return groups;
+    if (!query.trim() || !eventSearch) return groups;
 
+    const matches = new Set(eventSearch.find(query));
     return groups
-      .map((g) => ({
-        ...g,
-        items: g.items.filter((p) => {
-          const hay = [g.tag, p.title, p.summary, ...(p.tags || [])].join(" ").toLowerCase();
-          return hay.includes(q);
-        }),
+      .map((group) => ({
+        ...group,
+        items: group.items.filter((event) => matches.has(event.pericopeId)),
       }))
-      .filter((g) => g.items.length > 0);
-  }, [groups, query, themeParam]);
+      .filter((group) => group.items.length > 0);
+  }, [groups, query, themeParam, eventSearch]);
 
-  React.useEffect(() => {
-    setOpenGroups((prev) => {
-      const next: Record<string, boolean> = {};
-      for (const group of filteredGroups) {
-        next[group.tag] = themeParam
-          ? group.tag.toLowerCase() === themeParam
-          : prev[group.tag] ?? false;
-      }
-      return next;
-    });
-  }, [filteredGroups, themeParam]);
+  const openGroups = browse.openSections ?? (themeParam || query.trim() ? filteredGroups.map((group) => group.tag) : []);
 
   const toggleGroup = (tag: string) => {
-    setOpenGroups((prev) => ({
-      ...prev,
-      [tag]: !prev[tag],
-    }));
-  };
-
-  const expandAll = () => {
-    const next: Record<string, boolean> = {};
-    for (const group of filteredGroups) next[group.tag] = true;
-    setOpenGroups(next);
-  };
-
-  const collapseAll = () => {
-    const next: Record<string, boolean> = {};
-    for (const group of filteredGroups) next[group.tag] = false;
-    setOpenGroups(next);
+    browse.setOpenSections(openGroups.includes(tag)
+      ? openGroups.filter((openTag) => openTag !== tag)
+      : [...openGroups, tag]);
   };
 
   return (
     <div>
       <div className="card">
-        {returnTo ? (
+        {origin ? (
           <div className="muted" style={{ marginBottom: 10 }}>
-            <Link to={returnTo}>← Back to map</Link>
+            <Link to={origin.path}>← {origin.label}</Link>
           </div>
         ) : null}
 
@@ -194,7 +160,7 @@ export default function TypeView() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search themes, title, summary..."
+              placeholder="Search themes, events, or references..."
               style={{ width: "100%" }}
               disabled={Boolean(themeParam)}
             />
@@ -202,14 +168,14 @@ export default function TypeView() {
 
           <div>
             <label>Version</label>
-            <select value={version} onChange={(e) => setVersion(e.target.value as Version)}>
+            <select value={version} onChange={(e) => setVersion(e.target.value)}>
               <option value="KJV">KJV</option>
-              <option value="ESV" disabled={esvStatusChecked && !esvAvailable}>ESV</option>
+              <option value="ESV" disabled={esvUnavailable}>ESV</option>
             </select>
           </div>
         </div>
 
-        {esvStatusChecked && !esvAvailable ? (
+        {esvUnavailable ? (
           <p className="muted" style={{ marginTop: 8 }}>
             ESV is unavailable until <code>ESV_API_KEY</code> is configured.
           </p>
@@ -222,8 +188,8 @@ export default function TypeView() {
 
           {!themeParam ? (
             <div className="row" style={{ gap: 8 }}>
-              <button onClick={expandAll}>Expand all</button>
-              <button onClick={collapseAll}>Collapse all</button>
+              <button onClick={() => browse.setOpenSections(filteredGroups.map((group) => group.tag))}>Expand all</button>
+              <button onClick={() => browse.setOpenSections([])}>Collapse all</button>
             </div>
           ) : null}
         </div>
@@ -235,7 +201,7 @@ export default function TypeView() {
       {!loading && !error ? (
         <div style={{ marginTop: 12 }}>
           {filteredGroups.map((group) => {
-            const isOpen = !!openGroups[group.tag];
+            const isOpen = openGroups.includes(group.tag);
 
             return (
               <div key={group.tag} className="card" style={{ marginBottom: 12 }}>
@@ -274,12 +240,14 @@ export default function TypeView() {
                     {group.items.map((p) => {
                       const artItems = artworkForPericope(artworkMap, p.pericopeId);
                       const firstArt = artItems[0];
+                      const anchor = `event-${encodeURIComponent(group.tag)}-${p.pericopeId}`;
 
                       return (
                         <button
                           key={p.pericopeId}
+                          id={anchor}
                           className="interactiveCard"
-                          onClick={() => navigate(`/story/${p.pericopeId}?version=${version}`)}
+                          onClick={() => openEvent(p.pericopeId, anchor)}
                           style={{
                             display: "block",
                             width: "100%",

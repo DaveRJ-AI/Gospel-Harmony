@@ -1,7 +1,6 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import ArtworkModal from "../components/ArtworkModal";
-import { useEsvAvailability } from "../hooks/useEsvAvailability";
+import { useEventBrowse } from "../hooks/useEventBrowse";
 import {
   artworkForPericope,
   loadArtworkMap,
@@ -9,36 +8,26 @@ import {
   type ArtworkMap,
 } from "../lib/artwork";
 import { loadHarmony, type Pericope } from "../lib/harmony";
-import type { Version } from "../lib/refs";
+import { createEventSearch, type EventSearch } from "../lib/eventSearch";
 
 type ArtCardItem = {
-  pericopeId: string;
-  storyTitle: string;
-  summary: string;
+  id: string;
+  pericope: Pericope;
   artworkIndex: number;
   artwork: ArtworkItem;
 };
 
 export default function ArtView() {
-  const navigate = useNavigate();
-  const { esvAvailable, esvStatusChecked } = useEsvAvailability();
-
-  const [version, setVersion] = React.useState<Version>("KJV");
-  const [query, setQuery] = React.useState("");
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
+  const { version, query, esvUnavailable, setVersion, setQuery, openEvent } = useEventBrowse(!loading && !error);
 
   const [cards, setCards] = React.useState<ArtCardItem[]>([]);
+  const [eventSearch, setEventSearch] = React.useState<EventSearch>();
   const [artworkMap, setArtworkMap] = React.useState<ArtworkMap>({});
 
   const [modalItems, setModalItems] = React.useState<ArtworkItem[]>([]);
   const [modalIndex, setModalIndex] = React.useState<number | null>(null);
-
-  React.useEffect(() => {
-    if (version === "ESV" && esvStatusChecked && !esvAvailable) {
-      setVersion("KJV");
-    }
-  }, [version, esvAvailable, esvStatusChecked]);
 
   React.useEffect(() => {
     let alive = true;
@@ -64,19 +53,19 @@ export default function ArtView() {
 
           items.forEach((artwork, artworkIndex) => {
             nextCards.push({
-              pericopeId,
-              storyTitle: pericope.title,
-              summary: pericope.summary,
+              id: `${pericopeId}-${artworkIndex}`,
+              pericope,
               artworkIndex,
               artwork,
             });
           });
         }
 
-        nextCards.sort((a, b) => a.storyTitle.localeCompare(b.storyTitle));
+        nextCards.sort((a, b) => a.pericope.title.localeCompare(b.pericope.title));
 
         setArtworkMap(artMap);
         setCards(nextCards);
+        setEventSearch(createEventSearch(harmony, nextCards));
       } catch (e: any) {
         if (!alive) return;
         setError(e?.message ?? "Failed to load artwork");
@@ -92,24 +81,10 @@ export default function ArtView() {
   }, []);
 
   const filtered = React.useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return cards;
-
-    return cards.filter((card) => {
-      const hay = [
-        card.storyTitle,
-        card.summary,
-        card.artwork.title,
-        card.artwork.caption || "",
-        card.artwork.artist || "",
-        card.artwork.source || "",
-      ]
-        .join(" ")
-        .toLowerCase();
-
-      return hay.includes(q);
-    });
-  }, [cards, query]);
+    if (!query.trim() || !eventSearch) return cards;
+    const byId = new Map(cards.map((card) => [card.id, card]));
+    return eventSearch.find(query).flatMap((id) => byId.get(id) ?? []);
+  }, [cards, query, eventSearch]);
 
   if (error) {
     return <p className="error">{error}</p>;
@@ -127,7 +102,7 @@ export default function ArtView() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search story title or artwork..."
+              placeholder="Search artwork, events, or references..."
               style={{ width: "100%" }}
             />
           </div>
@@ -136,10 +111,10 @@ export default function ArtView() {
             <label>Version</label>
             <select
               value={version}
-              onChange={(e) => setVersion(e.target.value as Version)}
+              onChange={(e) => setVersion(e.target.value)}
             >
               <option value="KJV">KJV</option>
-              <option value="ESV" disabled={esvStatusChecked && !esvAvailable}>
+              <option value="ESV" disabled={esvUnavailable}>
                 ESV
               </option>
             </select>
@@ -149,7 +124,7 @@ export default function ArtView() {
         <p className="muted" style={{ marginTop: 10 }}>
           Browse artwork by story. View the image or jump directly to the related passages.
         </p>
-        {esvStatusChecked && !esvAvailable ? (
+        {esvUnavailable ? (
           <p className="muted" style={{ marginTop: 8 }}>
             ESV is unavailable until <code>ESV_API_KEY</code> is configured.
           </p>
@@ -172,11 +147,12 @@ export default function ArtView() {
           }}
         >
           {filtered.map((card) => {
-            const storyArtItems = artworkForPericope(artworkMap, card.pericopeId);
+            const storyArtItems = artworkForPericope(artworkMap, card.pericope.pericopeId);
+            const anchor = `event-${card.id}`;
 
             return (
               <div
-                key={`${card.pericopeId}-${card.artworkIndex}-${card.artwork.image}`}
+                key={card.id}
                 className="card interactiveCard"
                 style={{
                   padding: 0,
@@ -227,9 +203,9 @@ export default function ArtView() {
                     flex: 1,
                   }}
                 >
-                  <div style={{ fontWeight: 800 }}>{card.storyTitle}</div>
+                  <div style={{ fontWeight: 800 }}>{card.pericope.title}</div>
 
-                  {card.artwork.title && card.artwork.title !== card.storyTitle ? (
+                  {card.artwork.title && card.artwork.title !== card.pericope.title ? (
                     <div className="muted" style={{ fontSize: 14 }}>
                       {card.artwork.title}
                     </div>
@@ -245,7 +221,7 @@ export default function ArtView() {
                       overflow: "hidden",
                     }}
                   >
-                    {card.summary}
+                    {card.pericope.summary}
                   </div>
 
                   <div
@@ -269,9 +245,8 @@ export default function ArtView() {
 
                     <button
                       type="button"
-                      onClick={() =>
-                        navigate(`/story/${card.pericopeId}?version=${version}`)
-                      }
+                      id={anchor}
+                      onClick={() => openEvent(card.pericope.pericopeId, anchor)}
                     >
                       Open Story
                     </button>

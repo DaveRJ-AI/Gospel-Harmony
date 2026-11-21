@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import ColumnGrid, { type ColumnBlock } from "../components/ColumnGrid";
 import ArtworkModal from "../components/ArtworkModal";
 import ReadingPlans from "../components/ReadingPlans";
@@ -7,10 +8,13 @@ import { getChapter, getPassage, type PassageRef } from "../lib/bible";
 import { setEsvDisplayActive } from "../lib/esvDisplayState";
 import { artworkForPericope, loadArtworkMap, type ArtworkItem, type ArtworkMap } from "../lib/artwork";
 import { loadHarmony, passagesForPericope, pericopesForChapter } from "../lib/harmony";
+import { readPreference, writePreference } from "../lib/preferences";
 import { GOSPELS, otherGospels, type Gospel, type Version } from "../lib/refs";
 import { overlapsReading, readingLabel, type ChapterReading } from "../lib/readingPlans";
 
 type ChapterVerse = { book: Gospel; chapter: number; verse: number; text: string };
+
+const INTRO_DISMISSED_KEY = "gospel-harmonics.hide-chapter-intro";
 
 const CHAPTER_COUNTS: Record<Gospel, number> = {
   Matthew: 28,
@@ -82,9 +86,26 @@ function InfoTooltip({
   description: string;
 }) {
   const [open, setOpen] = React.useState(false);
+  const anchorRef = React.useRef<HTMLSpanElement>(null);
+  const tooltipRef = React.useRef<HTMLSpanElement>(null);
+
+  React.useLayoutEffect(() => {
+    const anchor = anchorRef.current;
+    const tooltip = tooltipRef.current;
+    if (!open || !anchor || !tooltip) return;
+
+    const fitTooltip = () => {
+      const right = anchor.getBoundingClientRect().right;
+      tooltip.style.right = `${Math.min(0, right - tooltip.offsetWidth - 12)}px`;
+    };
+    fitTooltip();
+    window.addEventListener("resize", fitTooltip);
+    return () => window.removeEventListener("resize", fitTooltip);
+  }, [open]);
 
   return (
     <span
+      ref={anchorRef}
       style={{ position: "relative", display: "inline-flex", alignItems: "center", marginLeft: 6 }}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
@@ -94,7 +115,10 @@ function InfoTooltip({
       <button
         type="button"
         aria-label={`${label}: ${description}`}
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => setOpen(true)}
+        onKeyDown={(event) => {
+          if (event.key === "Escape") setOpen(false);
+        }}
         style={{
           width: 18,
           height: 18,
@@ -113,13 +137,14 @@ function InfoTooltip({
       </button>
 
       {open ? (
-        <div
+        <span
+          ref={tooltipRef}
           role="tooltip"
           style={{
             position: "absolute",
             top: "calc(100% + 8px)",
             right: 0,
-            width: 240,
+            width: "min(240px, calc(100vw - 24px))",
             padding: "10px 12px",
             borderRadius: 12,
             border: "1px solid #DBE3EF",
@@ -132,7 +157,7 @@ function InfoTooltip({
           }}
         >
           {description}
-        </div>
+        </span>
       ) : null}
     </span>
   );
@@ -221,7 +246,14 @@ export default function ChapterView() {
   const [book, setBook] = React.useState<Gospel>("Matthew");
   const [chapter, setChapter] = React.useState<number>(1);
   const [assignedReading, setAssignedReading] = React.useState<ChapterReading | null>(null);
+  const [showIntroduction, setShowIntroduction] = React.useState(
+    () => readPreference(INTRO_DISMISSED_KEY) !== "1",
+  );
+  const versionPickerRef = React.useRef<HTMLSelectElement>(null);
+  const chapterReaderRef = React.useRef<HTMLDivElement>(null);
+  const revealDemo = React.useRef(false);
   const readerRef = React.useRef<HTMLDivElement>(null);
+  const revealAssignedReading = React.useRef(false);
 
   const [enableSync, setEnableSync] = React.useState(true);
   const [showDifferences, setShowDifferences] = React.useState(false);
@@ -282,10 +314,21 @@ export default function ChapterView() {
   }, [book, chapter, version, assignedReading]);
 
   React.useEffect(() => {
-    if (!assignedReading) return;
+    if (!assignedReading || !revealAssignedReading.current) return;
+    revealAssignedReading.current = false;
     readerRef.current?.focus({ preventScroll: true });
     readerRef.current?.scrollIntoView({ block: "start" });
   }, [assignedReading]);
+
+  const openAssignedReading = React.useCallback((reading: ChapterReading | null, reveal = true) => {
+    revealAssignedReading.current = Boolean(reading && reveal);
+    setAssignedReading(reading && { ...reading });
+    if (!reading) return;
+    setLoading(true);
+    setError(null);
+    setBook(reading.book);
+    setChapter(reading.chapter);
+  }, []);
 
   React.useEffect(() => {
     let alive = true;
@@ -448,6 +491,34 @@ export default function ChapterView() {
   const others = otherGospels(book);
   const chapterButtons = Array.from({ length: CHAPTER_COUNTS[book] }, (_, i) => i + 1);
 
+  function focusChapterReader() {
+    chapterReaderRef.current?.focus({ preventScroll: true });
+    chapterReaderRef.current?.scrollIntoView({ block: "start" });
+  }
+
+  React.useLayoutEffect(() => {
+    if (!revealDemo.current) return;
+    revealDemo.current = false;
+    focusChapterReader();
+  }, [book, chapter, assignedReading]);
+
+  function dismissIntroduction() {
+    writePreference(INTRO_DISMISSED_KEY, "1");
+    setShowIntroduction(false);
+    versionPickerRef.current?.focus({ preventScroll: true });
+  }
+
+  function tryDemo() {
+    if (book === "Luke" && chapter === 22 && !assignedReading) {
+      focusChapterReader();
+      return;
+    }
+    revealDemo.current = true;
+    setAssignedReading(null);
+    setBook("Luke");
+    setChapter(22);
+  }
+
   return (
     <div>
       <div className="card">
@@ -455,21 +526,42 @@ export default function ChapterView() {
           <ReadingPlans
             version={version}
             assignedReading={assignedReading}
-            onPlanChange={() => setAssignedReading(null)}
-            onRead={(reading) => {
-              setLoading(true);
-              setError(null);
-              setBook(reading.book);
-              setChapter(reading.chapter);
-              setAssignedReading({ ...reading });
-            }}
+            onRead={openAssignedReading}
           >
-            {(picker) => (
+            {(picker, activePlan) => (
               <>
+                {showIntroduction && !activePlan && (
+                  <section className="chapterIntro" aria-labelledby="chapter-intro-title">
+                    <div>
+                      <h2 id="chapter-intro-title">Compare the Gospels side by side</h2>
+                      <p>Choose a Gospel and chapter to see how the other Gospels tell the same events.</p>
+                    </div>
+                    <div className="chapterIntroActions">
+                      <button type="button" className="chapterIntroAction chapterIntroDemo" onClick={tryDemo}>Try Luke 22</button>
+                      <Link
+                        className="chapterIntroAction chapterIntroEvents"
+                        to="/stories"
+                        onClick={(event) => {
+                          if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+                          window.scrollTo(0, 0);
+                        }}
+                      >
+                        Browse Events
+                      </Link>
+                      <button
+                        type="button"
+                        className="chapterIntroAction chapterIntroDismiss"
+                        onClick={dismissIntroduction}
+                      >
+                        Don’t show again
+                      </button>
+                    </div>
+                  </section>
+                )}
                 <div className="chapterSettings">
                   <div className="chapterVersionPicker">
                     <label>Version</label>
-                    <select value={version} onChange={(e) => setVersion(e.target.value as Version)}>
+                    <select ref={versionPickerRef} value={version} onChange={(e) => setVersion(e.target.value as Version)}>
                       <option value="KJV">KJV</option>
                       <option value="ESV" disabled={esvStatusChecked && !esvAvailable}>ESV</option>
                     </select>
@@ -481,7 +573,13 @@ export default function ChapterView() {
                   </div>
 
                   <div className="primaryGospelPicker">
-                    <label>Primary Gospel</label>
+                    <label>
+                      Primary Gospel
+                      <InfoTooltip
+                        label="Primary Gospel"
+                        description="Choose the Gospel you want to read in the main column. The other columns show parallel passages for the same events."
+                      />
+                    </label>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                       {GOSPELS.map((g) => (
                         <SelectionPill
@@ -569,25 +667,35 @@ export default function ChapterView() {
       {error ? <p className="error" style={{ marginTop: 10 }}>{error}</p> : null}
       {loading ? <p className="muted">Loading…</p> : null}
 
-      {(!assignedReading || (!loading && !error)) && <ColumnGrid
-        version={version}
-        enableSync={enableSync}
-        activeBlockId={activeBlockId}
-        onPrimaryActiveBlockChange={setActiveBlockId}
-        showDifferences={showDifferences}
-        scrollPrimaryToTopSignal={scrollPrimaryToTopSignal}
-        primary={{
-          colKey: `${book}-primary`,
-          header: assignedReading ? `Assigned reading · ${readingLabel(assignedReading)}` : `Primary: ${book} ${chapter}`,
-          blocks: primaryBlocks,
-        }}
-        others={others.map((og) => ({
-          book: og,
-          colKey: og,
-          header: `${og} parallels`,
-          blocks: otherBlocks[og] || [],
-        }))}
-      />}
+      {(!assignedReading || (!loading && !error)) && (
+        <div
+          ref={chapterReaderRef}
+          className="chapterReader"
+          role="region"
+          tabIndex={-1}
+          aria-label={`${book} ${chapter} and parallel passages`}
+        >
+          <ColumnGrid
+            version={version}
+            enableSync={enableSync}
+            activeBlockId={activeBlockId}
+            onPrimaryActiveBlockChange={setActiveBlockId}
+            showDifferences={showDifferences}
+            scrollPrimaryToTopSignal={scrollPrimaryToTopSignal}
+            primary={{
+              colKey: `${book}-primary`,
+              header: assignedReading ? `Assigned reading · ${readingLabel(assignedReading)}` : `Primary: ${book} ${chapter}`,
+              blocks: primaryBlocks,
+            }}
+            others={others.map((og) => ({
+              book: og,
+              colKey: og,
+              header: `${og} parallels`,
+              blocks: otherBlocks[og] || [],
+            }))}
+          />
+        </div>
+      )}
 
       {modalIndex !== null ? (
         <ArtworkModal

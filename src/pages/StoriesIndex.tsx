@@ -1,30 +1,20 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import ArtworkModal from "../components/ArtworkModal";
-import { useEsvAvailability } from "../hooks/useEsvAvailability";
+import { useEventBrowse } from "../hooks/useEventBrowse";
 import { artworkForPericope, loadArtworkMap, type ArtworkItem, type ArtworkMap } from "../lib/artwork";
 import { loadHarmony, type Pericope } from "../lib/harmony";
-import type { Version } from "../lib/refs";
+import { getEventSearch, type EventSearch } from "../lib/eventSearch";
 
 export default function StoriesIndex() {
-  const nav = useNavigate();
-  const { esvAvailable, esvStatusChecked } = useEsvAvailability();
-
-  const [version, setVersion] = React.useState<Version>("KJV");
-  const [query, setQuery] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const [pericopes, setPericopes] = React.useState<Pericope[]>([]);
+  const [eventSearch, setEventSearch] = React.useState<EventSearch>();
   const [artworkMap, setArtworkMap] = React.useState<ArtworkMap>({});
   const [loading, setLoading] = React.useState(true);
+  const { version, query, esvUnavailable, setVersion, setQuery, openEvent } = useEventBrowse(!loading && !error);
 
   const [modalItems, setModalItems] = React.useState<ArtworkItem[]>([]);
   const [modalIndex, setModalIndex] = React.useState<number | null>(null);
-
-  React.useEffect(() => {
-    if (version === "ESV" && esvStatusChecked && !esvAvailable) {
-      setVersion("KJV");
-    }
-  }, [version, esvAvailable, esvStatusChecked]);
 
   React.useEffect(() => {
     let alive = true;
@@ -45,6 +35,7 @@ export default function StoriesIndex() {
         });
 
         setPericopes(sorted);
+        setEventSearch(getEventSearch(harmony));
         setArtworkMap(artMap);
       } catch (e: any) {
         if (!alive) return;
@@ -61,14 +52,10 @@ export default function StoriesIndex() {
   }, []);
 
   const filtered = React.useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return pericopes;
-
-    return pericopes.filter((p) => {
-      const hay = [p.title, p.summary, ...(p.tags || [])].join(" ").toLowerCase();
-      return hay.includes(q);
-    });
-  }, [pericopes, query]);
+    if (!query.trim() || !eventSearch) return pericopes;
+    const byId = new Map(pericopes.map((event) => [event.pericopeId, event]));
+    return eventSearch.find(query).flatMap((id) => byId.get(id) ?? []);
+  }, [pericopes, query, eventSearch]);
 
   if (error) return <p className="error">{error}</p>;
 
@@ -81,16 +68,16 @@ export default function StoriesIndex() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search title, summary, or type..."
+              placeholder="Search events or scripture references..."
               style={{ width: "100%" }}
             />
           </div>
 
           <div>
             <label>Version</label>
-            <select value={version} onChange={(e) => setVersion(e.target.value as Version)}>
+            <select value={version} onChange={(e) => setVersion(e.target.value)}>
               <option value="KJV">KJV</option>
-              <option value="ESV" disabled={esvStatusChecked && !esvAvailable}>ESV</option>
+              <option value="ESV" disabled={esvUnavailable}>ESV</option>
             </select>
           </div>
         </div>
@@ -98,7 +85,7 @@ export default function StoriesIndex() {
         <p className="muted" style={{ marginTop: 10 }}>
           Events shows Gospel events in harmony order. Click any event to open the 4-column harmonized view.
         </p>
-        {esvStatusChecked && !esvAvailable ? (
+        {esvUnavailable ? (
           <p className="muted" style={{ marginTop: 8 }}>
             ESV is unavailable until <code>ESV_API_KEY</code> is configured.
           </p>
@@ -112,18 +99,20 @@ export default function StoriesIndex() {
           {filtered.map((p) => {
             const artItems = artworkForPericope(artworkMap, p.pericopeId);
             const firstArt = artItems[0];
+            const anchor = `event-${p.pericopeId}`;
 
             return (
               <div
                 key={p.pericopeId}
+                id={anchor}
                 className="interactiveCard"
-                onClick={() => nav(`/story/${p.pericopeId}?version=${version}`)}
+                onClick={() => openEvent(p.pericopeId, anchor)}
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
+                  if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
                     e.preventDefault();
-                    nav(`/story/${p.pericopeId}?version=${version}`);
+                    openEvent(p.pericopeId, anchor);
                   }
                 }}
                 style={{
