@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import type {
   Episode,
@@ -55,6 +55,10 @@ const VIEWBOX_X = -240;
 const VIEWBOX_Y = -30;
 const VIEWBOX_WIDTH = 1800;
 const VIEWBOX_HEIGHT = 1280;
+const VIEWBOX_CENTER = {
+  x: VIEWBOX_X + VIEWBOX_WIDTH / 2,
+  y: VIEWBOX_Y + VIEWBOX_HEIGHT / 2,
+};
 const INITIAL_ZOOM = 2;
 const MIN_ZOOM = 0.7;
 const MAX_ZOOM = 4;
@@ -165,10 +169,10 @@ const LABEL_OFFSETS: Record<
   { dx?: number; dy?: number; anchor?: "start" | "middle" | "end" }
 > = {
   nazareth: { dx: 0, dy: 18, anchor: "middle" },
-  capernaum: { dx: 14, dy: 4, anchor: "start" },
+  capernaum: { dx: 14, dy: 6, anchor: "start" },
   chorazin: { dx: 0, dy: 18, anchor: "middle" },
   cana: { dx: 0, dy: 18, anchor: "middle" },
-  bethsaida: { dx: 0, dy: 18, anchor: "middle" },
+  bethsaida: { dx: 0, dy: -14, anchor: "middle" },
   magdala: { dx: 0, dy: 18, anchor: "middle" },
   "sea-of-galilee": { dx: 18, dy: 4, anchor: "start" },
   nain: { dx: 0, dy: 18, anchor: "middle" },
@@ -381,11 +385,16 @@ function clampPan(
 const initialCenter = RELATIONAL_NODE_POSITIONS["jordan-river"];
 const initialPan = clampPan(
   {
-    x: VIEWBOX_X + VIEWBOX_WIDTH / 2 - initialCenter.x * INITIAL_ZOOM,
-    y: VIEWBOX_Y + VIEWBOX_HEIGHT / 2 - initialCenter.y * INITIAL_ZOOM,
+    x: VIEWBOX_CENTER.x - initialCenter.x * INITIAL_ZOOM,
+    y: VIEWBOX_CENTER.y - initialCenter.y * INITIAL_ZOOM,
   },
   INITIAL_ZOOM
 );
+
+function clientToSvg(svg: SVGSVGElement | null, x: number, y: number) {
+  const matrix = svg?.getScreenCTM();
+  return matrix?.a ? new DOMPoint(x, y).matrixTransform(matrix.inverse()) : null;
+}
 
 function getRegionColor(region: string | null): string {
   if (!region) return REGION_TEXT_COLORS.default;
@@ -478,15 +487,7 @@ function LegendNode({
   shape?: "circle" | "square";
 }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 8,
-        fontSize: 12,
-        color: "#475569",
-      }}
-    >
+    <div className="mapLegendItem">
       <svg width="22" height="22" viewBox="0 0 22 22" style={{ flex: "0 0 auto" }}>
         {shape === "circle" ? (
           <circle cx="11" cy="11" r={size / 2} fill={fill} stroke={stroke} strokeWidth="2" />
@@ -569,7 +570,12 @@ export default function MapView() {
   const episodeParam = searchParams.get("episode");
   const gospelParam = searchParams.get("gospels");
   const showDesignerCoordinates = searchParams.get("designer") === "1";
-  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const mapPageRef = useRef<HTMLDivElement>(null);
+  const viewerRef = useRef<HTMLDialogElement>(null);
+  const expandButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const inlineMapHeight = useRef(0);
+  const restoreExpandFocus = useRef(false);
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
   const placesHeadingRef = useRef<HTMLHeadingElement | null>(null);
   const panStateRef = useRef<{
@@ -587,6 +593,8 @@ export default function MapView() {
     null
   );
   const [showPlacesOnMobile, setShowPlacesOnMobile] = useState(false);
+  const [mapExpanded, setMapExpanded] = useState(false);
+  const [viewerPlacesOpen, setViewerPlacesOpen] = useState(false);
   const [zoom, setZoom] = useState(INITIAL_ZOOM);
   const [panX, setPanX] = useState(initialPan.x);
   const [panY, setPanY] = useState(initialPan.y);
@@ -594,6 +602,26 @@ export default function MapView() {
   const [designerCoordinateMode, setDesignerCoordinateMode] = useState(false);
   const [designerMouseCoordinate, setDesignerMouseCoordinate] =
     useState<MapCoordinate | null>(null);
+
+  useLayoutEffect(() => {
+    const viewer = viewerRef.current;
+    if (!mapExpanded || !viewer) {
+      if (restoreExpandFocus.current) {
+        restoreExpandFocus.current = false;
+        expandButtonRef.current?.focus({ preventScroll: true });
+      }
+      return;
+    }
+
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    viewer.showModal();
+    closeButtonRef.current?.focus({ preventScroll: true });
+    return () => {
+      viewer.close();
+      document.body.style.overflow = overflow;
+    };
+  }, [mapExpanded]);
 
   const nodes = useMemo<PositionedNode[]>(() => {
     return buildRelationalLayout(graph.nodes);
@@ -888,6 +916,7 @@ export default function MapView() {
     }
     setSelectedPlaceId(placeId);
     setSelectedEpisodeId(null);
+    if (mapExpanded) setViewerPlacesOpen(true);
   }
 
   function clearPlaceSelection() {
@@ -971,27 +1000,12 @@ export default function MapView() {
     clientX?: number,
     clientY?: number
   ) {
-    const svg = mapSvgRef.current;
     const normalized = clampZoom(nextZoom);
+    if (normalized === zoom) return;
 
-    if (!svg || normalized === zoom) {
-      return;
-    }
-
-    const rect = svg.getBoundingClientRect();
-    if (!rect.width || !rect.height) {
-      setZoom(normalized);
-      return;
-    }
-
-    const pointerX =
-      clientX !== undefined ? clientX - rect.left : rect.width / 2;
-    const pointerY =
-      clientY !== undefined ? clientY - rect.top : rect.height / 2;
-
-    const svgX = VIEWBOX_X + (pointerX / rect.width) * VIEWBOX_WIDTH;
-    const svgY = VIEWBOX_Y + (pointerY / rect.height) * VIEWBOX_HEIGHT;
-
+    const { x: svgX, y: svgY } = clientX !== undefined && clientY !== undefined
+      ? clientToSvg(mapSvgRef.current, clientX, clientY) ?? VIEWBOX_CENTER
+      : VIEWBOX_CENTER;
     const mapXBefore = (svgX - panX) / zoom;
     const mapYBefore = (svgY - panY) / zoom;
 
@@ -1008,7 +1022,7 @@ export default function MapView() {
     setPanY(nextPan.y);
   }
 
-  function handleMapWheel(event: React.WheelEvent<HTMLDivElement>) {
+  function handleMapWheel(event: WheelEvent) {
     event.preventDefault();
     const deltaMultiplier =
       event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 160 : 1;
@@ -1018,6 +1032,13 @@ export default function MapView() {
     const nextZoom = zoom * zoomFactor;
     setZoomAnchored(nextZoom, event.clientX, event.clientY);
   }
+
+  useLayoutEffect(() => {
+    const svg = mapSvgRef.current;
+    if (!svg) return;
+    svg.addEventListener("wheel", handleMapWheel, { passive: false });
+    return () => svg.removeEventListener("wheel", handleMapWheel);
+  }, [mapExpanded, zoom, panX, panY]);
 
   function beginPan(event: React.PointerEvent<SVGSVGElement>) {
     if (zoom <= 1 || event.button !== 0) return;
@@ -1039,16 +1060,13 @@ export default function MapView() {
 
   function handlePanMove(event: React.PointerEvent<SVGSVGElement>) {
     const panState = panStateRef.current;
-    const svg = mapSvgRef.current;
-    if (!panState || !svg) return;
-
-    const rect = svg.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
+    const scale = mapSvgRef.current?.getScreenCTM()?.a;
+    if (!panState || !scale) return;
 
     const deltaX = event.clientX - panState.startX;
     const deltaY = event.clientY - panState.startY;
-    const svgDeltaX = (deltaX / rect.width) * VIEWBOX_WIDTH;
-    const svgDeltaY = (deltaY / rect.height) * VIEWBOX_HEIGHT;
+    const svgDeltaX = deltaX / scale;
+    const svgDeltaY = deltaY / scale;
 
     if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
       suppressMapClickRef.current = true;
@@ -1103,21 +1121,12 @@ export default function MapView() {
     clientX: number,
     clientY: number
   ): MapCoordinate | null {
-    const svg = mapSvgRef.current;
-    if (!svg) return null;
-
-    const rect = svg.getBoundingClientRect();
-    if (!rect.width || !rect.height) return null;
-
-    const pointerX = clientX - rect.left;
-    const pointerY = clientY - rect.top;
-
-    const svgX = VIEWBOX_X + (pointerX / rect.width) * VIEWBOX_WIDTH;
-    const svgY = VIEWBOX_Y + (pointerY / rect.height) * VIEWBOX_HEIGHT;
+    const point = clientToSvg(mapSvgRef.current, clientX, clientY);
+    if (!point) return null;
 
     return {
-      x: Math.round((svgX - panX) / zoom),
-      y: Math.round((svgY - panY) / zoom),
+      x: Math.round((point.x - panX) / zoom),
+      y: Math.round((point.y - panY) / zoom),
     };
   }
 
@@ -1180,41 +1189,196 @@ export default function MapView() {
     ];
   }
 
-  return (
-    <div style={{ width: "100%" }}>
-      <div
-        style={{
-          background: "#FFFFFF",
-          border: "1px solid #E2E8F0",
-          borderRadius: 14,
-          padding: 16,
-          marginBottom: 16,
-        }}
-      >
-        <h2
-          style={{
-            margin: 0,
-            fontSize: "2rem",
-            lineHeight: 1.1,
-            color: "#0F172A",
-          }}
-        >
-          Gospel Map
-        </h2>
-        <p
-          style={{
-            margin: "8px 0 0 0",
-            fontSize: "0.95rem",
-            color: "#64748B",
-          }}
-        >
-          Select a place to see its events, or choose a Gospel to trace its route.
-        </p>
-      </div>
+  function openViewer() {
+    inlineMapHeight.current = mapPageRef.current?.offsetHeight ?? 0;
+    endPan();
+    suppressMapClickRef.current = false;
+    setMapExpanded(true);
+  }
 
-      <div className="mapLayout">
+  function closeViewer() {
+    endPan();
+    suppressMapClickRef.current = false;
+    restoreExpandFocus.current = true;
+    setMapExpanded(false);
+  }
+
+  function handleViewerKeyDown(event: React.KeyboardEvent<HTMLDialogElement>) {
+    if (event.key !== "Tab") return;
+    const controls = Array.from(event.currentTarget.querySelectorAll<HTMLElement>(
+      "button:not(:disabled), [tabindex='0']",
+    )).filter((control) => control.getClientRects().length > 0);
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    if (event.target === (event.shiftKey ? first : last)) {
+      event.preventDefault();
+      (event.shiftKey ? last : first)?.focus();
+    }
+  }
+
+  const layout = (
+      <div className={mapExpanded && viewerPlacesOpen ? "mapLayout mapLayoutWithPlaces" : "mapLayout"}>
+        <header className="mapHeader">
+          <div className="mapHeaderTitle">
+            <h1 id="gospel-map-heading">Gospel Map</h1>
+            {!mapExpanded && <p>Select a place to see its events, or choose a Gospel to trace its route.</p>}
+          </div>
+          <div className="mapTools">
+            {showDesignerCoordinates ? (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "8px 12px",
+                  background: designerCoordinateMode ? "#EFF6FF" : "#FFFFFF",
+                  border: designerCoordinateMode
+                    ? "1px solid #93C5FD"
+                    : "1px solid #E2E8F0",
+                  borderRadius: 16,
+                  boxShadow: "0 8px 20px rgba(15, 23, 42, 0.06)",
+                  maxWidth: "100%",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDesignerCoordinateMode((current) => {
+                      const next = !current;
+                      if (!next) {
+                        setDesignerMouseCoordinate(null);
+                      }
+                      return next;
+                    });
+                  }}
+                  style={{
+                    borderRadius: 999,
+                    padding: "6px 12px",
+                    border: designerCoordinateMode
+                      ? "1px solid #60A5FA"
+                      : "1px solid #CBD5E1",
+                    background: designerCoordinateMode ? "#DBEAFE" : "#FFFFFF",
+                    color: designerCoordinateMode ? "#1D4ED8" : "#334155",
+                    fontWeight: 700,
+                    fontSize: 12,
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {designerCoordinateMode ? "Designer coords on" : "Designer coords"}
+                </button>
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                    minWidth: 0,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 700,
+                      color: "#334155",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {selectedDesignerNode
+                      ? selectedDesignerNode.name
+                      : "Select a node"}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "#64748B",
+                      fontFamily:
+                        'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    current:{" "}
+                    {selectedDesignerNode
+                      ? `x ${selectedDesignerNode.x}, y ${selectedDesignerNode.y}`
+                      : "x -, y -"}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: designerCoordinateMode ? "#1D4ED8" : "#94A3B8",
+                      fontFamily:
+                        'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    mouse:{" "}
+                    {designerCoordinateMode && designerMouseCoordinate
+                      ? `x ${designerMouseCoordinate.x}, y ${designerMouseCoordinate.y}`
+                      : "x -, y -"}
+                  </div>
+                </div>
+              </div>
+            ) : null}
+            <div className="mapZoomControls" role="group" aria-label="Map zoom">
+              <button
+                type="button"
+                onClick={() => setZoomAnchored(zoom - ZOOM_STEP)}
+                disabled={zoom <= MIN_ZOOM}
+                aria-label="Zoom out"
+              >
+                −
+              </button>
+              <span>{zoomPercent}%</span>
+              <button
+                type="button"
+                onClick={() => setZoomAnchored(zoom + ZOOM_STEP)}
+                disabled={zoom >= MAX_ZOOM}
+                aria-label="Zoom in"
+              >
+                +
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setZoom(INITIAL_ZOOM);
+                  setPanX(initialPan.x);
+                  setPanY(initialPan.y);
+                }}
+                disabled={zoom === INITIAL_ZOOM && panX === initialPan.x && panY === initialPan.y}
+              >
+                Reset
+              </button>
+            </div>
+            {mapExpanded ? (
+              <button
+                type="button"
+                className="mapViewButton"
+                aria-expanded={viewerPlacesOpen}
+                aria-controls="map-places-panel"
+                onClick={() => setViewerPlacesOpen((open) => !open)}
+              >
+                {viewerPlacesOpen ? "Hide places" : "Show places"}
+              </button>
+            ) : (
+              <button ref={expandButtonRef} type="button" className="mapViewButton" aria-haspopup="dialog" onClick={openViewer}>
+                Expand map
+              </button>
+            )}
+          </div>
+          {mapExpanded && (
+            <button
+              ref={closeButtonRef}
+              type="button"
+              className="mapViewButton mapCloseButton"
+              onClick={closeViewer}
+            >
+              Close
+            </button>
+          )}
+        </header>
+
         <section className="mapGospelRoutes" style={panelStyle}>
-          <h3 style={panelTitleStyle}>Gospel travel sequences</h3>
+          <h3 style={mapExpanded ? { ...panelTitleStyle, margin: 0 } : panelTitleStyle}>Gospel travel sequences</h3>
           <div className="mapRouteButtons">
             {GOSPELS.map((gospel) => {
               const active = enabledGospels.includes(gospel);
@@ -1255,403 +1419,16 @@ export default function MapView() {
         </section>
 
         <main className="mapMain">
-          <div
-            className="mapCard"
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid #E2E8F0",
-              borderRadius: 14,
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                padding: "14px 16px",
-                borderBottom: "1px solid #E2E8F0",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "flex-start",
-                gap: 12,
-                flexWrap: "wrap",
-                background: "#FFFFFF",
-              }}
-            >
-              <div>
-                <h1
-                  style={{
-                    margin: 0,
-                    fontSize: "1.35rem",
-                    color: "#0F172A",
-                  }}
-                >
-                  Relational Gospel Map
-                </h1>
-                <p
-                  style={{
-                    margin: "6px 0 0 0",
-                    fontSize: 14,
-                    color: "#64748B",
-                  }}
-                >
-                  {`${nodes.length} places and ${graph.edges.length} relationships`}
-                </p>
-              </div>
-
-              <div
-                className="mapTools"
-                >
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 8,
-                    flexWrap: "wrap",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  {enabledGospels.map((gospel) => (
-                    <div
-                      key={gospel}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 8,
-                        borderRadius: 999,
-                        padding: "6px 10px",
-                        background: "#F8FAFC",
-                        border: "1px solid #E2E8F0",
-                        fontSize: 12,
-                        color: "#334155",
-                        textTransform: "capitalize",
-                      }}
-                    >
-                      <span
-                        style={{
-                          display: "inline-block",
-                          width: 10,
-                          height: 10,
-                          borderRadius: 999,
-                          background: travelColorByGospel[gospel],
-                        }}
-                      />
-                      <span>{gospel}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "stretch",
-                    gap: 10,
-                    flexWrap: "wrap",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  {showDesignerCoordinates ? (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 10,
-                        padding: "8px 12px",
-                        background: designerCoordinateMode ? "#EFF6FF" : "#FFFFFF",
-                        border: designerCoordinateMode
-                          ? "1px solid #93C5FD"
-                          : "1px solid #E2E8F0",
-                        borderRadius: 16,
-                        boxShadow: "0 8px 20px rgba(15, 23, 42, 0.06)",
-                        maxWidth: "100%",
-                      }}
-                    >
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setDesignerCoordinateMode((current) => {
-                            const next = !current;
-                            if (!next) {
-                              setDesignerMouseCoordinate(null);
-                            }
-                            return next;
-                          });
-                        }}
-                        style={{
-                          borderRadius: 999,
-                          padding: "6px 12px",
-                          border: designerCoordinateMode
-                            ? "1px solid #60A5FA"
-                            : "1px solid #CBD5E1",
-                          background: designerCoordinateMode ? "#DBEAFE" : "#FFFFFF",
-                          color: designerCoordinateMode ? "#1D4ED8" : "#334155",
-                          fontWeight: 700,
-                          fontSize: 12,
-                          cursor: "pointer",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {designerCoordinateMode ? "Designer coords on" : "Designer coords"}
-                      </button>
-
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: 2,
-                          minWidth: 0,
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: 12,
-                            fontWeight: 700,
-                            color: "#334155",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {selectedDesignerNode
-                            ? selectedDesignerNode.name
-                            : "Select a node"}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: 11,
-                            color: "#64748B",
-                            fontFamily:
-                              'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          current:{" "}
-                          {selectedDesignerNode
-                            ? `x ${selectedDesignerNode.x}, y ${selectedDesignerNode.y}`
-                            : "x -, y -"}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: 11,
-                            color: designerCoordinateMode ? "#1D4ED8" : "#94A3B8",
-                            fontFamily:
-                              'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          mouse:{" "}
-                          {designerCoordinateMode && designerMouseCoordinate
-                            ? `x ${designerMouseCoordinate.x}, y ${designerMouseCoordinate.y}`
-                            : "x -, y -"}
-                        </div>
-                      </div>
-                    </div>
-                  ) : null}
-
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 6,
-                      padding: 8,
-                      background: "#FFFFFF",
-                      border: "1px solid #E2E8F0",
-                      borderRadius: 999,
-                      boxShadow: "0 8px 20px rgba(15, 23, 42, 0.06)",
-                    }}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setZoomAnchored(zoom - ZOOM_STEP)}
-                      disabled={zoom <= MIN_ZOOM}
-                      aria-label="Zoom out"
-                      style={{ borderRadius: 999, padding: "6px 10px" }}
-                    >
-                      -
-                    </button>
-                    <div
-                      style={{
-                        minWidth: 58,
-                        textAlign: "center",
-                        fontSize: 13,
-                        fontWeight: 700,
-                        color: "#334155",
-                      }}
-                    >
-                      {zoomPercent}%
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setZoomAnchored(zoom + ZOOM_STEP)}
-                      disabled={zoom >= MAX_ZOOM}
-                      aria-label="Zoom in"
-                      style={{ borderRadius: 999, padding: "6px 10px" }}
-                    >
-                      +
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setZoom(INITIAL_ZOOM);
-                        setPanX(initialPan.x);
-                        setPanY(initialPan.y);
-                      }}
-                      disabled={zoom === INITIAL_ZOOM && panX === initialPan.x && panY === initialPan.y}
-                      style={{ borderRadius: 999, padding: "6px 12px" }}
-                    >
-                      Reset
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div
-              className="mapLegend"
-              style={{
-                padding: "10px 16px",
-                borderBottom: "1px solid #E2E8F0",
-                background: "#FFFFFF",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 14,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <LegendNode fill="#FFFFFF" stroke="#334155" label="Town / city / site" size={10} />
-                <LegendNode fill="#A5F3FC" stroke="#0E7490" label="Water feature" size={12} />
-                <LegendNode fill="#E7E5E4" stroke="#57534E" label="Area / wilderness" size={12} />
-                <LegendNode fill="#F59E0B" stroke="#7C2D12" label="Selected place" size={12} />
-                <LegendNode fill="#38BDF8" stroke="#075985" label="Episode highlight" size={12} />
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    fontSize: 12,
-                    color: "#475569",
-                  }}
-                >
-                  <svg width="24" height="24" viewBox="0 0 24 24">
-                    <circle cx="12" cy="9" r="6" fill="#2563EB" stroke="#0F172A" strokeWidth="1.4" />
-                    <path
-                      d="M8.8 13.3 L12 19.5 L15.2 13.3 Z"
-                      fill="#2563EB"
-                      stroke="#0F172A"
-                      strokeWidth="1.1"
-                    />
-                    <text
-                      x="12"
-                      y="11.8"
-                      textAnchor="middle"
-                      fontSize="8.5"
-                      fontWeight="700"
-                      fill="#FFFFFF"
-                    >
-                      1
-                    </text>
-                  </svg>
-                  <span>Start</span>
-                </div>
-                <LegendNode fill="#2563EB" stroke="#0F172A" label="End" size={12} shape="square" />
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    fontSize: 12,
-                    color: "#475569",
-                  }}
-                >
-                  <svg width="24" height="24" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="9.5" fill="#2563EB" />
-                    <text
-                      x="12"
-                      y="15.2"
-                      textAnchor="middle"
-                      fontSize="10"
-                      fontWeight="700"
-                      fill="#FFFFFF"
-                    >
-                      2
-                    </text>
-                  </svg>
-                  <span>Sequence on path</span>
-                </div>
-
-                <div
-  style={{
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    fontSize: 12,
-    color: "#475569",
-  }}
->
-  <svg width="24" height="24" viewBox="0 0 24 24">
-    <rect
-      x="6"
-      y="6"
-      width="12"
-      height="12"
-      rx="2"
-      transform="rotate(45 12 12)"
-      fill="#2563EB"
-      stroke="#FFFFFF"
-      strokeWidth="1.2"
-    />
-    <text
-      x="12"
-      y="15"
-      textAnchor="middle"
-      fontSize="8"
-      fontWeight="700"
-      fill="#FFFFFF"
-    >
-      3
-    </text>
-  </svg>
-  <span>Region transition</span>
-</div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    fontSize: 12,
-                    color: "#475569",
-                  }}
-                >
-                  <svg width="34" height="14" viewBox="0 0 34 14">
-                    <line
-                      x1="1"
-                      y1="7"
-                      x2="33"
-                      y2="7"
-                      stroke="#2563EB"
-                      strokeWidth="3"
-                      strokeDasharray="8 5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <span>Active Gospel path</span>
-                </div>
-              </div>
-            </div>
-
+          <div className="mapCard">
             <div
               className="mapViewport"
-              ref={mapContainerRef}
               style={{
                 position: "relative",
-                aspectRatio: VIEWBOX_WIDTH / VIEWBOX_HEIGHT,
+                aspectRatio: mapExpanded ? undefined : VIEWBOX_WIDTH / VIEWBOX_HEIGHT,
                 overflow: "hidden",
                 background: "#F8FAFC",
-                borderTop: "1px solid #E2E8F0",
                 cursor: zoom > 1 ? (isPanning ? "grabbing" : "grab") : "default",
               }}
-              onWheel={handleMapWheel}
             >
               <svg
                 ref={mapSvgRef}
@@ -1941,7 +1718,97 @@ onClick={() => togglePlace("egypt")}
           </div>
         </main>
 
-        <aside className="mapSidebar">
+        <section className="mapLegend" aria-label="Map legend">
+          <LegendNode fill="#FFFFFF" stroke="#334155" label="Town / city / site" size={10} />
+          <LegendNode fill="#A5F3FC" stroke="#0E7490" label="Water feature" size={12} />
+          <LegendNode fill="#E7E5E4" stroke="#57534E" label="Area / wilderness" size={12} />
+          <LegendNode fill="#F59E0B" stroke="#7C2D12" label="Selected place" size={12} />
+          <LegendNode fill="#38BDF8" stroke="#075985" label="Episode highlight" size={12} />
+          <div className="mapLegendItem">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <circle cx="12" cy="9" r="6" fill="#2563EB" stroke="#0F172A" strokeWidth="1.4" />
+              <path
+                d="M8.8 13.3 L12 19.5 L15.2 13.3 Z"
+                fill="#2563EB"
+                stroke="#0F172A"
+                strokeWidth="1.1"
+              />
+              <text
+                x="12"
+                y="11.8"
+                textAnchor="middle"
+                fontSize="8.5"
+                fontWeight="700"
+                fill="#FFFFFF"
+              >
+                1
+              </text>
+            </svg>
+            <span>Start</span>
+          </div>
+          <LegendNode fill="#2563EB" stroke="#0F172A" label="End" size={12} shape="square" />
+          <div className="mapLegendItem">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="9.5" fill="#2563EB" />
+              <text
+                x="12"
+                y="15.2"
+                textAnchor="middle"
+                fontSize="10"
+                fontWeight="700"
+                fill="#FFFFFF"
+              >
+                2
+              </text>
+            </svg>
+            <span>Sequence on path</span>
+          </div>
+
+          <div className="mapLegendItem">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <rect
+                x="6"
+                y="6"
+                width="12"
+                height="12"
+                rx="2"
+                transform="rotate(45 12 12)"
+                fill="#2563EB"
+                stroke="#FFFFFF"
+                strokeWidth="1.2"
+              />
+              <text
+                x="12"
+                y="15"
+                textAnchor="middle"
+                fontSize="8"
+                fontWeight="700"
+                fill="#FFFFFF"
+              >
+                3
+              </text>
+            </svg>
+            <span>Region transition</span>
+          </div>
+
+          <div className="mapLegendItem">
+            <svg width="34" height="14" viewBox="0 0 34 14">
+              <line
+                x1="1"
+                y1="7"
+                x2="33"
+                y2="7"
+                stroke="#2563EB"
+                strokeWidth="3"
+                strokeDasharray="8 5"
+                strokeLinecap="round"
+              />
+            </svg>
+            <span>Active Gospel path</span>
+          </div>
+        </section>
+
+        <aside className="mapSidebar" id="map-places-panel" hidden={mapExpanded && !viewerPlacesOpen}>
           <section style={panelStyle} aria-labelledby="map-places-heading">
             <div className="mapPlacesHeader">
               <h3
@@ -1950,7 +1817,7 @@ onClick={() => togglePlace("egypt")}
                 tabIndex={-1}
                 style={{ ...panelTitleStyle, margin: 0 }}
               >
-                Places
+                Places ({nodes.length})
               </h3>
               <button
                 className="mapPlacesToggle"
@@ -2156,6 +2023,27 @@ onClick={() => togglePlace("egypt")}
           </section>
         </aside>
       </div>
+  );
+
+  return (
+    <div ref={mapPageRef} style={mapExpanded ? { minHeight: inlineMapHeight.current } : undefined}>
+      {mapExpanded ? (
+        <dialog
+          ref={viewerRef}
+          className="mapViewer"
+          aria-labelledby="gospel-map-heading"
+          onCancel={(event) => {
+            event.preventDefault();
+            closeViewer();
+          }}
+          onClick={(event) => {
+            if (event.target === event.currentTarget) closeViewer();
+          }}
+          onKeyDown={handleViewerKeyDown}
+        >
+          {layout}
+        </dialog>
+      ) : layout}
     </div>
   );
 }
