@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ShareLink } from "./EventShare";
+import { revealReadingControl } from "./ReaderControls";
 import { eventPath } from "../lib/eventNavigation";
 import { loadHarmony, type HarmonyData } from "../lib/harmony";
 import { readPreference, writePreference } from "../lib/preferences";
@@ -91,9 +92,14 @@ export default function ReadingPlans({ children, version, assignedReading, onRea
     if (!card || (!openingSharedPlan && !shouldReveal.current)) return;
     shouldReveal.current = false;
     revealedSharedPlan.current = shared;
-    if (openingSharedPlan || card.getBoundingClientRect().top > window.innerHeight - 160) {
+    const controls = card.closest(".readerControls");
+    const visibleBottom = Math.min(
+      window.innerHeight,
+      controls?.getBoundingClientRect().bottom ?? window.innerHeight,
+    );
+    if (openingSharedPlan || card.getBoundingClientRect().top > visibleBottom - 160) {
       card.focus({ preventScroll: true });
-      card.scrollIntoView({ block: "start" });
+      revealReadingControl(card);
     }
   }, [plan, shared, count]);
 

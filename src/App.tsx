@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, NavLink, Route, Routes, useLocation, useSearchParams } from "react-router-dom";
+import { Route, Routes, useLocation, useSearchParams } from "react-router-dom";
 import ChapterView from "./pages/ChapterView";
 import StoriesIndex from "./pages/StoriesIndex";
 import StoryView from "./pages/StoryView";
@@ -9,6 +9,7 @@ import ArtView from "./pages/ArtView";
 import AboutView from "./pages/AboutView";
 import MapView from "./components/map/MapView";
 import EsvAttribution from "./components/EsvAttribution";
+import SiteHeader from "./components/SiteHeader";
 import {
   getEsvDisplayActive,
   getEsvDisplayEventName,
@@ -22,7 +23,6 @@ export default function App() {
     getEsvDisplayActive()
   );
   const isStoryRoute = location.pathname.startsWith("/story/");
-  const isEventsSection = isStoryRoute || location.pathname.replace(/\/$/, "") === "/stories";
   const isChapterRoute = location.pathname === "/";
   const versionParam = searchParams.get("version");
   const showEsvAttribution =
@@ -56,55 +56,19 @@ export default function App() {
 
   return (
     <div className="container">
-      <div className="header">
-        <div
-          className="brand"
-          style={{ display: "flex", alignItems: "center", gap: "18px" }}
-        >
-          <img
-            className="brandLogo"
-            src="/logo.png"
-            alt="Gospel Harmonics logo"
-            width={80}
-            height={80}
-          />
-          <div>
-            <h1 style={{ margin: 0, fontSize: "2.15rem", lineHeight: 1.05 }}>
-              Gospel Harmonics
-            </h1>
-            <small style={{ fontSize: "1rem" }}>
-              Chapter + Event parallels in 4 columns
-            </small>
-          </div>
-        </div>
-
-        <nav className="nav" aria-label="Main navigation">
-          <NavLink to="/" end>Chapters</NavLink>
-          <Link
-            to="/stories"
-            className={isEventsSection ? "sectionActive" : undefined}
-            aria-current={isEventsSection ? (isStoryRoute ? "location" : "page") : undefined}
-          >
-            Events
-          </Link>
-          <NavLink to="/timeline">Timeline</NavLink>
-          <NavLink to="/types">Themes</NavLink>
-          <NavLink to="/map">Map</NavLink>
-          <NavLink to="/art">Artwork</NavLink>
-          <NavLink to="/about">About</NavLink>
-        </nav>
+      <div className={isChapterRoute || isStoryRoute ? "siteReaderLayout" : undefined}>
+        <SiteHeader />
+        <Routes>
+          <Route path="/" element={<ChapterView />} />
+          <Route path="/stories" element={<StoriesIndex />} />
+          <Route path="/story/:pericopeId" element={<StoryView />} />
+          <Route path="/timeline" element={<TimelineView />} />
+          <Route path="/types" element={<TypeView />} />
+          <Route path="/map" element={<MapView />} />
+          <Route path="/art" element={<ArtView />} />
+          <Route path="/about" element={<AboutView />} />
+        </Routes>
       </div>
-
-      <Routes>
-        <Route path="/" element={<ChapterView />} />
-        <Route path="/stories" element={<StoriesIndex />} />
-        <Route path="/story/:pericopeId" element={<StoryView />} />
-        <Route path="/timeline" element={<TimelineView />} />
-        <Route path="/types" element={<TypeView />} />
-        <Route path="/map" element={<MapView />} />
-        <Route path="/art" element={<ArtView />} />
-        <Route path="/about" element={<AboutView />} />
-      </Routes>
 
       {showEsvAttribution ? <EsvAttribution /> : null}
 

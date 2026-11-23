@@ -213,7 +213,7 @@ function Column(props: {
         <span>{header}</span>
       </div>
 
-      <div className="colBody" ref={bodyRef}>
+      <div className="colBody" ref={bodyRef} tabIndex={0} role="region" aria-label={`${header} verses`}>
         {blocks.length === 0 ? <p className="muted">No content</p> : null}
 
         {blocks.map((b, index) => {

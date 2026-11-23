@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import ColumnGrid, { type ColumnBlock } from "../components/ColumnGrid";
 import ArtworkModal from "../components/ArtworkModal";
+import ReaderControls from "../components/ReaderControls";
 import EventShare from "../components/EventShare";
 import { useEsvAvailability } from "../hooks/useEsvAvailability";
 import { getPassage, type PassageRef } from "../lib/bible";
@@ -218,102 +219,106 @@ export default function StoryView() {
   }
 
   return (
-    <div>
-      <div className="card">
-        <div className="row" style={{ alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
-          <div style={{ flex: 1 }}>
-            <div className="muted">
-              <Link to={backPath}>← {backLabel}</Link>
-            </div>
-            {currentEvent ? (
-              <>
-                <div className="eventTitle">
-                  <h2>{currentEvent.title}</h2>
-                  <EventShare
-                    key={`${currentEvent.pericopeId}-${version}`}
-                    eventId={currentEvent.pericopeId}
-                    title={currentEvent.title}
-                    version={version}
-                  />
-                </div>
-                <div className="muted">{currentEvent.summary}</div>
-              </>
-            ) : null}
-
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
-              {GOSPELS.map((g) => (
-                <div
-                  key={g}
-                  style={{
-                    padding: "8px 10px",
-                    borderRadius: 10,
-                    border: "1px solid #e5e7eb",
-                    background: g === primaryBook ? "#eef2ff" : "#fafafa",
-                    fontSize: 14,
-                  }}
-                >
-                  <strong>{g}:</strong> {referenceMap[g] || "—"}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <label>Version</label>
-            <select value={version} onChange={(e) => setVersion(e.target.value as Version)}>
-              <option value="KJV">KJV</option>
-              <option value="ESV" disabled={esvStatusChecked && !esvAvailable}>ESV</option>
-            </select>
-            {esvStatusChecked && !esvAvailable ? (
-              <div className="muted" style={{ marginTop: 8, fontSize: 12, maxWidth: 220 }}>
-                ESV is unavailable until <code>ESV_API_KEY</code> is configured.
+    <div className="readerPage" key={pericopeId}>
+      <ReaderControls>
+        <div className="card">
+          <div className="row" style={{ alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
+            <div style={{ flex: 1 }}>
+              <div className="muted">
+                <Link to={backPath}>← {backLabel}</Link>
               </div>
-            ) : null}
+              {currentEvent ? (
+                <>
+                  <div className="eventTitle">
+                    <h2>{currentEvent.title}</h2>
+                    <EventShare
+                      key={`${currentEvent.pericopeId}-${version}`}
+                      eventId={currentEvent.pericopeId}
+                      title={currentEvent.title}
+                      version={version}
+                    />
+                  </div>
+                  <div className="muted">{currentEvent.summary}</div>
+                </>
+              ) : null}
+
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
+                {GOSPELS.map((g) => (
+                  <div
+                    key={g}
+                    style={{
+                      padding: "8px 10px",
+                      borderRadius: 10,
+                      border: "1px solid #e5e7eb",
+                      background: g === primaryBook ? "#eef2ff" : "#fafafa",
+                      fontSize: 14,
+                    }}
+                  >
+                    <strong>{g}:</strong> {referenceMap[g] || "—"}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label>Version</label>
+              <select value={version} onChange={(e) => setVersion(e.target.value as Version)}>
+                <option value="KJV">KJV</option>
+                <option value="ESV" disabled={esvStatusChecked && !esvAvailable}>ESV</option>
+              </select>
+              {esvStatusChecked && !esvAvailable ? (
+                <div className="muted" style={{ marginTop: 8, fontSize: 12, maxWidth: 220 }}>
+                  ESV is unavailable until <code>ESV_API_KEY</code> is configured.
+                </div>
+              ) : null}
+            </div>
+          </div>
+
+          <div className="row" style={{ marginTop: 12, justifyContent: "space-between", gap: 12 }}>
+            <div>
+              {prevPericope ? (
+                <button onClick={() => goToPericope(prevPericope.pericopeId)}>
+                  ← Previous: {prevPericope.title}
+                </button>
+              ) : (
+                <button disabled>← Previous</button>
+              )}
+            </div>
+
+            <div>
+              {nextPericope ? (
+                <button onClick={() => goToPericope(nextPericope.pericopeId)}>
+                  Next: {nextPericope.title} →
+                </button>
+              ) : (
+                <button disabled>Next →</button>
+              )}
+            </div>
           </div>
         </div>
+      </ReaderControls>
 
-        <div className="row" style={{ marginTop: 12, justifyContent: "space-between", gap: 12 }}>
-          <div>
-            {prevPericope ? (
-              <button onClick={() => goToPericope(prevPericope.pericopeId)}>
-                ← Previous: {prevPericope.title}
-              </button>
-            ) : (
-              <button disabled>← Previous</button>
-            )}
-          </div>
-
-          <div>
-            {nextPericope ? (
-              <button onClick={() => goToPericope(nextPericope.pericopeId)}>
-                Next: {nextPericope.title} →
-              </button>
-            ) : (
-              <button disabled>Next →</button>
-            )}
-          </div>
-        </div>
+      <div className="readerPanes">
+        <ColumnGrid
+          version={version}
+          enableSync={false}
+          activeBlockId={pericopeId ?? null}
+          onPrimaryActiveBlockChange={() => {}}
+          showDifferences={false}
+          scrollPrimaryToTopSignal={0}
+          primary={{
+            colKey: `${primaryBook}-primary`,
+            header: `${primaryBook} (${version})`,
+            blocks: cols[primaryBook],
+          }}
+          others={otherBooks.map((book) => ({
+            book,
+            colKey: book,
+            header: `${book} (${version})`,
+            blocks: cols[book],
+          }))}
+        />
       </div>
-
-      <ColumnGrid
-        version={version}
-        enableSync={false}
-        activeBlockId={pericopeId ?? null}
-        onPrimaryActiveBlockChange={() => {}}
-        showDifferences={false}
-        scrollPrimaryToTopSignal={0}
-        primary={{
-          colKey: `${primaryBook}-primary`,
-          header: `${primaryBook} (${version})`,
-          blocks: cols[primaryBook],
-        }}
-        others={otherBooks.map((book) => ({
-          book,
-          colKey: book,
-          header: `${book} (${version})`,
-          blocks: cols[book],
-        }))}
-      />
 
       {artOpenIndex !== null ? (
         <ArtworkModal

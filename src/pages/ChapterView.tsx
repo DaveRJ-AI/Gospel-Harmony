@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ColumnGrid, { type ColumnBlock } from "../components/ColumnGrid";
 import ArtworkModal from "../components/ArtworkModal";
+import ReaderControls, { revealReadingControl } from "../components/ReaderControls";
 import ReadingPlans from "../components/ReadingPlans";
 import { useEsvAvailability } from "../hooks/useEsvAvailability";
 import { getChapter, getPassage, type PassageRef } from "../lib/bible";
@@ -317,7 +318,7 @@ export default function ChapterView() {
     if (!assignedReading || !revealAssignedReading.current) return;
     revealAssignedReading.current = false;
     readerRef.current?.focus({ preventScroll: true });
-    readerRef.current?.scrollIntoView({ block: "start" });
+    if (readerRef.current) revealReadingControl(readerRef.current);
   }, [assignedReading]);
 
   const openAssignedReading = React.useCallback((reading: ChapterReading | null, reveal = true) => {
@@ -493,7 +494,9 @@ export default function ChapterView() {
 
   function focusChapterReader() {
     chapterReaderRef.current?.focus({ preventScroll: true });
-    chapterReaderRef.current?.scrollIntoView({ block: "start" });
+    chapterReaderRef.current?.scrollIntoView({
+      block: matchMedia("(min-width: 761px)").matches ? "nearest" : "start",
+    });
   }
 
   React.useLayoutEffect(() => {
@@ -520,182 +523,198 @@ export default function ChapterView() {
   }
 
   return (
-    <div>
-      <div className="card">
-        <div className="chapterPanel">
-          <ReadingPlans
-            version={version}
-            assignedReading={assignedReading}
-            onRead={openAssignedReading}
-          >
-            {(picker, activePlan) => (
-              <>
-                {showIntroduction && !activePlan && (
-                  <section className="chapterIntro" aria-labelledby="chapter-intro-title">
-                    <div>
-                      <h2 id="chapter-intro-title">Compare the Gospels side by side</h2>
-                      <p>Choose a Gospel and chapter to see how the other Gospels tell the same events.</p>
-                    </div>
-                    <div className="chapterIntroActions">
-                      <button type="button" className="chapterIntroAction chapterIntroDemo" onClick={tryDemo}>Try Luke 22</button>
-                      <Link
-                        className="chapterIntroAction chapterIntroEvents"
-                        to="/stories"
-                        onClick={(event) => {
-                          if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
-                          window.scrollTo(0, 0);
-                        }}
-                      >
-                        Browse Events
-                      </Link>
-                      <button
-                        type="button"
-                        className="chapterIntroAction chapterIntroDismiss"
-                        onClick={dismissIntroduction}
-                      >
-                        Don’t show again
-                      </button>
-                    </div>
-                  </section>
-                )}
-                <div className="chapterSettings">
-                  <div className="chapterVersionPicker">
-                    <label>Version</label>
-                    <select ref={versionPickerRef} value={version} onChange={(e) => setVersion(e.target.value as Version)}>
-                      <option value="KJV">KJV</option>
-                      <option value="ESV" disabled={esvStatusChecked && !esvAvailable}>ESV</option>
-                    </select>
-                    {esvStatusChecked && !esvAvailable ? (
-                      <div className="muted" style={{ marginTop: 8, fontSize: 12 }}>
-                        ESV unavailable
+    <div className="readerPage">
+      <ReaderControls>
+        <div className="card">
+          <div className="chapterPanel">
+            <ReadingPlans
+              version={version}
+              assignedReading={assignedReading}
+              onRead={openAssignedReading}
+            >
+              {(picker, activePlan) => (
+                <>
+                  {showIntroduction && !activePlan && (
+                    <section className="chapterIntro" aria-labelledby="chapter-intro-title">
+                      <div>
+                        <h2 id="chapter-intro-title">Compare the Gospels side by side</h2>
+                        <p>Choose a Gospel and chapter to see how the other Gospels tell the same events.</p>
                       </div>
-                    ) : null}
-                  </div>
-
-                  <div className="primaryGospelPicker">
-                    <label>
-                      Primary Gospel
-                      <InfoTooltip
-                        label="Primary Gospel"
-                        description="Choose the Gospel you want to read in the main column. The other columns show parallel passages for the same events."
-                      />
-                    </label>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                      {GOSPELS.map((g) => (
-                        <SelectionPill
-                          key={g}
-                          active={book === g}
-                          onClick={() => {
-                            setAssignedReading(null);
-                            setBook(g);
-                            setChapter(1);
+                      <div className="chapterIntroActions">
+                        <button type="button" className="chapterIntroAction chapterIntroDemo" onClick={tryDemo}>Try Luke 22</button>
+                        <Link
+                          className="chapterIntroAction chapterIntroEvents"
+                          to="/stories"
+                          onClick={(event) => {
+                            if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+                            window.scrollTo(0, 0);
                           }}
                         >
-                          {g}
+                          Browse Events
+                        </Link>
+                        <button
+                          type="button"
+                          className="chapterIntroAction chapterIntroDismiss"
+                          onClick={dismissIntroduction}
+                        >
+                          Don’t show again
+                        </button>
+                      </div>
+                    </section>
+                  )}
+                  <div className="chapterSettings">
+                    <div className="chapterVersionPicker">
+                      <label>Version</label>
+                      <select ref={versionPickerRef} value={version} onChange={(e) => setVersion(e.target.value as Version)}>
+                        <option value="KJV">KJV</option>
+                        <option value="ESV" disabled={esvStatusChecked && !esvAvailable}>ESV</option>
+                      </select>
+                      {esvStatusChecked && !esvAvailable ? (
+                        <div className="muted" style={{ marginTop: 8, fontSize: 12 }}>
+                          ESV unavailable
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <div className="primaryGospelPicker">
+                      <label>
+                        Primary Gospel
+                        <InfoTooltip
+                          label="Primary Gospel"
+                          description="Choose the Gospel you want to read in the main column. The other columns show parallel passages for the same events."
+                        />
+                      </label>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                        {GOSPELS.map((g) => (
+                          <SelectionPill
+                            key={g}
+                            active={book === g}
+                            onClick={() => {
+                              setAssignedReading(null);
+                              setBook(g);
+                              setChapter(1);
+                            }}
+                          >
+                            {g}
+                          </SelectionPill>
+                        ))}
+                      </div>
+                    </div>
+
+                    {picker}
+
+                    <div className="chapterReadingOptions">
+                      <div>
+                        <label>
+                          Sync
+                          <InfoTooltip
+                            label="Sync"
+                            description="Keeps the same story aligned across the parallel columns as you move through the primary column."
+                          />
+                        </label>
+                        <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 10 }}>
+                          <Switch checked={enableSync} onChange={setEnableSync} label="Sync" />
+                          <span style={{ fontSize: 14, color: "#64748B", fontWeight: 700 }}>
+                            {enableSync ? "On" : "Off"}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label>
+                          Differences
+                          <InfoTooltip
+                            label="Differences"
+                            description="Highlights words in an active parallel passage that do not appear in the active primary passage."
+                          />
+                        </label>
+                        <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 10 }}>
+                          <Switch checked={showDifferences} onChange={setShowDifferences} label="Differences" />
+                          <span style={{ fontSize: 14, color: "#64748B", fontWeight: 700 }}>
+                            {showDifferences ? "On" : "Off"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label>Select chapter</label>
+                    <div className="chapterNumberButtons">
+                      {chapterButtons.map((ch) => (
+                        <SelectionPill key={ch} active={chapter === ch} onClick={() => {
+                          setAssignedReading(null);
+                          setChapter(ch);
+                        }}>
+                          {ch}
                         </SelectionPill>
                       ))}
                     </div>
                   </div>
-
-                  {picker}
-
-                  <div className="chapterReadingOptions">
-                    <div>
-                      <label>
-                        Sync
-                        <InfoTooltip
-                          label="Sync"
-                          description="Keeps the same story aligned across the parallel columns as you move through the primary column."
-                        />
-                      </label>
-                      <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 10 }}>
-                        <Switch checked={enableSync} onChange={setEnableSync} label="Sync" />
-                        <span style={{ fontSize: 14, color: "#64748B", fontWeight: 700 }}>
-                          {enableSync ? "On" : "Off"}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label>
-                        Differences
-                        <InfoTooltip
-                          label="Differences"
-                          description="Highlights words in an active parallel passage that do not appear in the active primary passage."
-                        />
-                      </label>
-                      <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 10 }}>
-                        <Switch checked={showDifferences} onChange={setShowDifferences} label="Differences" />
-                        <span style={{ fontSize: 14, color: "#64748B", fontWeight: 700 }}>
-                          {showDifferences ? "On" : "Off"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label>Select chapter</label>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                    {chapterButtons.map((ch) => (
-                      <SelectionPill key={ch} active={chapter === ch} onClick={() => {
-                        setAssignedReading(null);
-                        setChapter(ch);
-                      }}>
-                        {ch}
-                      </SelectionPill>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-          </ReadingPlans>
-        </div>
-      </div>
-
-      {assignedReading && (
-        <div className="assignedReading" ref={readerRef} tabIndex={-1} aria-label="Assigned reading">
-          <h2>{readingLabel(assignedReading)}</h2>
-          <div className="readingPlanActions">
-            <a href="#reading-plan-card">Back to reading plan</a>
-            <button type="button" onClick={() => setAssignedReading(null)}>
-              {assignedReading.startVerse === undefined ? "Return to chapter view" : "Show full chapter"}
-            </button>
+                </>
+              )}
+            </ReadingPlans>
           </div>
         </div>
-      )}
-      {error ? <p className="error" style={{ marginTop: 10 }}>{error}</p> : null}
-      {loading ? <p className="muted">Loading…</p> : null}
 
-      {(!assignedReading || (!loading && !error)) && (
-        <div
-          ref={chapterReaderRef}
-          className="chapterReader"
-          role="region"
-          tabIndex={-1}
-          aria-label={`${book} ${chapter} and parallel passages`}
-        >
-          <ColumnGrid
-            version={version}
-            enableSync={enableSync}
-            activeBlockId={activeBlockId}
-            onPrimaryActiveBlockChange={setActiveBlockId}
-            showDifferences={showDifferences}
-            scrollPrimaryToTopSignal={scrollPrimaryToTopSignal}
-            primary={{
-              colKey: `${book}-primary`,
-              header: assignedReading ? `Assigned reading · ${readingLabel(assignedReading)}` : `Primary: ${book} ${chapter}`,
-              blocks: primaryBlocks,
-            }}
-            others={others.map((og) => ({
-              book: og,
-              colKey: og,
-              header: `${og} parallels`,
-              blocks: otherBlocks[og] || [],
-            }))}
-          />
-        </div>
-      )}
+        {assignedReading && (
+          <div className="assignedReading" ref={readerRef} tabIndex={-1} aria-label="Assigned reading">
+            <h2>{readingLabel(assignedReading)}</h2>
+            <div className="readingPlanActions">
+              <a
+                href="#reading-plan-card"
+                onClick={(event) => {
+                  if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+                  const planCard = document.getElementById("reading-plan-card");
+                  if (!planCard) return;
+                  event.preventDefault();
+                  planCard.focus({ preventScroll: true });
+                  revealReadingControl(planCard);
+                }}
+              >
+                Back to reading plan
+              </a>
+              <button type="button" onClick={() => setAssignedReading(null)}>
+                {assignedReading.startVerse === undefined ? "Return to chapter view" : "Show full chapter"}
+              </button>
+            </div>
+          </div>
+        )}
+        {error ? <p className="error" style={{ marginTop: 10 }}>{error}</p> : null}
+        {loading ? <p className="muted">Loading…</p> : null}
+      </ReaderControls>
+
+      <div className="readerPanes">
+        {(!assignedReading || (!loading && !error)) && (
+          <div
+            ref={chapterReaderRef}
+            className="chapterReader"
+            role="region"
+            tabIndex={-1}
+            aria-label={`${book} ${chapter} and parallel passages`}
+          >
+            <ColumnGrid
+              version={version}
+              enableSync={enableSync}
+              activeBlockId={activeBlockId}
+              onPrimaryActiveBlockChange={setActiveBlockId}
+              showDifferences={showDifferences}
+              scrollPrimaryToTopSignal={scrollPrimaryToTopSignal}
+              primary={{
+                colKey: `${book}-primary`,
+                header: assignedReading ? `Assigned reading · ${readingLabel(assignedReading)}` : `Primary: ${book} ${chapter}`,
+                blocks: primaryBlocks,
+              }}
+              others={others.map((og) => ({
+                book: og,
+                colKey: og,
+                header: `${og} parallels`,
+                blocks: otherBlocks[og] || [],
+              }))}
+            />
+          </div>
+        )}
+      </div>
 
       {modalIndex !== null ? (
         <ArtworkModal

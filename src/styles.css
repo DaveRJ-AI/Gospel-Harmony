@@ -111,20 +111,34 @@ small {
 }
 
 .header {
+  --header-inline-gap: 20px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 20px;
+  gap: var(--header-inline-gap);
   margin-bottom: 22px;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 14px;
+  width: max-content;
+  max-width: 100%;
+  min-width: 0;
+  gap: 18px;
+}
+
+.brand h1 {
+  font-size: 2.15rem;
+  line-height: 1.05;
+}
+
+.brand small {
+  font-size: 1rem;
 }
 
 .brandLogo {
+  flex: none;
   object-fit: contain;
   /* Lighten the near-white matte so it disappears against the light header. */
   filter: brightness(1.025);
@@ -195,6 +209,67 @@ small {
   transition: background 140ms ease, border-color 140ms ease;
 }
 
+.nav a > span {
+  flex: none;
+  white-space: nowrap;
+}
+
+.menuToggle {
+  display: none;
+}
+
+.header[data-menu-layout="inline"],
+.header[data-menu-layout="compact"] {
+  flex-direction: row;
+  align-items: center;
+}
+
+.header[data-menu-layout="inline"] .brand {
+  flex: none;
+}
+
+.header[data-menu-layout="inline"] .nav {
+  flex: 1;
+}
+
+.header[data-menu-layout="compact"] {
+  position: relative;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.header[data-menu-layout="compact"] .menuToggle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-color: #CBD5E1;
+  background: #EEF4FA;
+  font-weight: 700;
+}
+
+.header[data-menu-layout="compact"] .menuToggle[aria-expanded="true"] {
+  background: var(--nav-active-bg);
+  border-color: var(--nav-active-border);
+}
+
+.header[data-menu-layout="compact"] .nav {
+  position: absolute;
+  inset-block-start: calc(100% + 8px);
+  inset-inline-end: 0;
+  z-index: 30;
+  width: min(23rem, 100%);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
+}
+
+.header[data-menu-layout="compact"] .nav[aria-hidden="true"] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .nav a:hover {
   background: #E2EAF4;
   border-color: #CBD5E1;
@@ -208,7 +283,8 @@ small {
   font-weight: 800;
 }
 
-.nav a:focus-visible {
+.nav a:focus-visible,
+.menuToggle:focus-visible {
   outline: 2px solid #2563EB;
   outline-offset: 2px;
 }
@@ -263,10 +339,14 @@ small {
 }
 
 .colBody {
-  height: min(760px, calc(100vh - 360px));
   overflow: auto;
   padding: 16px 14px 14px 14px;
   background: #FFFFFF;
+}
+
+.colBody:focus-visible {
+  outline: 2px solid #2563EB;
+  outline-offset: -2px;
 }
 
 .blockWrap {
@@ -659,9 +739,84 @@ small {
   .grid4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
 
-  .colBody {
-    height: min(720px, calc(100vh - 340px));
+@media (min-width: 761px) {
+  .siteReaderLayout {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 44px);
+    height: calc(100dvh - 44px);
+    min-height: 500px;
+  }
+
+  .siteReaderLayout > .header {
+    flex: none;
+  }
+
+  .readerPage {
+    --reader-min-height: 200px;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .readerControls {
+    min-height: 0;
+  }
+
+  .readerControls[data-scrollable] {
+    overflow: auto;
+    overscroll-behavior-y: contain;
+  }
+
+  .readerControls:focus-visible {
+    outline: 2px solid #2563EB;
+    outline-offset: -2px;
+  }
+
+  .readerControlsContent {
+    display: flow-root;
+  }
+
+  .readerPanes {
+    flex: 1 0 var(--reader-min-height);
+    min-height: 0;
+    margin-top: 16px;
+  }
+
+  .readerPanes .chapterReader,
+  .readerPanes .grid4 {
+    height: 100%;
+  }
+
+  .readerPanes .grid4 {
+    grid-auto-rows: minmax(0, 1fr);
+    align-items: stretch;
+    margin-top: 0;
+  }
+
+  .readerPanes .col {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .readerPanes .colHeader {
+    padding: 10px 16px;
+  }
+
+  .readerPanes .colBody {
+    flex: 1;
+    min-height: 0;
+    overscroll-behavior-y: contain;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1400px) {
+  .readerPage {
+    --reader-min-height: 332px;
   }
 }
 
@@ -670,25 +825,21 @@ small {
     padding: 12px;
   }
 
-  .header {
-    flex-direction: column;
-    align-items: stretch;
+  .header[data-menu-layout="compact"] .brand {
+    gap: 10px;
   }
 
-  .nav {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 4px;
-    padding: 5px;
+  .header[data-menu-layout="compact"] .brandLogo {
+    width: 52px;
+    height: 52px;
   }
 
-  .nav a {
-    grid-column: span 3;
-    padding: 9px 4px;
+  .header[data-menu-layout="compact"] .brand h1 {
+    font-size: clamp(1.25rem, 5.6vw, 2.15rem);
+  }
+
+  .header[data-menu-layout="compact"] .brand small {
     font-size: 0.875rem;
-  }
-
-  .nav a:nth-child(n + 5) {
-    grid-column: span 4;
   }
 
   .grid4 {
@@ -816,6 +967,12 @@ small {
   gap: 22px;
 }
 
+.chapterNumberButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .chapterIntro,
 .chapterIntroActions {
   display: flex;
@@ -830,6 +987,41 @@ small {
   border: 1px solid #9FD394;
   border-radius: 14px;
   background: #DDF0D7;
+}
+
+@media (min-width: 761px) and (max-height: 850px) {
+  .siteReaderLayout > .header {
+    margin-bottom: 16px;
+  }
+
+  .siteReaderLayout .brandLogo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .readerControls .card {
+    padding: 12px 16px;
+  }
+
+  .readerControls .chapterPanel {
+    gap: 14px;
+  }
+
+  .chapterIntro {
+    column-gap: 8px;
+  }
+
+  .chapterIntro > :first-child {
+    flex: 1 1 16rem;
+  }
+
+  .chapterNumberButtons {
+    gap: 6px;
+  }
+
+  .chapterNumberButtons button {
+    padding: 7px 12px;
+  }
 }
 
 .chapterIntro h2 {
